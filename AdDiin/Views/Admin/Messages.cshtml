@@ -1,0 +1,109 @@
+﻿@model List<AdDiin.Models.Entities.Conversation>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Direct User Support & Chat Inquiries";
+    var active = ViewBag.ActiveConversation as AdDiin.Models.Entities.Conversation;
+}
+
+<div class="card card-custom border-0 bg-white shadow-sm overflow-hidden" style="min-height: 600px;">
+    <div class="row g-0">
+        <!-- Conversations List Sidebar -->
+        <div class="col-md-4 border-end bg-light">
+            <div class="p-3 border-bottom bg-white">
+                <h6 class="fw-bold mb-0 text-dark">User Inquiries Inbox</h6>
+            </div>
+
+            <div class="list-group list-group-flush overflow-y-auto" style="max-height: 520px;">
+                @if (!Model.Any())
+                {
+                    <div class="p-4 text-center text-muted small">No active conversations.</div>
+                }
+                else
+                {
+                    @foreach (var c in Model)
+                    {
+                        var isActive = active != null && active.Id == c.Id;
+                        <a asp-action="Messages" asp-route-id="@c.Id" class="list-group-item list-group-item-action p-3 @(isActive ? "bg-emerald-light border-emerald" : "")">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong class="small text-dark text-truncate">@(c.User?.FullName ?? "User")</strong>
+                                <small class="text-muted" style="font-size: 0.7rem;">@c.UpdatedAt?.ToString("hh:mm tt")</small>
+                            </div>
+                            <div class="text-muted small text-truncate">
+                                @(c.Messages.LastOrDefault()?.MessageContent ?? "No messages")
+                            </div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Active Chat Area -->
+        <div class="col-md-8 d-flex flex-column" style="height: 600px;">
+            @if (active != null)
+            {
+                <div class="p-3 border-bottom bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">@(active.User?.FullName ?? "User") - @active.Subject</h6>
+                        <small class="text-muted">@active.User?.Email • @active.User?.PhoneNumber</small>
+                    </div>
+                    <div>
+                        @if (active.Status == "active")
+                        {
+                            <form asp-controller="Messages" asp-action="CloseConversation" asp-route-id="@active.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill">Close Inquiry</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Closed</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Messages Stream -->
+                <div class="chat-box flex-grow-1 p-3 overflow-y-auto" id="adminChatBox">
+                    @foreach (var msg in active.Messages)
+                    {
+                        var isMe = msg.SenderType == "admin";
+                        <div class="mb-3 d-flex flex-column @(isMe ? "align-items-end" : "align-items-start")">
+                            <div class="@(isMe ? "chat-bubble-user" : "chat-bubble-bot")">
+                                @msg.MessageContent
+                            </div>
+                            <small class="text-muted mt-1 px-1" style="font-size: 0.7rem;">
+                                @msg.CreatedAt.ToString("hh:mm tt")
+                            </small>
+                        </div>
+                    }
+                </div>
+
+                <!-- Message Input Form -->
+                <div class="p-3 border-top bg-white">
+                    <form asp-controller="Messages" asp-action="SendMessage" method="post" class="d-flex gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="conversationId" value="@active.Id" />
+                        <input type="text" name="messageContent" class="form-control rounded-pill" placeholder="Type admin reply..." required autocomplete="off" />
+                        <button type="submit" class="btn btn-emerald-gradient rounded-pill px-4 fw-bold">
+                            Reply
+                        </button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                    Select an inquiry from the inbox to reply.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const chatBox = document.getElementById('adminChatBox');
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+}

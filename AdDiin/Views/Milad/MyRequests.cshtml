@@ -1,0 +1,97 @@
+﻿@model List<AdDiin.Models.Entities.MiladRequest>
+@{
+    ViewData["Title"] = "My Milad Booking Requests";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-bookmark-heart text-emerald me-2"></i> My Milad & Dua Bookings</h3>
+            <p class="text-muted small mb-0">Track the approval status and assigned Imam remarks for your requests.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-emerald-gradient btn-sm rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-plus-lg me-1"></i> New Request
+        </a>
+    </div>
+
+    <div class="card card-custom border rounded-4 bg-white p-4 shadow-sm">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-calendar-x display-3 mb-2"></i>
+                <p>You have not submitted any Milad or Dua requests yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Occasion Title</th>
+                            <th>Preferred Date</th>
+                            <th>Contact Phone</th>
+                            <th>Status</th>
+                            <th>Admin Remarks</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var m in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">@m.Name</div>
+                                    <small class="text-muted text-truncate d-inline-block" style="max-width: 240px;">@m.Description</small>
+                                </td>
+                                <td>@m.MiladDate.ToString("dd MMM yyyy")</td>
+                                <td>@m.Phone</td>
+                                <td>
+                                    @if (m.Status == "approved")
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success">Approved</span>
+                                    }
+                                    else if (m.Status == "pending")
+                                    {
+                                        <span class="badge bg-warning bg-opacity-15 text-dark">Pending Review</span>
+                                    }
+                                    else if (m.Status == "completed")
+                                    {
+                                        <span class="badge bg-info bg-opacity-10 text-info">Completed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger">Rejected</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="small text-muted">@(m.AdminRemark ?? "Under review by Mosque Imam")</span>
+                                </td>
+                                <td class="text-end">
+                                    @if (m.Status == "pending")
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@m.Id" class="btn btn-outline-secondary btn-sm rounded-pill px-3 me-1">
+                                            Edit
+                                        </a>
+                                        <form asp-action="Cancel" asp-route-id="@m.Id" method="post" class="d-inline" onsubmit="return confirm('Cancel this booking request?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Details" asp-route-id="@m.Id" class="btn btn-outline-emerald btn-sm rounded-pill px-3">
+                                            Details
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

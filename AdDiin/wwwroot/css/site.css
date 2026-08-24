@@ -1,0 +1,189 @@
+﻿:root {
+    --primary-emerald: #059669;
+    --primary-emerald-dark: #064e3b;
+    --primary-emerald-light: #ecfdf5;
+    --accent-gold: #d97706;
+    --accent-gold-light: #fef3c7;
+    --neutral-dark: #0f172a;
+    --neutral-light: #f8fafc;
+    --neutral-gray: #64748b;
+    --border-color: #e2e8f0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--neutral-dark);
+    background-color: #f8fafc;
+}
+
+/* Islamic & Arabic Typography */
+.arabic-subtext {
+    font-family: 'Amiri', serif;
+    font-size: 1.25rem;
+    color: var(--accent-gold);
+    font-weight: 700;
+    margin-left: 0.25rem;
+}
+
+.brand-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--primary-emerald-dark);
+}
+
+.brand-subtitle {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: var(--neutral-gray);
+}
+
+.brand-logo-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+}
+
+/* Emerald Colors */
+.bg-emerald {
+    background-color: var(--primary-emerald) !important;
+}
+
+.bg-emerald-dark {
+    background-color: var(--primary-emerald-dark) !important;
+}
+
+.bg-emerald-light {
+    background-color: var(--primary-emerald-light) !important;
+}
+
+.text-emerald {
+    color: var(--primary-emerald) !important;
+}
+
+.text-emerald-light {
+    color: #a7f3d0 !important;
+}
+
+.btn-emerald {
+    background-color: var(--primary-emerald);
+    color: white;
+    border: none;
+    transition: all 0.25s ease;
+}
+
+.btn-emerald:hover {
+    background-color: #047857;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.btn-outline-emerald {
+    border: 1.5px solid var(--primary-emerald);
+    color: var(--primary-emerald);
+    background: transparent;
+    transition: all 0.25s ease;
+}
+
+.btn-outline-emerald:hover {
+    background-color: var(--primary-emerald);
+    color: white;
+}
+
+.btn-emerald-gradient {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-emerald-gradient:hover {
+    background: linear-gradient(135deg, #047857 0%, #064e3b 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(5, 150, 105, 0.35);
+}
+
+/* Cards & Containers */
+.card-custom {
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.card-custom:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.card-emerald {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    color: white;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 8px 24px rgba(4, 120, 87, 0.25);
+}
+
+/* Navigation Link Active Style */
+.navbar-nav .nav-link {
+    color: #475569;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-emerald);
+    background-color: var(--primary-emerald-light);
+}
+
+.navbar-nav .nav-link.active {
+    color: var(--primary-emerald);
+    font-weight: 700;
+    background-color: var(--primary-emerald-light);
+}
+
+/* Avatar circle */
+.avatar-circle-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.avatar-circle-lg {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* Footer Links */
+.footer-links a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: #fbbf24;
+    transform: translateX(4px);
+}

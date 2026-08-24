@@ -1,0 +1,87 @@
+﻿@model AdDiin.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm">
+                <div class="text-center mb-4">
+                    <div class="brand-logo-icon mx-auto mb-3">
+                        <span>🕌</span>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1">Join Ad-Diin Community</h3>
+                    <p class="text-muted small">Register for transparent donation tracking, Milad bookings, and community engagement</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-semibold">Full Name *</label>
+                        <input asp-for="FullName" class="form-control py-2" placeholder="e.g. Danial Hossain" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label fw-semibold">Email Address *</label>
+                            <input asp-for="Email" class="form-control py-2" placeholder="name@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label fw-semibold">Phone Number</label>
+                            <input asp-for="Phone" class="form-control py-2" placeholder="+880 1XXXXXXXXX" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label fw-semibold">Password *</label>
+                            <input asp-for="Password" class="form-control py-2" placeholder="Min 6 characters" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label fw-semibold">Confirm Password *</label>
+                            <input asp-for="ConfirmPassword" class="form-control py-2" placeholder="Re-type password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label fw-semibold">City</label>
+                            <input asp-for="City" class="form-control py-2" placeholder="e.g. Dhaka" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label fw-semibold">Gender</label>
+                            <select asp-for="Gender" class="form-select py-2">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Address" class="form-label fw-semibold">Address (Optional)</label>
+                        <input asp-for="Address" class="form-control py-2" placeholder="House/Street, Area" />
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald-gradient w-100 py-3 rounded-pill fw-bold shadow-sm mb-3">
+                        <i class="bi bi-person-check-fill me-1"></i> Register Account
+                    </button>
+
+                    <div class="text-center small text-muted">
+                        Already have an account? 
+                        <a asp-action="Login" class="text-emerald fw-bold text-decoration-none">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

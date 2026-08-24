@@ -1,0 +1,88 @@
+{
+  "HeroBadge": "Welcome to",
+  "HeroTitle": "Ad-Diin Mosque & Islamic Center",
+  "HeroDescription": "A spiritual home dedicated to worship, education, transparent charity, and community service. We strive to strengthen Islamic values and foster unity and innovation in our community.",
+  "Stats": [
+    {
+      "Value": "5+",
+      "Label": "Daily Prayers"
+    },
+    {
+      "Value": "5,000+",
+      "Label": "Community Members"
+    },
+    {
+      "Value": "25+",
+      "Label": "Monthly Programs"
+    },
+    {
+      "Value": "12+",
+      "Label": "Years Serving"
+    }
+  ],
+  "MissionTitle": "Our Mission",
+  "MissionDescription": "To establish a vibrant, transparent, and technology-driven Islamic center that serves as a beacon of faith, knowledge, compassion, and sustainable community infrastructure. We aim to provide a welcoming space for worship, learning, transparent Zakat distribution, and civic empowerment.",
+  "VisionTitle": "Our Vision",
+  "VisionDescription": "To be recognized as a premier smart Islamic institution that nurtures spiritual growth, promotes universal Islamic values, and empowers communities through modern digital tools, charity, and ethical leadership.",
+  "ValuesTitle": "Core Values",
+  "ValuesDescription": "The principles that guide everything we do at Ad-Diin Mosque & Community Platform",
+  "Values": [
+    {
+      "Title": "Faith (Imaan)",
+      "Description": "Encouraging spiritual growth, devotion, and regular congregational worship."
+    },
+    {
+      "Title": "Knowledge (Ilm)",
+      "Description": "Promoting authentic Islamic education based on the Holy Qur'an and Sunnah."
+    },
+    {
+      "Title": "Compassion (Rahmah)",
+      "Description": "Serving the underprivileged through transparent Zakat, disaster relief, and social welfare."
+    },
+    {
+      "Title": "Innovation",
+      "Description": "Leveraging modern digital infrastructure for transparent operations and AI-powered learning."
+    }
+  ],
+  "ProgramsTitle": "Our Programs & Initiatives",
+  "ProgramsDescription": "Comprehensive religious, educational, and welfare services offered for the community.",
+  "Programs": [
+    {
+      "Title": "Daily Prayers & Jamaat",
+      "Description": "Five daily prayers with congregation, Friday Jummah khutbahs, and Ramadan Taraweeh prayers."
+    },
+    {
+      "Title": "Islamic Education & Maktab",
+      "Description": "Quran recitation, Tajweed, Hadith study circles, and youth moral education."
+    },
+    {
+      "Title": "Community Welfare & Relief",
+      "Description": "Transparent Zakat calculation & distribution, Winter clothes drives, Food packages, and Orphan care."
+    },
+    {
+      "Title": "Smart Milad & Dua Bookings",
+      "Description": "Online booking for family Milad, Mahfil, and special supplications with certified Imams."
+    }
+  ],
+  "CommunityHeadsTitle": "Mosque & Community Leadership",
+  "CommunityHeadsDescription": "Dedicated leadership guiding spiritual administration and community development",
+  "CommunityHeads": [
+    {
+      "Name": "Maulana Dr. Abdur Rahman",
+      "Role": "Head Imam & Religious Advisor",
+      "Phone": "+880 1711-000001"
+    },
+    {
+      "Name": "Engr. Mojid Uddin",
+      "Role": "President, Mosque Committee",
+      "Phone": "+880 1812-000002"
+    },
+    {
+      "Name": "Prof. Nurul Islam",
+      "Role": "General Secretary & Coordinator",
+      "Phone": "+880 1913-000003"
+    }
+  ],
+  "CtaTitle": "Join Our Blessed Community",
+  "CtaDescription": "Whether you are seeking a peaceful place of worship, Islamic knowledge, or ways to contribute through transparent charity, we welcome you with open arms."
+}

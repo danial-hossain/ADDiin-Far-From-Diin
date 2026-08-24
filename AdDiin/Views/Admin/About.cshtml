@@ -1,0 +1,55 @@
+﻿@model AdDiin.Models.Entities.AboutContentModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "About Page Content Management";
+}
+
+<div class="card card-custom p-4 p-md-5 border-0 bg-white shadow-sm">
+    <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-pencil-square text-emerald me-2"></i> Update Mosque Mission, Vision & Content</h5>
+
+    <form asp-action="About" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label asp-for="HeroBadge" class="form-label small fw-semibold">Hero Badge</label>
+                <input asp-for="HeroBadge" class="form-control" />
+            </div>
+            <div class="col-md-8">
+                <label asp-for="HeroTitle" class="form-label small fw-semibold">Hero Main Title</label>
+                <input asp-for="HeroTitle" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="HeroDescription" class="form-label small fw-semibold">Hero Description</label>
+            <textarea asp-for="HeroDescription" rows="3" class="form-control"></textarea>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label asp-for="MissionTitle" class="form-label small fw-semibold">Mission Title</label>
+                <input asp-for="MissionTitle" class="form-control" />
+                <label asp-for="MissionDescription" class="form-label small fw-semibold mt-2">Mission Statement</label>
+                <textarea asp-for="MissionDescription" rows="4" class="form-control"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="VisionTitle" class="form-label small fw-semibold">Vision Title</label>
+                <input asp-for="VisionTitle" class="form-control" />
+                <label asp-for="VisionDescription" class="form-label small fw-semibold mt-2">Vision Statement</label>
+                <textarea asp-for="VisionDescription" rows="4" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="CtaTitle" class="form-label small fw-semibold">Call to Action Title</label>
+            <input asp-for="CtaTitle" class="form-control" />
+            <label asp-for="CtaDescription" class="form-label small fw-semibold mt-2">CTA Description</label>
+            <textarea asp-for="CtaDescription" rows="2" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-emerald-gradient px-4 py-2 rounded-pill fw-bold">
+            <i class="bi bi-check2-circle me-1"></i> Save Content Changes
+        </button>
+    </form>
+</div>
