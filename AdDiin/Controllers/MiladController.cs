@@ -1,4 +1,4 @@
-﻿using AdDiin.Models.Entities;
+using AdDiin.Models.Entities;
 using AdDiin.Models.ViewModels;
 using AdDiin.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +25,7 @@ namespace AdDiin.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
