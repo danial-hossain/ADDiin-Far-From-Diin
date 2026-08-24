@@ -1,0 +1,88 @@
+﻿@model List<AdDiin.Models.Entities.ContactMessage>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Contact Messages & Inquiries";
+}
+
+<div class="card card-custom p-4 border-0 bg-white shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+            <thead class="table-light">
+                <tr>
+                    <th>From</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold">@c.Name</div>
+                            <small class="text-muted">@(c.Company ?? "Individual")</small>
+                        </td>
+                        <td>@c.Email</td>
+                        <td>
+                            <div class="text-truncate" style="max-width: 250px;">@c.Message</div>
+                            @if (!string.IsNullOrEmpty(c.ReplyMessage))
+                            {
+                                <small class="text-success d-block"><strong>Replied:</strong> @c.ReplyMessage</small>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge @(c.Status == "unread" ? "bg-danger" : (c.Status == "replied" ? "bg-success" : "bg-info"))">
+                                @c.Status
+                            </span>
+                        </td>
+                        <td class="text-muted">@c.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-emerald rounded-pill py-0 px-2" data-bs-toggle="modal" data-bs-target="#replyModal_@c.Id">
+                                Reply
+                            </button>
+
+                            <!-- Reply Modal -->
+                            <div class="modal fade text-start" id="replyModal_@c.Id" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content rounded-4 border-0">
+                                        <form asp-action="ContactReply" asp-route-id="@c.Id" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">Reply to @c.Name (@c.Email)</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="p-3 bg-light rounded-3 mb-3 border">
+                                                    <strong>Original Message:</strong>
+                                                    <p class="mb-0 text-muted small mt-1">@c.Message</p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-semibold">Email Reply Message</label>
+                                                    <textarea name="replyText" rows="4" class="form-control" placeholder="Assalamu Alaikum... write your reply here" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-emerald">Send Reply</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form asp-action="ContactDelete" asp-route-id="@c.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this message?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

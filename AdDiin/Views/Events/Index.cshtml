@@ -1,0 +1,96 @@
+﻿@model List<AdDiin.Models.Entities.IslamicEvent>
+@{
+    ViewData["Title"] = "Islamic Calendar & Special Events";
+    var upcoming = Model.Where(e => e.EventDate >= DateTime.Today).OrderBy(e => e.EventDate).ToList();
+    var past = Model.Where(e => e.EventDate < DateTime.Today).OrderByDescending(e => e.EventDate).ToList();
+}
+
+<div class="bg-emerald-dark text-white py-5">
+    <div class="container text-center py-3">
+        <h1 class="display-5 fw-extrabold mb-2">📅 Islamic Calendar & Events</h1>
+        <p class="text-white-75 max-w-700 mx-auto">
+            Stay updated with upcoming Islamic milestones, blessed nights, Ramadan schedules, and Eid celebrations.
+        </p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h3 class="fw-bold mb-4 text-dark"><i class="bi bi-calendar-event-fill text-emerald me-2"></i> Upcoming Blessed Days & Occasions</h3>
+
+    <div class="row g-4 mb-5">
+        @if (!upcoming.Any())
+        {
+            <div class="col-12 text-center py-5 text-muted">
+                <i class="bi bi-calendar-x display-3 mb-2"></i>
+                <p>No upcoming events scheduled at this moment.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var evt in upcoming)
+            {
+                var daysRemaining = (evt.EventDate.Date - DateTime.Today).Days;
+
+                <div class="col-lg-6">
+                    <div class="card card-custom h-100 p-4 border rounded-4 bg-white shadow-sm d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span class="badge bg-emerald-light text-emerald text-uppercase fw-semibold mb-1">@evt.EventType</span>
+                                    <h4 class="fw-bold text-dark mb-1">@evt.EventName</h4>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-moon-stars me-1 text-warning"></i> @evt.HijriDate
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                                        @(daysRemaining == 0 ? "Today!" : $"{daysRemaining} days left")
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-muted small leading-relaxed">
+                                @evt.Description
+                            </p>
+                        </div>
+                        <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                            <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i> Gregorian Date: <strong>@evt.EventDate.ToString("dd MMMM, yyyy")</strong></span>
+                            <a asp-action="Details" asp-route-id="@evt.Id" class="btn btn-outline-emerald btn-sm rounded-pill px-3">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    @if (past.Any())
+    {
+        <h4 class="fw-bold mb-3 text-muted"><i class="bi bi-clock-history me-2"></i> Past Events Archive</h4>
+        <div class="card card-custom border rounded-4 bg-white p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Hijri Date</th>
+                            <th>Gregorian Date</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in past)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@p.EventName</td>
+                                <td>@p.HijriDate</td>
+                                <td>@p.EventDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="badge bg-light text-dark border">@p.EventType</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

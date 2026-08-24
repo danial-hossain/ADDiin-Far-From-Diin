@@ -1,0 +1,107 @@
+﻿@model AdDiin.Models.ViewModels.ContactViewModel
+@{
+    ViewData["Title"] = "Contact Administration";
+}
+
+<div class="bg-emerald-dark text-white py-5">
+    <div class="container text-center py-3">
+        <h1 class="fw-extrabold display-5 mb-2">Contact Administration</h1>
+        <p class="text-white-75 max-w-700 mx-auto">
+            Have questions regarding prayer schedules, donations, Zakat, or community services? We are here to assist you.
+        </p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm">
+                <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-envelope-paper-heart text-emerald me-2"></i> Send Us a Message</h4>
+                
+                <form asp-action="Contact" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold">Your Full Name *</label>
+                        <input asp-for="Name" class="form-control py-2 rounded-3" placeholder="e.g. Danial Hossain" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label fw-semibold">Email Address *</label>
+                            <input asp-for="Email" class="form-control py-2 rounded-3" placeholder="name@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Company" class="form-label fw-semibold">Organization / Affiliation (Optional)</label>
+                            <input asp-for="Company" class="form-control py-2 rounded-3" placeholder="Company or Organization" />
+                            <span asp-validation-for="Company" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Message" class="form-label fw-semibold">Your Message / Inquiry *</label>
+                        <textarea asp-for="Message" rows="5" class="form-control rounded-3" placeholder="Write your questions or suggestions here..."></textarea>
+                        <span asp-validation-for="Message" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald-gradient w-100 py-3 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-send-fill me-2"></i> Submit Inquiry
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm h-100">
+                <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-geo-alt-fill text-danger me-2"></i> Mosque Complex</h4>
+                
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-emerald-light text-emerald p-3 rounded-circle fs-5">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Ad-Diin Mosque Complex</h6>
+                        <p class="text-muted small mb-0">14/B Tejgaon / Dhanmondi Industrial & Residential Zone, Dhaka-1208, Bangladesh</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-emerald-light text-emerald p-3 rounded-circle fs-5">
+                        <i class="bi bi-telephone"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Helpline & Bookings</h6>
+                        <p class="text-muted small mb-0">+880 1700-000000<br />+880 1811-111111</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-emerald-light text-emerald p-3 rounded-circle fs-5">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Email Inquiries</h6>
+                        <p class="text-muted small mb-0">info@addiin.com<br />support@addiin.com</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="bg-emerald-light text-emerald p-3 rounded-circle fs-5">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Administration Office Hours</h6>
+                        <p class="text-muted small mb-0">Saturday - Thursday: 9:00 AM - 8:00 PM<br />Friday: 2:30 PM - 8:00 PM</p>
+                    </div>
+                </div>
+
+                <div class="mt-auto p-3 bg-light rounded-3 text-center border">
+                    <small class="text-muted">For urgent religious counseling or Janaza/Emergency prayers, please call the hotline directly.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

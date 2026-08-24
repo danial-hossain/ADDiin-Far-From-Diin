@@ -1,0 +1,172 @@
+﻿@{
+    ViewData["Title"] = "Diin AI - Islamic Learning Assistant";
+}
+
+<div class="container my-4 max-w-800 mx-auto">
+    <div class="card card-custom border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- AI Header -->
+        <div class="bg-emerald-dark text-white p-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="w-48 h-48 bg-white text-emerald rounded-circle d-flex align-items-center justify-content-center fs-3 shadow-sm" style="width: 48px; height: 48px;">
+                    🕋
+                </div>
+                <div>
+                    <h4 class="fw-bold mb-0">Diin AI</h4>
+                    <small class="text-emerald-light">Islamic Companion & Verified Learning Assistant</small>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-outline-light rounded-pill px-3" id="btnClearChat">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> New Chat
+            </button>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-box p-4" id="aiChatStream" style="height: 480px; overflow-y: auto; background-color: #f0fdf4;">
+            <!-- Initial Welcome Message -->
+            <div class="d-flex align-items-start gap-2 mb-3">
+                <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
+                <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
+                    <p class="mb-0 text-dark small leading-relaxed">
+                        আসসালামু আলাইকুম! আমি <strong>Diin AI</strong> - আপনার ব্যক্তিগত ইসলামিক সহায়ক। কুরআন ও সহীহ হাদিসের আলোকে সালাত, সাওম, যাকাত, হজ, তাফসির বা ইসলামের যে কোনো বিষয়ে প্রশ্ন করুন।
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggested Quick Prompts -->
+        <div class="px-4 py-2 bg-white border-top border-light d-flex flex-wrap gap-2" id="quickPromptsBlock">
+            <span class="small text-muted align-self-center">Suggested:</span>
+            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="কুরআনে সালাতের গুরুত্ব কী?">সালাতের গুরুত্ব</button>
+            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="রোজার নিয়ত কী?">রোজার নিয়ত</button>
+            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="যাকাত কীভাবে হিসাব করতে হয়?">যাকাত হিসাব</button>
+            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="তাহাজ্জুদ নামাজ কীভাবে পড়ব?">তাহাজ্জুদ নামাজ</button>
+        </div>
+
+        <!-- AI Input Bar -->
+        <div class="p-3 bg-white border-top">
+            <form id="aiChatForm" class="d-flex gap-2">
+                <textarea id="aiMessageInput" rows="1" class="form-control rounded-4 py-2" placeholder="ইসলাম সম্পর্কিত যেকোনো প্রশ্ন লিখুন..." style="resize: none;"></textarea>
+                <button type="submit" id="btnSendAI" class="btn btn-emerald-gradient px-4 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-1">
+                    <span>Send</span> <i class="bi bi-send-fill"></i>
+                </button>
+            </form>
+            <div class="text-center mt-2" style="font-size: 0.72rem; color: #94a3b8;">
+                🕌 Diin AI কুরআন ও সুন্নাহর ভিত্তিতে ইসলামিক শিক্ষা প্রদানে নিবেদিত।
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const chatStream = document.getElementById('aiChatStream');
+        const chatForm = document.getElementById('aiChatForm');
+        const inputMsg = document.getElementById('aiMessageInput');
+        const btnSend = document.getElementById('btnSendAI');
+        let chatHistory = [];
+
+        function appendMessage(sender, text, sources = null) {
+            const row = document.createElement('div');
+            row.className = sender === 'user' ? 'd-flex justify-content-end mb-3' : 'd-flex align-items-start gap-2 mb-3';
+
+            let content = '';
+            if (sender === 'user') {
+                content = 
+                    <div class="chat-bubble-user p-3 rounded-4" style="max-width: 80%;">
+                        <p class="mb-0 small"></p>
+                    </div>
+                ;
+            } else {
+                let sourcesHtml = '';
+                if (sources && sources.length > 0) {
+                    sourcesHtml = '<div class="mt-2 pt-2 border-top small bg-light p-2 rounded-3 text-muted">';
+                    sourcesHtml += '<strong class="text-emerald d-block mb-1">📚 রেফারেন্স ও সূত্র:</strong>';
+                    sources.forEach(s => {
+                        sourcesHtml += <div><strong>:</strong> </div>;
+                    });
+                    sourcesHtml += '</div>';
+                }
+
+                content = 
+                    <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
+                    <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
+                        <p class="mb-0 text-dark small leading-relaxed" style="white-space: pre-line;"></p>
+                        
+                    </div>
+                ;
+            }
+
+            row.innerHTML = content;
+            chatStream.appendChild(row);
+            chatStream.scrollTop = chatStream.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const text = inputMsg.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text);
+            inputMsg.value = '';
+            btnSend.disabled = true;
+
+            // Loading indicator
+            const loadingRow = document.createElement('div');
+            loadingRow.id = 'loadingIndicator';
+            loadingRow.className = 'd-flex align-items-start gap-2 mb-3';
+            loadingRow.innerHTML = 
+                <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
+                <div class="bg-white border p-3 rounded-4 text-muted small">
+                    <span class="spinner-border spinner-border-sm text-emerald me-2"></span> যাচাই করে উত্তর প্রস্তুত করা হচ্ছে...
+                </div>
+            ;
+            chatStream.appendChild(loadingRow);
+            chatStream.scrollTop = chatStream.scrollHeight;
+
+            try {
+                const res = await fetch('/DiinAI/Chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, history: chatHistory })
+                });
+
+                const data = await res.json();
+                document.getElementById('loadingIndicator')?.remove();
+
+                if (data.success) {
+                    appendMessage('bot', data.response, data.sources);
+                    chatHistory.push({ role: 'user', content: text });
+                    chatHistory.push({ role: 'assistant', content: data.response });
+                } else {
+                    appendMessage('bot', data.message || 'দুঃখিত, কোনো উত্তর পাওয়া যায়নি।');
+                }
+            } catch (err) {
+                document.getElementById('loadingIndicator')?.remove();
+                appendMessage('bot', 'সার্ভারে সংযোগ করতে সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।');
+            } finally {
+                btnSend.disabled = false;
+            }
+        });
+
+        document.querySelectorAll('.prompt-chip').forEach(btn => {
+            btn.addEventListener('click', function() {
+                inputMsg.value = this.getAttribute('data-prompt');
+                chatForm.dispatchEvent(new Event('submit'));
+            });
+        });
+
+        document.getElementById('btnClearChat')?.addEventListener('click', function() {
+            chatHistory = [];
+            chatStream.innerHTML = 
+                <div class="d-flex align-items-start gap-2 mb-3">
+                    <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
+                    <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
+                        <p class="mb-0 text-dark small leading-relaxed">
+                            আসসালামু আলাইকুম! আমি <strong>Diin AI</strong> - আপনার ব্যক্তিগত ইসলামিক সহায়ক। কুরআন ও সহীহ হাদিসের আলোকে যেকোনো প্রশ্ন করুন।
+                        </p>
+                    </div>
+                </div>
+            ;
+        });
+    </script>
+}

@@ -1,0 +1,71 @@
+﻿@model List<AdDiin.Models.Entities.Donation>
+@{
+    ViewData["Title"] = "My Donation History";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-wallet2 text-emerald me-2"></i> My Donation Records</h3>
+            <p class="text-muted small mb-0">View all your historical contributions and download digital receipts.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-emerald-gradient btn-sm rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-plus-lg me-1"></i> Make a Donation
+        </a>
+    </div>
+
+    <div class="card card-custom border rounded-4 bg-white p-4 shadow-sm">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-cash-stack display-3 mb-2"></i>
+                <p>You have not made any recorded donations yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-end">Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model)
+                        {
+                            <tr>
+                                <td class="font-monospace small fw-bold">@d.TranId</td>
+                                <td class="text-uppercase"><span class="badge bg-emerald-light text-emerald">@d.Category</span></td>
+                                <td class="fw-bold text-dark">৳ @d.Amount.ToString("N2")</td>
+                                <td class="small text-muted text-uppercase">@(d.PaymentMethod ?? "Online")</td>
+                                <td>
+                                    @if (d.PaymentStatus == "completed")
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success">Completed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning bg-opacity-15 text-dark">@d.PaymentStatus</span>
+                                    }
+                                </td>
+                                <td class="small text-muted">@d.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</td>
+                                <td class="text-end">
+                                    <a asp-action="Receipt" asp-route-tranId="@d.TranId" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                        <i class="bi bi-receipt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

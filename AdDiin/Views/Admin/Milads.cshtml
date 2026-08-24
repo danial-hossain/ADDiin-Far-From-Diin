@@ -1,0 +1,106 @@
+﻿@model AdDiin.Models.ViewModels.AdminMiladsViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Milad & Dua Bookings Management";
+}
+
+<div class="card card-custom p-4 border-0 bg-white shadow-sm mb-4">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-6">
+            <input type="text" name="search" value="@Model.SearchQuery" class="form-control" placeholder="Search by name or phone..." />
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-emerald flex-grow-1">Filter</button>
+            <a asp-action="Milads" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+</div>
+
+<div class="card card-custom p-4 border-0 bg-white shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+            <thead class="table-light">
+                <tr>
+                    <th>Occasion Title</th>
+                    <th>User & Phone</th>
+                    <th>Target Date</th>
+                    <th>Status</th>
+                    <th>Admin Remarks</th>
+                    <th class="text-end">Review & Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model.MiladRequests)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold">@m.Name</div>
+                            <small class="text-muted text-truncate d-inline-block" style="max-width: 220px;">@m.Description</small>
+                        </td>
+                        <td>
+                            <div>@(m.User?.FullName ?? "N/A")</div>
+                            <small class="text-muted">@m.Phone</small>
+                        </td>
+                        <td>@m.MiladDate.ToString("dd MMM yyyy")</td>
+                        <td>
+                            <span class="badge @(m.Status == "approved" ? "bg-success" : (m.Status == "pending" ? "bg-warning text-dark" : (m.Status == "completed" ? "bg-info" : "bg-danger")))">
+                                @m.Status
+                            </span>
+                        </td>
+                        <td>
+                            <small class="text-muted">@(m.AdminRemark ?? "None")</small>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-emerald rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#updateMiladModal_@m.Id">
+                                Update
+                            </button>
+
+                            <!-- Update Status Modal -->
+                            <div class="modal fade text-start" id="updateMiladModal_@m.Id" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content rounded-4 border-0">
+                                        <form asp-action="MiladUpdateStatus" asp-route-id="@m.Id" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">Update Milad #@m.Id</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-semibold">Status</label>
+                                                    <select name="status" class="form-select">
+                                                        <option value="pending" selected="@(m.Status == "pending")">Pending</option>
+                                                        <option value="approved" selected="@(m.Status == "approved")">Approved</option>
+                                                        <option value="completed" selected="@(m.Status == "completed")">Completed</option>
+                                                        <option value="rejected" selected="@(m.Status == "rejected")">Rejected</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-semibold">Assigned Imam / Admin Remark</label>
+                                                    <textarea name="adminRemark" rows="3" class="form-control" placeholder="e.g. Approved. Imam Maulana Abdur Rahman assigned.">@m.AdminRemark</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-emerald">Update Status</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

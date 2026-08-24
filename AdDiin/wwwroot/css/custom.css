@@ -1,0 +1,115 @@
+﻿/* Admin Styles */
+.admin-wrapper {
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    z-index: 1050;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.admin-nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-nav-link.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: -260px;
+    }
+    .admin-sidebar.show {
+        left: 0;
+    }
+}
+
+/* Chat & Messaging UI */
+.chat-box {
+    height: 480px;
+    overflow-y: auto;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.chat-bubble-user {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    border-radius: 16px 16px 4px 16px;
+    padding: 0.75rem 1rem;
+    max-width: 80%;
+    margin-left: auto;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+}
+
+.chat-bubble-bot, .chat-bubble-admin {
+    background: #ffffff;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px 16px 16px 4px;
+    padding: 0.75rem 1rem;
+    max-width: 80%;
+    margin-right: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Prayer Times Table */
+.prayer-time-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.prayer-time-card.current-prayer {
+    border-color: #059669;
+    background: #ecfdf5;
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.15);
+    transform: translateY(-3px);
+}
+
+/* Hero Section */
+.hero-islamic-pattern {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-islamic-pattern::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}

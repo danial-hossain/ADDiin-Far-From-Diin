@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container my-5 text-center">
+    <div class="card card-custom p-5 border rounded-4 bg-white shadow-sm max-w-600 mx-auto">
+        <div class="text-danger display-1 mb-3">
+            <i class="bi bi-shield-x"></i>
+        </div>
+        <h2 class="fw-bold text-dark">Access Denied</h2>
+        <p class="text-muted mb-4">You do not have administrative privileges to access this requested resource.</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-emerald-gradient px-4 py-2 rounded-pill fw-bold">
+            <i class="bi bi-house-door me-1"></i> Return to Homepage
+        </a>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+﻿@model AdDiin.Models.ViewModels.DonationInitiateViewModel
+@{
+    ViewData["Title"] = "Online Donations & Zakat Platform";
+}
+
+<div class="bg-emerald-dark text-white py-5">
+    <div class="container text-center py-3">
+        <h1 class="display-5 fw-extrabold mb-2">💝 Online Donations & Zakat</h1>
+        <p class="text-white-75 max-w-700 mx-auto">
+            100% transparent and digital donation portal empowering community welfare, mosque maintenance, and emergency relief.
+        </p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm">
+                <h4 class="fw-bold mb-4 text-dark text-center">Select Fund & Amount</h4>
+
+                <form asp-action="Initiate" method="post" id="donationForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <!-- Category Selector -->
+                    <div class="mb-4">
+                        <label asp-for="Category" class="form-label fw-bold">Donation Purpose / Category *</label>
+                        <select asp-for="Category" class="form-select py-2 fs-6" id="categorySelect">
+                            <option value="general">General Mosque Maintenance Fund</option>
+                            <option value="zakat">Obligatory Zakat Fund</option>
+                            <option value="iftar">Ramadan Daily Iftar Program</option>
+                            <option value="durjog">Disaster & Flood Relief (Durjog)</option>
+                            <option value="sitarto">Winter Warmth Clothes & Blankets (Sitarto)</option>
+                            <option value="gachropon">Green Mosque Tree Plantation (Gachropon - SDG 9)</option>
+                            <option value="kurbani">Qurbani Meat Distribution</option>
+                            <option value="orphan">Orphan Sponsorship & Education</option>
+                        </select>
+                        <span asp-validation-for="Category" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Amount Chips & Custom Input -->
+                    <div class="mb-4">
+                        <label asp-for="Amount" class="form-label fw-bold">Donation Amount (BDT ৳) *</label>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="500">৳ 500</button>
+                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="1000">৳ 1,000</button>
+                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="2500">৳ 2,500</button>
+                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="5000">৳ 5,000</button>
+                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="10000">৳ 10,000</button>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-bold">৳ BDT</span>
+                            <input asp-for="Amount" class="form-control py-2 fs-5 fw-bold text-emerald" id="customAmount" type="number" step="any" min="10" />
+                        </div>
+                        <span asp-validation-for="Amount" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Anonymous Checkbox -->
+                    <div class="form-check p-3 bg-light rounded-3 mb-4 border">
+                        <input asp-for="IsAnonymous" class="form-check-input ms-0 me-2" id="anonymousCheck" />
+                        <label asp-for="IsAnonymous" class="form-check-label fw-semibold">Make this an Anonymous Donation</label>
+                        <small class="d-block text-muted">Your name will not appear on public donor boards or receipts.</small>
+                    </div>
+
+                    <!-- Donor Details -->
+                    <div id="donorDetailsBlock">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Name" class="form-label fw-semibold">Full Name</label>
+                                <input asp-for="Name" class="form-control py-2" placeholder="Your Name" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-semibold">Phone Number *</label>
+                                <input asp-for="Phone" class="form-control py-2" placeholder="+880 1XXXXXXXXX" />
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-semibold">Email Address (For Digital Invoice)</label>
+                            <input asp-for="Email" class="form-control py-2" placeholder="name@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Payment Gateway</label>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3">
+                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
+                                    <input type="radio" asp-for="PaymentMethod" value="bkash" class="form-check-input mb-1 d-block mx-auto" checked />
+                                    <span class="small fw-bold text-danger">bKash</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
+                                    <input type="radio" asp-for="PaymentMethod" value="nagad" class="form-check-input mb-1 d-block mx-auto" />
+                                    <span class="small fw-bold text-warning">Nagad</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
+                                    <input type="radio" asp-for="PaymentMethod" value="rocket" class="form-check-input mb-1 d-block mx-auto" />
+                                    <span class="small fw-bold text-primary">Rocket</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
+                                    <input type="radio" asp-for="PaymentMethod" value="sslcommerz" class="form-check-input mb-1 d-block mx-auto" />
+                                    <span class="small fw-bold text-emerald">Cards/Bank</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label fw-semibold">Special Prayers / Notes (Optional)</label>
+                        <textarea asp-for="Notes" rows="2" class="form-control" placeholder="Any specific Dua intention or instructions..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald-gradient w-100 py-3 rounded-pill fw-bold shadow-lg fs-5">
+                        <i class="bi bi-lock-fill me-2"></i> Proceed to Secure Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('customAmount').value = this.getAttribute('data-amt');
+            });
+        });
+    </script>
+}

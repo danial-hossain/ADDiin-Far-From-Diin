@@ -1,0 +1,113 @@
+﻿@model List<AdDiin.Models.Entities.Activity>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Activities & Initiatives Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Mosque Activities List</h5>
+    <button class="btn btn-emerald btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createActivityModal">
+        <i class="bi bi-plus-lg me-1"></i> Add Activity
+    </button>
+</div>
+
+<div class="card card-custom p-4 border-0 bg-white shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 small">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Order</th>
+                    <th>Status</th>
+                    <th>Image</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-bold">@a.Title</div>
+                            <small class="text-muted text-truncate d-inline-block" style="max-width: 250px;">@a.Description</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border text-uppercase">@a.Category</span></td>
+                        <td>@a.DisplayOrder</td>
+                        <td>
+                            <span class="badge @(a.IsActive ? "bg-success bg-opacity-10 text-success" : "bg-secondary")">
+                                @(a.IsActive ? "Active" : "Hidden")
+                            </span>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(a.ImageUrl))
+                            {
+                                <img src="@a.ImageUrl" class="rounded" style="width: 40px; height: 30px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">None</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <form asp-action="ActivityDelete" asp-route-id="@a.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this activity?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Activity Modal -->
+<div class="modal fade" id="createActivityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 border-0">
+            <form asp-action="ActivityCreate" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Add New Activity</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body space-y-3">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Activity Title</label>
+                        <input name="Title" class="form-control" required />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Category</label>
+                            <select name="Category" class="form-select">
+                                <option value="education">Education</option>
+                                <option value="charity">Charity</option>
+                                <option value="youth">Youth</option>
+                                <option value="community">Community</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Display Order</label>
+                            <input name="DisplayOrder" type="number" class="form-control" value="0" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Image URL (Optional)</label>
+                        <input name="ImageUrl" class="form-control" placeholder="https://..." />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Description</label>
+                        <textarea name="Description" rows="4" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-emerald">Save Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
