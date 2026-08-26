@@ -61,134 +61,68 @@
         </div>
     </div>
 
-    <!-- Five Obligatory Prayers (Fard/Azan) -->
+    <!-- Obligatory Daily Prayers (Fard / Azan) -->
     <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-                <h3 class="font-extrabold text-slate-900 text-lg">Five Obligatory Daily Prayers (Azan Times)</h3>
+                <h3 class="font-extrabold text-slate-900 text-lg">ফারদ্ব নামাযের আযান (Obligatory Daily Prayers)</h3>
                 <p class="text-xs text-slate-500">The pillar of Islam and primary daily connection with Allah (SWT)</p>
             </div>
             <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">
-                5 Fard Prayers
+                @fardPrayers.Count Daily Prayers
             </span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">ফজর</span>
-                <h4 class="text-lg font-black text-slate-900">Fajr</h4>
-                <div id="time-fajr" class="text-3xl font-black text-emerald-900 font-mono py-1">
-                    @(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("fajr"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "05:00")
+            @foreach (var prayer in fardPrayers)
+            {
+                var time12 = DateTime.Today.Add(prayer.PrayerTimeValue).ToString("hh:mm tt");
+                <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
+                    <span class="text-xs uppercase font-bold text-slate-400">@prayer.DisplayNameBn</span>
+                    <h4 class="text-lg font-black text-slate-900">@prayer.DisplayNameEn</h4>
+                    <div id="prayer-time-@prayer.Id" data-prayer-id="@prayer.Id" data-base-time="@prayer.PrayerTimeValue.ToString(@"hh\:mm")" class="dynamic-prayer-time text-2xl sm:text-3xl font-black text-emerald-900 font-mono py-1">
+                        @time12
+                    </div>
+                    <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
+                        Azan Time
+                    </span>
                 </div>
-                <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
-                    Azan Time
-                </span>
-            </div>
-
-            <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">যোহর</span>
-                <h4 class="text-lg font-black text-slate-900">Dhuhr</h4>
-                <div id="time-dhuhr" class="text-3xl font-black text-emerald-900 font-mono py-1">
-                    @(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("dhuhr"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "12:15")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
-                    Azan Time
-                </span>
-            </div>
-
-            <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">আসর</span>
-                <h4 class="text-lg font-black text-slate-900">Asr</h4>
-                <div id="time-asr" class="text-3xl font-black text-emerald-900 font-mono py-1">
-                    @(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("asr"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "15:45")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
-                    Azan Time
-                </span>
-            </div>
-
-            <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">মাগরিব</span>
-                <h4 class="text-lg font-black text-slate-900">Maghrib</h4>
-                <div id="time-maghrib" class="text-3xl font-black text-emerald-900 font-mono py-1">
-                    @(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("maghrib"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "18:30")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
-                    Azan Time
-                </span>
-            </div>
-
-            <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">এশা</span>
-                <h4 class="text-lg font-black text-slate-900">Isha</h4>
-                <div id="time-isha" class="text-3xl font-black text-emerald-900 font-mono py-1">
-                    @(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("isha"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "20:00")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
-                    Azan Time
-                </span>
-            </div>
+            }
         </div>
     </div>
 
-    <!-- Voluntary Nafl Prayers -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div>
-                <h3 class="font-extrabold text-slate-900 text-lg">Sunnah & Voluntary Prayers (Nafl)</h3>
-                <p class="text-xs text-slate-500">Recommended Prophetic prayers for immense spiritual rewards and elevated ranks</p>
-            </div>
-            <span class="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">
-                Voluntary Sunnah
-            </span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center space-y-2 hover:bg-white hover:border-purple-300 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">তাহাজ্জুদ</span>
-                <h4 class="text-base font-bold text-slate-900">Tahajjud (Night Vigil)</h4>
-                <div id="time-tahajjud" class="text-2xl font-black text-purple-900 font-mono py-1">
-                    @(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("tahajju"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "02:30")
+    <!-- Voluntary Sunnah & Nafl Prayers -->
+    @if (naflPrayers.Any())
+    {
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-lg">সুন্নাত ও নফল নামায (Sunnah & Nafl Prayers)</h3>
+                    <p class="text-xs text-slate-500">Recommended Prophetic prayers for immense spiritual rewards and elevated ranks</p>
                 </div>
-                <span class="inline-block px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">
-                    Recommended Nafl
+                <span class="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">
+                    @naflPrayers.Count Voluntary Prayers
                 </span>
             </div>
 
-            <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center space-y-2 hover:bg-white hover:border-purple-300 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">ইশরাক</span>
-                <h4 class="text-base font-bold text-slate-900">Ishraq (Post-Sunrise)</h4>
-                <div id="time-ishraq" class="text-2xl font-black text-purple-900 font-mono py-1">
-                    @(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("ishraq"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "05:45")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">
-                    Recommended Nafl
-                </span>
-            </div>
-
-            <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center space-y-2 hover:bg-white hover:border-purple-300 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">চাশত / দুহা</span>
-                <h4 class="text-base font-bold text-slate-900">Duha / Chasht</h4>
-                <div id="time-duha" class="text-2xl font-black text-purple-900 font-mono py-1">
-                    @(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("duha"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "08:00")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">
-                    Recommended Nafl
-                </span>
-            </div>
-
-            <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center space-y-2 hover:bg-white hover:border-purple-300 hover:shadow-md transition">
-                <span class="text-xs uppercase font-bold text-slate-400">আউওয়াবিন</span>
-                <h4 class="text-base font-bold text-slate-900">Awwabin</h4>
-                <div id="time-awwabin" class="text-2xl font-black text-purple-900 font-mono py-1">
-                    @(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("awwabin"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "18:45")
-                </div>
-                <span class="inline-block px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">
-                    Recommended Nafl
-                </span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                @foreach (var prayer in naflPrayers)
+                {
+                    var time12 = DateTime.Today.Add(prayer.PrayerTimeValue).ToString("hh:mm tt");
+                    <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center space-y-2 hover:bg-white hover:border-purple-300 hover:shadow-md transition">
+                        <span class="text-xs uppercase font-bold text-slate-400">@prayer.DisplayNameBn</span>
+                        <h4 class="text-base font-bold text-slate-900">@prayer.DisplayNameEn</h4>
+                        <div id="prayer-time-@prayer.Id" data-prayer-id="@prayer.Id" data-base-time="@prayer.PrayerTimeValue.ToString(@"hh\:mm")" class="dynamic-prayer-time text-2xl font-black text-purple-900 font-mono py-1">
+                            @time12
+                        </div>
+                        <span class="inline-block px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">
+                            Recommended Nafl
+                        </span>
+                    </div>
+                }
             </div>
         </div>
-    </div>
+    }
 </div>
 
 @section Scripts {
@@ -199,21 +133,8 @@
         const currentLocationText = document.getElementById('current-location-text');
         const statusText = document.getElementById('status-text');
 
-        // Base timings for Dhaka Standard
-        const baseTimings = {
-            fajr: "@(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("fajr"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "05:00")",
-            dhuhr: "@(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("dhuhr"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "12:15")",
-            asr: "@(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("asr"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "15:45")",
-            maghrib: "@(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("maghrib"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "18:30")",
-            isha: "@(fardPrayers.FirstOrDefault(p => p.PrayerName.Contains("isha"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "20:00")",
-            tahajjud: "@(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("tahajju"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "02:30")",
-            ishraq: "@(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("ishraq"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "05:45")",
-            duha: "@(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("duha"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "08:00")",
-            awwabin: "@(naflPrayers.FirstOrDefault(p => p.PrayerName.Contains("awwabin"))?.PrayerTimeValue.ToString(@"hh\:mm") ?? "18:45")"
-        };
-
-        function addMinutesToTime(timeStr, minutesToAdd) {
-            if (!timeStr) return '--:--';
+        function addMinutesToTime12(timeStr, minutesToAdd) {
+            if (!timeStr) return '--:-- --';
             const [hours, mins] = timeStr.split(':').map(Number);
             let totalMins = hours * 60 + mins + minutesToAdd;
             if (totalMins < 0) totalMins += 24 * 60;
@@ -221,20 +142,19 @@
 
             const resH = Math.floor(totalMins / 60);
             const resM = totalMins % 60;
-            return String(resH).padStart(2, '0') + ':' + String(resM).padStart(2, '0');
+            const ampm = resH >= 12 ? 'PM' : 'AM';
+            const displayH = resH % 12 === 0 ? 12 : resH % 12;
+            return String(displayH).padStart(2, '0') + ':' + String(resM).padStart(2, '0') + ' ' + ampm;
         }
 
         function applyDivisionTimes(divisionKey, divisionBn, offsetMinutes) {
-            document.getElementById('time-fajr').innerText = addMinutesToTime(baseTimings.fajr, offsetMinutes);
-            document.getElementById('time-dhuhr').innerText = addMinutesToTime(baseTimings.dhuhr, offsetMinutes);
-            document.getElementById('time-asr').innerText = addMinutesToTime(baseTimings.asr, offsetMinutes);
-            document.getElementById('time-maghrib').innerText = addMinutesToTime(baseTimings.maghrib, offsetMinutes);
-            document.getElementById('time-isha').innerText = addMinutesToTime(baseTimings.isha, offsetMinutes);
-
-            document.getElementById('time-tahajjud').innerText = addMinutesToTime(baseTimings.tahajjud, offsetMinutes);
-            document.getElementById('time-ishraq').innerText = addMinutesToTime(baseTimings.ishraq, offsetMinutes);
-            document.getElementById('time-duha').innerText = addMinutesToTime(baseTimings.duha, offsetMinutes);
-            document.getElementById('time-awwabin').innerText = addMinutesToTime(baseTimings.awwabin, offsetMinutes);
+            const timeElements = document.querySelectorAll('.dynamic-prayer-time');
+            timeElements.forEach(el => {
+                const baseTime = el.getAttribute('data-base-time');
+                if (baseTime) {
+                    el.innerText = addMinutesToTime12(baseTime, offsetMinutes);
+                }
+            });
 
             const offsetLabel = offsetMinutes === 0 ? 'ঢাকা মান সময়' : (offsetMinutes > 0 ? `+${offsetMinutes} মিনিট যোগ` : `${offsetMinutes} মিনিট বিয়োগ`);
             currentLocationText.innerText = `${divisionBn} (${divisionKey})`;

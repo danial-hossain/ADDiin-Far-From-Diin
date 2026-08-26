@@ -1,4 +1,4 @@
-﻿@model List<AdDiin.Models.Entities.PrayerTime>
+@model List<AdDiin.Models.Entities.PrayerTime>
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Prayer Times Management";
@@ -30,12 +30,13 @@
             <tbody>
                 @foreach (var p in Model)
                 {
+                    var time12 = DateTime.Today.Add(p.PrayerTimeValue).ToString("hh:mm tt");
                     <tr>
                         <td><span class="badge bg-light text-dark border">@p.DisplayOrder</span></td>
                         <td class="font-monospace">@p.PrayerName</td>
                         <td class="fw-bold">@p.DisplayNameEn</td>
                         <td>@p.DisplayNameBn</td>
-                        <td class="fw-bold text-emerald fs-6">@p.PrayerTimeValue.ToString(@"hh\:mm")</td>
+                        <td class="fw-bold text-emerald fs-6 font-monospace">@time12</td>
                         <td><span class="badge bg-light text-dark border text-uppercase">@p.Category</span></td>
                         <td><span class="badge bg-emerald-light text-emerald text-uppercase">@p.PrayerType</span></td>
                         <td>
@@ -109,9 +110,8 @@
                         <div class="col-6">
                             <label class="form-label small fw-semibold">Prayer Type</label>
                             <select name="PrayerType" class="form-select">
-                                <option value="jamaat">Jamaat (Iqamah)</option>
-                                <option value="azan">Azan</option>
-                                <option value="optional">Optional</option>
+                                <option value="azan" selected>Azan</option>
+                                <option value="optional">Optional / Nafl</option>
                             </select>
                         </div>
                     </div>
