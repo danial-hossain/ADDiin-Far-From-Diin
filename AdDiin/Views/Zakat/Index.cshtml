@@ -1,167 +1,100 @@
-﻿@model AdDiin.Models.ViewModels.ZakatCalculatorViewModel
+@model AdDiin.Models.ViewModels.ZakatCalculatorViewModel
 @{
-    ViewData["Title"] = "Zakat Calculator";
+    ViewData["Title"] = "Zakat Calculator & Fiqh Guidance | ADDiin";
 }
 
-<div class="bg-emerald-dark text-white py-5">
-    <div class="container text-center py-3">
-        <h1 class="display-5 fw-extrabold mb-2">🤲 Islamic Zakat Calculator</h1>
-        <p class="text-white-75 max-w-700 mx-auto">
-            Calculate your obligatory 2.5% Zakat on eligible assets based on authentic Gold and Silver Nisab thresholds.
-        </p>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-emerald-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-3 max-w-2xl">
+            <span class="px-3.5 py-1 bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold rounded-full uppercase tracking-wider">
+                Third Pillar of Islam
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Zakat Calculator & Guidance</h1>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Accurately evaluate your annual Zakat (2.5%) based on current Gold & Silver Nisab thresholds. Fulfill your obligation transparently.
+            </p>
+        </div>
+
+        <div class="p-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center">
+            <p class="text-xs text-amber-300 uppercase font-bold tracking-wider">Current Nisab (Silver)</p>
+            <p class="text-2xl font-black text-white mt-1">৳115,500</p>
+            <p class="text-[11px] text-slate-300">52.5 Tolas / 612.36 Grams</p>
+        </div>
     </div>
-</div>
 
-<div class="container my-5">
-    <div class="row g-4">
-        <!-- Calculator Form -->
-        <div class="col-lg-7">
-            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm">
-                <div class="d-flex align-items-center gap-2 mb-4">
-                    <span class="fs-4">🧮</span>
-                    <div>
-                        <h4 class="fw-bold mb-0">Assets & Liabilities Details</h4>
-                        <small class="text-muted">Enter all assets owned for 1 full lunar year</small>
-                    </div>
-                </div>
+    <!-- Calculator Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+        <div class="pb-3 border-b border-slate-100">
+            <h3 class="font-extrabold text-slate-900 text-lg">Calculate Your Zakat</h3>
+            <p class="text-xs text-slate-500">Enter your assets owned continuously for one full lunar year (Hawl)</p>
+        </div>
 
-                <form asp-action="Calculate" method="post" id="zakatForm">
-                    @Html.AntiForgeryToken()
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+                <label class="text-xs font-bold text-slate-700">Cash in Hand & Bank Accounts (৳)</label>
+                <input type="number" id="z_cash" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+            </div>
 
-                    <h6 class="fw-bold text-emerald border-bottom pb-2 mb-3">1. Liquid Cash & Savings</h6>
-                    <div class="mb-3">
-                        <label asp-for="Cash" class="form-label small fw-semibold">Cash in Hand, Bank Accounts & Savings (৳)</label>
-                        <input asp-for="Cash" class="form-control" type="number" step="any" min="0" />
-                    </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700">Value of Gold & Silver Owned (৳)</label>
+                <input type="number" id="z_gold" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+            </div>
 
-                    <h6 class="fw-bold text-emerald border-bottom pb-2 mb-3 mt-4">2. Gold & Silver Assets</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="GoldWeight" class="form-label small fw-semibold">Gold Weight (Grams)</label>
-                            <input asp-for="GoldWeight" class="form-control" type="number" step="any" min="0" />
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="GoldPrice" class="form-label small fw-semibold">Gold Price / Gram (৳)</label>
-                            <input asp-for="GoldPrice" class="form-control" type="number" step="any" min="0" />
-                        </div>
-                    </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700">Business Inventory & Merchandise (৳)</label>
+                <input type="number" id="z_business" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+            </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="SilverWeight" class="form-label small fw-semibold">Silver Weight (Grams)</label>
-                            <input asp-for="SilverWeight" class="form-control" type="number" step="any" min="0" />
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="SilverPrice" class="form-label small fw-semibold">Silver Price / Gram (৳)</label>
-                            <input asp-for="SilverPrice" class="form-control" type="number" step="any" min="0" />
-                        </div>
-                    </div>
+            <div>
+                <label class="text-xs font-bold text-slate-700">Investments, Shares & Savings Bonds (৳)</label>
+                <input type="number" id="z_invest" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+            </div>
 
-                    <h6 class="fw-bold text-emerald border-bottom pb-2 mb-3 mt-4">3. Business & Investments</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="Investments" class="form-label small fw-semibold">Stocks, Mutual Funds & Bonds (৳)</label>
-                            <input asp-for="Investments" class="form-control" type="number" step="any" min="0" />
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="BusinessInventory" class="form-label small fw-semibold">Commercial Inventory Value (৳)</label>
-                            <input asp-for="BusinessInventory" class="form-control" type="number" step="any" min="0" />
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="OtherAssets" class="form-label small fw-semibold">Other Zakatable Financial Assets (৳)</label>
-                        <input asp-for="OtherAssets" class="form-control" type="number" step="any" min="0" />
-                    </div>
-
-                    <h6 class="fw-bold text-danger border-bottom pb-2 mb-3 mt-4">4. Deductible Liabilities</h6>
-                    <div class="mb-4">
-                        <label asp-for="Debts" class="form-label small fw-semibold">Outstanding Short-Term Debts / Bills to Pay (৳)</label>
-                        <input asp-for="Debts" class="form-control" type="number" step="any" min="0" />
-                    </div>
-
-                    <div class="d-flex gap-3">
-                        <button type="submit" class="btn btn-emerald-gradient flex-grow-1 py-3 rounded-pill fw-bold shadow-sm">
-                            <i class="bi bi-calculator me-1"></i> Calculate Zakat
-                        </button>
-                        <a asp-action="Index" class="btn btn-outline-secondary py-3 px-4 rounded-pill">Reset</a>
-                    </div>
-                </form>
+            <div class="sm:col-span-2">
+                <label class="text-xs font-bold text-red-600">Deductible Liabilities & Immediate Debts (৳)</label>
+                <input type="number" id="z_debts" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-red-50/50 border border-red-200 rounded-xl" />
             </div>
         </div>
 
-        <!-- Calculation Result / Information -->
-        <div class="col-lg-5">
-            @if (Model.HasCalculated)
-            {
-                <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm mb-4">
-                    <h4 class="fw-bold mb-3 text-dark">Calculation Summary</h4>
-
-                    @if (Model.IsEligible)
-                    {
-                        <div class="bg-emerald-light p-4 rounded-4 text-center border border-emerald border-opacity-25 mb-4">
-                            <span class="badge bg-emerald text-white px-3 py-1 rounded-pill mb-2">ZAKAT OBLIGATION</span>
-                            <div class="text-muted small">Your Payable Zakat (2.5%):</div>
-                            <div class="display-4 fw-extrabold text-emerald-dark my-2">
-                                ৳ @Model.ZakatPayable.ToString("N2")
-                            </div>
-                            <small class="text-muted">Purify your wealth and help the needy</small>
-                        </div>
-
-                        <div class="table-responsive small mb-4">
-                            <table class="table table-borderless table-sm">
-                                <tbody>
-                                    <tr class="border-bottom">
-                                        <td class="text-muted">Total Zakatable Assets:</td>
-                                        <td class="text-end fw-bold">৳ @Model.TotalAssets.ToString("N2")</td>
-                                    </tr>
-                                    <tr class="border-bottom">
-                                        <td class="text-muted">Deducted Liabilities:</td>
-                                        <td class="text-end fw-bold text-danger">- ৳ @Model.Debts.ToString("N2")</td>
-                                    </tr>
-                                    <tr class="border-bottom">
-                                        <td class="text-muted">Net Zakatable Wealth:</td>
-                                        <td class="text-end fw-bold text-emerald">৳ @Model.NetWealth.ToString("N2")</td>
-                                    </tr>
-                                    <tr class="border-bottom">
-                                        <td class="text-muted">Nisab Threshold (Silver basis):</td>
-                                        <td class="text-end fw-bold">৳ @Model.NisabThresholdUsed.ToString("N2")</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-muted">Rate Applied:</td>
-                                        <td class="text-end fw-bold">2.5%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <a asp-controller="Donate" asp-action="Index" asp-route-category="zakat" asp-route-amount="@Model.ZakatPayable" class="btn btn-warning text-dark w-100 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
-                            <i class="bi bi-heart-fill"></i> Pay Zakat Online Now
-                        </a>
-                    }
-                    else
-                    {
-                        <div class="bg-light p-4 rounded-4 text-center border mb-4">
-                            <i class="bi bi-info-circle-fill fs-1 text-warning mb-2 d-block"></i>
-                            <h5 class="fw-bold mb-2">Not Eligible for Zakat</h5>
-                            <p class="text-muted small mb-0">
-                                Your net wealth of <strong>৳ @Model.NetWealth.ToString("N2")</strong> is below the current Nisab threshold of <strong>৳ @Model.NisabThresholdUsed.ToString("N2")</strong>. Zakat is not obligatory on you at this time.
-                            </p>
-                        </div>
-                    }
+        <!-- Calculated Summary Box -->
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase text-emerald-800 tracking-wider">Total Net Zakat Payable (2.5%)</span>
+                <div class="text-3xl sm:text-4xl font-black text-emerald-950 font-mono mt-1" id="zakatResultDisplay">
+                    ৳0
                 </div>
-            }
-
-            <!-- Educational Info Card -->
-            <div class="card card-custom p-4 border rounded-4 bg-light shadow-sm">
-                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-book text-emerald me-2"></i> Zakat Rules at a Glance</h5>
-                <ul class="list-unstyled small text-muted space-y-2 mb-0">
-                    <li class="mb-2"><strong>Gold Nisab:</strong> 7.5 Tolas = 87.48 Grams of gold.</li>
-                    <li class="mb-2"><strong>Silver Nisab:</strong> 52.5 Tolas = 612.36 Grams of silver (Standard benchmark for mixed wealth).</li>
-                    <li class="mb-2"><strong>Rate:</strong> 2.5% on total net assets held for one Hawl (lunar year).</li>
-                    <li><strong>Beneficiaries:</strong> Poor, needy, destitute, and designated categories in Surah At-Tawbah (9:60).</li>
-                </ul>
+                <p class="text-xs text-slate-600 mt-1" id="nisabStatus">Enter your asset values above</p>
             </div>
+
+            <a href="/donate?category=zakat" id="payZakatBtn" class="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-2xl shadow-md transition text-nowrap">
+                Pay Zakat Directly &rarr;
+            </a>
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    const silverNisab = 115500;
+    function calcZakat() {
+        const cash = parseFloat(document.getElementById('z_cash').value) || 0;
+        const gold = parseFloat(document.getElementById('z_gold').value) || 0;
+        const business = parseFloat(document.getElementById('z_business').value) || 0;
+        const invest = parseFloat(document.getElementById('z_invest').value) || 0;
+        const debts = parseFloat(document.getElementById('z_debts').value) || 0;
+
+        const netAssets = (cash + gold + business + invest) - debts;
+        const resultEl = document.getElementById('zakatResultDisplay');
+        const statusEl = document.getElementById('nisabStatus');
+
+        if (netAssets >= silverNisab) {
+            const zakat = Math.round(netAssets * 0.025);
+            resultEl.textContent = '৳' + zakat.toLocaleString();
+            statusEl.textContent = '✅ Your net assets (৳' + netAssets.toLocaleString() + ') exceed Nisab threshold. Zakat is obligatory.';
+        } else {
+            resultEl.textContent = '৳0';
+            statusEl.textContent = 'ℹ️ Net assets below Nisab (৳' + silverNisab.toLocaleString() + '). Zakat is not obligatory.';
+        }
+    }
+</script>
+}

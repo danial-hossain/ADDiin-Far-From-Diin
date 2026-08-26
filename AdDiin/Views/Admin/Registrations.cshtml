@@ -1,0 +1,122 @@
+@model AdDiin.Models.ViewModels.AdminRegistrationsViewModel
+@{
+    ViewData["Title"] = "Program Registrations Review | Admin Panel";
+    Layout = "_AdminLayout";
+}
+
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900">Activities & Programs Registrations</h1>
+            <p class="text-xs text-slate-500">Review community registrations, approve or reject applications with administrative remarks</p>
+        </div>
+        <div class="flex gap-2">
+            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">
+                @Model.Registrations.Count(r => r.Status == "Pending") Pending Applications
+            </span>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap gap-3">
+        <a href="/admin/registrations" class="px-3 py-1.5 rounded-xl text-xs font-bold @(string.IsNullOrEmpty(Model.StatusFilter) ? "bg-purple-700 text-white" : "bg-slate-100 text-slate-700")">
+            All (@Model.Registrations.Count)
+        </a>
+        <a href="/admin/registrations?status=Pending" class="px-3 py-1.5 rounded-xl text-xs font-bold @(Model.StatusFilter == "Pending" ? "bg-amber-600 text-white" : "bg-amber-50 text-amber-800")">
+            Pending Review
+        </a>
+        <a href="/admin/registrations?status=Approved" class="px-3 py-1.5 rounded-xl text-xs font-bold @(Model.StatusFilter == "Approved" ? "bg-emerald-600 text-white" : "bg-emerald-50 text-emerald-800")">
+            Approved
+        </a>
+        <a href="/admin/registrations?status=Rejected" class="px-3 py-1.5 rounded-xl text-xs font-bold @(Model.StatusFilter == "Rejected" ? "bg-red-600 text-white" : "bg-red-50 text-red-800")">
+            Rejected
+        </a>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase">
+                    <tr>
+                        <th class="p-4">Applicant</th>
+                        <th class="p-4">Program / Activity</th>
+                        <th class="p-4">Contact</th>
+                        <th class="p-4">Registered Date</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4 text-right">Review Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @if (Model.Registrations.Any())
+                    {
+                        @foreach (var reg in Model.Registrations)
+                        {
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="p-4">
+                                    <p class="font-bold text-slate-900">@reg.FullName</p>
+                                    @if (!string.IsNullOrEmpty(reg.Notes))
+                                    {
+                                        <p class="text-[11px] text-slate-500 italic mt-0.5">"@reg.Notes"</p>
+                                    }
+                                </td>
+                                <td class="p-4">
+                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 font-bold rounded text-[10px] uppercase">@reg.Activity.Category</span>
+                                    <p class="font-semibold text-slate-800 mt-1">@reg.Activity.Title</p>
+                                </td>
+                                <td class="p-4 text-slate-600">
+                                    <p>@reg.Email</p>
+                                    <p class="text-[11px] text-slate-400">@reg.PhoneNumber</p>
+                                </td>
+                                <td class="p-4 text-slate-500">
+                                    @reg.RegisteredAt.ToString("MMM dd, yyyy")
+                                </td>
+                                <td class="p-4">
+                                    <span class="px-2.5 py-1 rounded-full font-bold text-[10px] @(reg.Status == "Approved" ? "bg-emerald-100 text-emerald-800" : reg.Status == "Pending" ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800")">
+                                        @reg.Status
+                                    </span>
+                                </td>
+                                <td class="p-4 text-right">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        @if (reg.Status != "Approved")
+                                        {
+                                            <form asp-controller="Admin" asp-action="RegistrationReview" method="post" class="m-0 inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@reg.Id" />
+                                                <input type="hidden" name="status" value="Approved" />
+                                                <input type="hidden" name="adminRemarks" value="Registration approved. Welcome!" />
+                                                <button type="submit" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg shadow-xs transition">
+                                                    Approve
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (reg.Status != "Rejected")
+                                        {
+                                            <form asp-controller="Admin" asp-action="RegistrationReview" method="post" class="m-0 inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@reg.Id" />
+                                                <input type="hidden" name="status" value="Rejected" />
+                                                <input type="hidden" name="adminRemarks" value="Capacity full or prerequisites not met." />
+                                                <button type="submit" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold text-[11px] rounded-lg transition">
+                                                    Reject
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="p-8 text-center text-slate-500">
+                                No program registrations matching the filter.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

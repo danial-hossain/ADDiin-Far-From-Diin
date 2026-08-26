@@ -1,97 +1,221 @@
-﻿@model AdDiin.Models.ViewModels.ProfileViewModel
+@model AdDiin.Models.ViewModels.UserProfileDashboardViewModel
 @{
-    ViewData["Title"] = "User Profile";
+    ViewData["Title"] = $"{Model.User.FullName} | Islamic Profile & Progress";
 }
 
-<div class="container my-5">
-    <div class="row g-4">
-        <div class="col-lg-4">
-            <div class="card card-custom p-4 border rounded-4 bg-white text-center">
-                <div class="avatar-circle-lg bg-emerald text-white fw-bold mx-auto mb-3 fs-2">
-                    @(Model.FullName.FirstOrDefault())
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Profile Hero Header -->
+    <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+            <div class="w-20 h-20 rounded-3xl bg-emerald-600 text-white font-extrabold text-3xl flex items-center justify-center shadow-lg border-2 border-emerald-400/40">
+                @(Model.User.FullName?.FirstOrDefault() ?? 'U')
+            </div>
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold">@Model.User.FullName</h1>
+                    <span class="px-2.5 py-0.5 bg-emerald-500/30 text-emerald-300 text-xs font-bold rounded-full border border-emerald-500/30">
+                        @Model.ProfileForm.Role
+                    </span>
                 </div>
-                <h5 class="fw-bold mb-1">@Model.FullName</h5>
-                <p class="text-muted small mb-2">@Model.Email</p>
-                <span class="badge bg-emerald-light text-emerald px-3 py-1 rounded-pill mb-3">@Model.Role</span>
-                
-                <hr class="my-3" />
-                <div class="text-start small text-muted space-y-2">
-                    <div><i class="bi bi-telephone me-2 text-emerald"></i> @(Model.PhoneNumber ?? "Not provided")</div>
-                    <div><i class="bi bi-geo-alt me-2 text-emerald"></i> @(Model.City ?? "Dhaka"), @(Model.Address ?? "Bangladesh")</div>
-                    <div><i class="bi bi-calendar me-2 text-emerald"></i> Member since @Model.CreatedAt.ToString("MMM yyyy")</div>
-                </div>
-
-                <div class="mt-4">
-                    <a asp-action="ChangePassword" class="btn btn-outline-secondary btn-sm w-100 rounded-pill">
-                        <i class="bi bi-key me-1"></i> Change Password
-                    </a>
+                <p class="text-slate-300 text-xs sm:text-sm">@Model.User.Email • Member since @Model.User.CreatedAt.ToString("MMMM yyyy")</p>
+                <div class="flex items-center gap-3 pt-2 text-xs">
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-300 font-bold rounded-xl border border-amber-500/30">
+                        🔥 @Model.CurrentStreak Day Streak
+                    </span>
+                    <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 font-bold rounded-xl border border-emerald-500/30">
+                        🎯 @Model.OverallCompletionRate% Consistency
+                    </span>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-8">
-            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white">
-                <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-pencil-square text-emerald me-2"></i> Edit Profile Information</h4>
+        <div class="flex gap-2">
+            <a href="/my-deen" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2">
+                <i class="bi bi-compass-fill"></i> Open My Deen Hub
+            </a>
+        </div>
+    </div>
 
-                <form asp-action="Profile" method="post">
+    <!-- Statistics Overview Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+                <span>Prayer Consistency</span>
+                <i class="bi bi-clock-history text-emerald-600 text-base"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-900">@Model.PrayerCompletionRate%</p>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-emerald-600 h-full rounded-full" style="width: @Model.PrayerCompletionRate%;"></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+                <span>Quran Recitation</span>
+                <i class="bi bi-book text-amber-600 text-base"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-900">@Model.QuranProgressPages <span class="text-sm font-bold text-slate-400">Pages</span></p>
+            <p class="text-xs text-slate-500">Total pages tracked</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+                <span>Dhikr Recitations</span>
+                <i class="bi bi-heart-pulse text-teal-600 text-base"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-900">@Model.DhikrTotalCount</p>
+            <p class="text-xs text-slate-500">Glorifications counted</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+                <span>Charity Given</span>
+                <i class="bi bi-gift text-purple-600 text-base"></i>
+            </div>
+            <p class="text-3xl font-black text-slate-900">৳@Model.LifetimeDonated.ToString("N0")</p>
+            <p class="text-xs text-slate-500">Goal: ৳@Model.MonthlyDonationGoal.ToString("N0") / month</p>
+        </div>
+    </div>
+
+    <!-- Achievements & Badges -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+                <h3 class="font-extrabold text-slate-900 text-lg">Spiritual Milestones & Badges</h3>
+                <p class="text-xs text-slate-500">Earn badges through consistent prayer, dhikr targets, and charity</p>
+            </div>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full">
+                @Model.Badges.Count(b => b.IsUnlocked) / @Model.Badges.Count Unlocked
+            </span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            @foreach (var badge in Model.Badges)
+            {
+                <div class="p-4 rounded-2xl border text-center transition-all @(badge.IsUnlocked ? "border-amber-300 bg-amber-50/40 shadow-xs" : "border-slate-100 bg-slate-50 opacity-60")">
+                    <div class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-2 @(badge.IsUnlocked ? "bg-white shadow-xs" : "bg-slate-200")">
+                        @badge.Icon
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-xs">@badge.Title</h4>
+                    <p class="text-[10px] text-slate-500 mt-1 leading-tight">@badge.Description</p>
+                    @if (badge.IsUnlocked)
+                    {
+                        <span class="inline-block mt-2 px-2 py-0.5 bg-amber-200 text-amber-900 text-[9px] font-extrabold rounded-full">
+                            UNLOCKED
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Personal Info & Activity Logs Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left 6 cols: Personal Information & Edit -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-extrabold text-slate-900 text-base">Personal Information</h3>
+                    <a href="/Account/ChangePassword" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">
+                        Change Password &rarr;
+                    </a>
+                </div>
+
+                <form asp-controller="Account" asp-action="UpdateInfo" method="post" class="space-y-4">
                     @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-
-                    <div class="mb-3">
-                        <label asp-for="FullName" class="form-label fw-semibold">Full Name</label>
-                        <input asp-for="FullName" class="form-control py-2" />
-                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    <div>
+                        <label class="text-xs font-bold text-slate-700">Full Name</label>
+                        <input type="text" name="FullName" value="@Model.ProfileForm.FullName" class="mt-1 w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" required />
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="Email" class="form-label fw-semibold">Email Address (Read-only)</label>
-                            <input asp-for="Email" class="form-control py-2 bg-light" readonly />
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-700">Phone Number</label>
+                            <input type="tel" name="PhoneNumber" value="@Model.ProfileForm.PhoneNumber" class="mt-1 w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
                         </div>
-                        <div class="col-md-6">
-                            <label asp-for="PhoneNumber" class="form-label fw-semibold">Phone Number</label>
-                            <input asp-for="PhoneNumber" class="form-control py-2" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700">City / District</label>
+                            <input type="text" name="City" value="@Model.ProfileForm.City" class="mt-1 w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="City" class="form-label fw-semibold">City</label>
-                            <input asp-for="City" class="form-control py-2" />
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="PostalCode" class="form-label fw-semibold">Postal Code</label>
-                            <input asp-for="PostalCode" class="form-control py-2" />
-                        </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-700">Address</label>
+                        <input type="text" name="Address" value="@Model.ProfileForm.Address" class="mt-1 w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
                     </div>
 
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="DateOfBirth" class="form-label fw-semibold">Date of Birth</label>
-                            <input asp-for="DateOfBirth" class="form-control py-2" />
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Gender" class="form-label fw-semibold">Gender</label>
-                            <select asp-for="Gender" class="form-select py-2">
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Address" class="form-label fw-semibold">Address</label>
-                        <input asp-for="Address" class="form-control py-2" />
-                    </div>
-
-                    <button type="submit" class="btn btn-emerald-gradient px-4 py-2 rounded-pill fw-bold shadow-sm">
-                        <i class="bi bi-check2-circle me-1"></i> Save Changes
+                    <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs transition">
+                        Update Profile Information
                     </button>
                 </form>
             </div>
+        </div>
+
+        <!-- Right 6 cols: Recent Activities & Charity Logs -->
+        <div class="lg:col-span-6 space-y-6">
+            
+            <!-- My Activities Log -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-extrabold text-slate-900 text-base">My Registered Programs</h3>
+                    <a href="/my-activities" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">View All &rarr;</a>
+                </div>
+
+                <div class="space-y-3">
+                    @if (Model.RegisteredPrograms.Any())
+                    {
+                        @foreach (var r in Model.RegisteredPrograms)
+                        {
+                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <h4 class="font-bold text-slate-900 text-xs truncate max-w-xs">@r.Activity.Title</h4>
+                                    <p class="text-[11px] text-slate-500">@r.Activity.Category • @(r.Activity.ProgramDate?.ToString("MMM dd, yyyy") ?? "TBA")</p>
+                                </div>
+                                <span class="px-2.5 py-1 text-[10px] font-bold rounded-full @(r.Status == "Approved" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800")">
+                                    @r.Status
+                                </span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-xs text-slate-500 text-center py-4">No registered activities yet.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- My Charity Log -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-extrabold text-slate-900 text-base">Recent Charity & Zakat</h3>
+                    <a href="/my-donations" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">View History &rarr;</a>
+                </div>
+
+                <div class="space-y-3">
+                    @if (Model.DonationHistory.Any())
+                    {
+                        @foreach (var d in Model.DonationHistory)
+                        {
+                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <h4 class="font-bold text-slate-900 text-xs uppercase">@d.Category Fund</h4>
+                                    <p class="text-[11px] text-slate-500">@d.CreatedAt.ToString("MMM dd, yyyy") • @d.PaymentMethod</p>
+                                </div>
+                                <span class="font-extrabold text-xs text-slate-900">
+                                    ৳@d.Amount.ToString("N0")
+                                </span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-xs text-slate-500 text-center py-4">No donations recorded yet.</p>
+                    }
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

@@ -1,36 +1,151 @@
-﻿@model AdDiin.Models.Entities.Activity
+@model AdDiin.Models.Entities.Activity
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = $"{Model.Title} | ADDiin Programs";
+    var currentUserRegistration = ViewBag.UserRegistration as AdDiin.Models.Entities.ProgramRegistration;
 }
 
-<div class="container my-5">
-    <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm max-w-800 mx-auto">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="badge bg-emerald-light text-emerald px-3 py-2 rounded-pill text-uppercase">@Model.Category</span>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="bi bi-arrow-left"></i> Back to Activities</a>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <a href="/activities" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-emerald-700">
+        <i class="bi bi-arrow-left"></i> Back to Activities & Programs
+    </a>
+
+    <!-- Header Banner -->
+    <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200">
+        <div class="relative h-64 sm:h-80 bg-slate-900">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Title" class="w-full h-full object-cover opacity-80" />
+            }
+            else
+            {
+                <div class="w-full h-full bg-gradient-to-r from-emerald-800 to-teal-900 flex items-center justify-center text-6xl text-white">
+                    🕌
+                </div>
+            }
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 text-white space-y-2">
+                <span class="px-3.5 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full uppercase tracking-wider">
+                    @Model.Category
+                </span>
+                <h1 class="text-2xl sm:text-4xl font-black leading-tight text-white">@Model.Title</h1>
+            </div>
         </div>
 
-        <h2 class="fw-bold text-dark mb-3">@Model.Title</h2>
+        <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Info (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg mb-2">About this Program</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+                        @Model.Description
+                    </p>
+                </div>
 
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-        {
-            <img src="@Model.ImageUrl" class="img-fluid rounded-4 mb-4 shadow-sm w-100" style="max-height: 380px; object-fit: cover;" alt="@Model.Title" />
-        }
+                <!-- Program Metadata Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 text-xs">
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                        <span class="text-slate-400 font-bold uppercase">Date & Time</span>
+                        <p class="font-bold text-slate-900">@(Model.ProgramDate?.ToString("MMMM dd, yyyy") ?? "TBA")</p>
+                        <p class="text-slate-600">@Model.StartTime - @Model.EndTime</p>
+                    </div>
 
-        <div class="text-muted leading-relaxed fs-6 mb-4">
-            @Model.Description
-        </div>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                        <span class="text-slate-400 font-bold uppercase">Venue / Location</span>
+                        <p class="font-bold text-slate-900">@Model.Location</p>
+                    </div>
 
-        <div class="p-4 bg-emerald-light rounded-4 border border-emerald border-opacity-25 text-center mt-4">
-            <h5 class="fw-bold text-emerald-dark mb-2">Support & Participate in this Activity</h5>
-            <p class="text-muted small mb-3">Your donations and voluntary participation help keep this community service thriving.</p>
-            <div class="d-flex justify-content-center gap-3">
-                <a asp-controller="Donate" asp-action="Index" class="btn btn-emerald-gradient px-4 py-2 rounded-pill fw-bold">
-                    <i class="bi bi-heart-fill me-1"></i> Donate for this Cause
-                </a>
-                <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-emerald px-4 py-2 rounded-pill">
-                    Volunteer
-                </a>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                        <span class="text-slate-400 font-bold uppercase">Guest Speaker / Instructor</span>
+                        <p class="font-bold text-slate-900">@(!string.IsNullOrEmpty(Model.Instructor) ? Model.Instructor : "Scholarly Panel")</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                        <span class="text-slate-400 font-bold uppercase">Organizer</span>
+                        <p class="font-bold text-slate-900">@(!string.IsNullOrEmpty(Model.Organizer) ? Model.Organizer : "ADDiin Community")</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Registration Box (5 cols) -->
+            <div class="lg:col-span-5">
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-3xl p-6 border border-emerald-200 space-y-5">
+                    <div class="pb-3 border-b border-emerald-200/60">
+                        <h3 class="font-extrabold text-slate-900 text-base">Program Registration</h3>
+                        <p class="text-xs text-slate-600">Free community participation with certificate of attendance</p>
+                    </div>
+
+                    @if (currentUserRegistration != null)
+                    {
+                        <div class="p-4 rounded-2xl bg-white border border-emerald-200 space-y-2">
+                            <span class="text-xs uppercase font-bold text-slate-400">Your Registration Status</span>
+                            <div class="flex items-center gap-2">
+                                @if (currentUserRegistration.Status == "Approved")
+                                {
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full">
+                                        ✅ Approved
+                                    </span>
+                                }
+                                else if (currentUserRegistration.Status == "Pending")
+                                {
+                                    <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-black rounded-full">
+                                        ⏳ Pending Review
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-black rounded-full">
+                                        ❌ Rejected
+                                    </span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(currentUserRegistration.AdminRemarks))
+                            {
+                                <p class="text-xs text-slate-600 italic">Remarks: @currentUserRegistration.AdminRemarks</p>
+                            }
+                            <p class="text-[11px] text-slate-400">Registered on @currentUserRegistration.RegisteredAt.ToString("MMM dd, yyyy")</p>
+                        </div>
+                    }
+                    else
+                    {
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-controller="Activities" asp-action="Register" method="post" class="space-y-3">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="ActivityId" value="@Model.Id" />
+                                
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700">Full Name</label>
+                                    <input type="text" name="FullName" value="@User.Identity?.Name" required class="mt-1 w-full text-xs font-semibold px-3 py-2 bg-white border border-slate-300 rounded-xl" />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700">Email Address</label>
+                                    <input type="email" name="Email" required class="mt-1 w-full text-xs font-semibold px-3 py-2 bg-white border border-slate-300 rounded-xl" />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700">Phone Number</label>
+                                    <input type="tel" name="PhoneNumber" required class="mt-1 w-full text-xs font-semibold px-3 py-2 bg-white border border-slate-300 rounded-xl" placeholder="+8801..." />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700">Notes / Questions for Speaker (Optional)</label>
+                                    <textarea name="Notes" rows="2" class="mt-1 w-full text-xs font-semibold px-3 py-2 bg-white border border-slate-300 rounded-xl" placeholder="Any specific questions or expectations..."></textarea>
+                                </div>
+
+                                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition">
+                                    Submit Free Registration
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="text-center p-6 bg-white rounded-2xl border border-emerald-200 space-y-3">
+                                <p class="text-xs text-slate-600">Please sign in to register for this Islamic program and track your participation.</p>
+                                <a href="/user-login?returnUrl=/activities/@Model.Id" class="inline-block px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition">
+                                    Sign In to Register
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
             </div>
         </div>
     </div>

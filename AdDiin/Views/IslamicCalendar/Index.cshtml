@@ -1,0 +1,114 @@
+@model AdDiin.Models.ViewModels.IslamicCalendarPageViewModel
+@{
+    ViewData["Title"] = "Islamic Hijri Calendar & Sunnah Occasions | ADDiin";
+    var nextOccasion = Model.UpcomingEvents.FirstOrDefault();
+    var daysLeft = nextOccasion != null ? (int)Math.Max(0, (nextOccasion.EventDate.Date - DateTime.Today).TotalDays) : 0;
+}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-purple-950 via-slate-900 to-emerald-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-3 max-w-2xl">
+            <span class="px-3.5 py-1 bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-bold rounded-full uppercase tracking-wider">
+                Hijri Dates & Sunnah Occasions
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Islamic Calendar @Model.CurrentHijriYear AH</h1>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Stay connected with sacred Islamic months, holy nights, Ramadan countdowns, and Sunnah fasting days (White Days & Mondays/Thursdays).
+            </p>
+        </div>
+
+        <div class="p-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center">
+            <p class="text-xs text-purple-300 uppercase font-bold tracking-wider">Today's Hijri Date</p>
+            <p class="text-2xl font-black text-white mt-1">@Model.CurrentHijriDateString</p>
+            <p class="text-xs text-slate-300 mt-1">@Model.CurrentGregorianDateString</p>
+        </div>
+    </div>
+
+    <!-- Next Upcoming Major Occasion Countdown -->
+    @if (nextOccasion != null)
+    {
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-3xl shadow-xs">
+                    🌙
+                </div>
+                <div>
+                    <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-md uppercase">Next Islamic Occasion</span>
+                    <h3 class="text-xl font-extrabold text-slate-900 mt-1">@nextOccasion.EventName</h3>
+                    <p class="text-xs text-slate-500">@nextOccasion.HijriDate • @nextOccasion.EventDate.ToString("MMMM dd, yyyy")</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                <div class="text-center px-3">
+                    <span class="text-2xl font-black text-slate-900">@daysLeft</span>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold">Days Left</p>
+                </div>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <a href="/notifications" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition">
+                    Set Reminder
+                </a>
+            </div>
+        </div>
+    }
+
+    <!-- Sunnah Fasting Days Box -->
+    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 sm:p-8 border border-emerald-200 space-y-4">
+        <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                <i class="bi bi-brightness-high-fill text-amber-500"></i> Recommended Sunnah Fasting Days (Ayyam al-Beed)
+            </h3>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">Sunnah Practice</span>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+            The Prophet Muhammad (ﷺ) encouraged fasting on Mondays and Thursdays, as well as the 13th, 14th, and 15th of every lunar Hijri month (The White Days).
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div class="p-4 bg-white rounded-2xl border border-emerald-200 text-center">
+                <span class="text-xs font-bold text-slate-400 uppercase">Mondays & Thursdays</span>
+                <p class="text-sm font-extrabold text-slate-800 mt-1">Weekly Sunnah Fasting</p>
+                <p class="text-[11px] text-emerald-700 mt-1">Deeds presented to Allah</p>
+            </div>
+            <div class="p-4 bg-white rounded-2xl border border-emerald-200 text-center">
+                <span class="text-xs font-bold text-slate-400 uppercase">13th, 14th, 15th Hijri</span>
+                <p class="text-sm font-extrabold text-slate-800 mt-1">The White Days (Ayyam al-Beed)</p>
+                <p class="text-[11px] text-emerald-700 mt-1">Reward like fasting whole year</p>
+            </div>
+            <div class="p-4 bg-white rounded-2xl border border-emerald-200 text-center">
+                <span class="text-xs font-bold text-slate-400 uppercase">Special Fasting Days</span>
+                <p class="text-sm font-extrabold text-slate-800 mt-1">Day of Arafah & Ashura</p>
+                <p class="text-[11px] text-emerald-700 mt-1">Expiation of sins</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Islamic Events List -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+        <h3 class="font-extrabold text-slate-900 text-lg">Yearly Islamic Occasions Schedule</h3>
+        <div class="space-y-4">
+            @foreach (var ev in Model.UpcomingEvents)
+            {
+                <div class="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-emerald-300 hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-xl font-bold">
+                            🌙
+                        </div>
+                        <div class="space-y-1">
+                            <span class="px-2.5 py-0.5 bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-bold rounded-md uppercase">
+                                @ev.HijriMonth
+                            </span>
+                            <h4 class="font-extrabold text-slate-900 text-base">@ev.EventName</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">@ev.Description</p>
+                        </div>
+                    </div>
+
+                    <div class="text-left sm:text-right text-xs">
+                        <p class="font-extrabold text-slate-900">@ev.HijriDate</p>
+                        <p class="text-slate-500">@ev.EventDate.ToString("MMMM dd, yyyy")</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

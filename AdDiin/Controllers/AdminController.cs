@@ -1,4 +1,4 @@
-﻿using AdDiin.Data;
+using AdDiin.Data;
 using AdDiin.Models.Entities;
 using AdDiin.Models.ViewModels;
 using AdDiin.Services;
@@ -56,10 +56,13 @@ namespace AdDiin.Controllers
 
             var totalCompletedDonations = await _context.Donations
                 .Where(d => d.PaymentStatus == "completed")
-                .SumAsync(d => d.Amount);
+                .SumAsync(d => (decimal?)d.Amount) ?? 0;
 
             var totalDonationsCount = await _context.Donations.CountAsync();
             var pendingDonationsCount = await _context.Donations.CountAsync(d => d.PaymentStatus == "pending");
+
+            var pendingRegistrations = await _context.ProgramRegistrations.CountAsync(r => r.Status == "Pending");
+            var totalRegistrations = await _context.ProgramRegistrations.CountAsync();
 
             var pendingMilads = await _context.MiladRequests.CountAsync(m => m.Status == "pending");
             var totalMilads = await _context.MiladRequests.CountAsync();
@@ -75,6 +78,13 @@ namespace AdDiin.Controllers
                 .Take(5)
                 .ToListAsync();
 
+            var recentRegistrations = await _context.ProgramRegistrations
+                .Include(r => r.Activity)
+                .Include(r => r.User)
+                .OrderByDescending(r => r.RegisteredAt)
+                .Take(5)
+                .ToListAsync();
+
             var recentMilads = await _context.MiladRequests
                 .Include(m => m.User)
                 .OrderByDescending(m => m.CreatedAt)
@@ -84,6 +94,12 @@ namespace AdDiin.Controllers
             var upcomingEvents = await _context.IslamicEvents
                 .Where(e => e.IsActive && e.EventDate >= DateTime.Today)
                 .OrderBy(e => e.EventDate)
+                .Take(4)
+                .ToListAsync();
+
+            var activePrograms = await _context.Activities
+                .Where(a => a.IsActive)
+                .OrderBy(a => a.ProgramDate)
                 .Take(4)
                 .ToListAsync();
 
@@ -98,6 +114,8 @@ namespace AdDiin.Controllers
                 TotalDonationsCompleted = totalCompletedDonations,
                 TotalDonationsCount = totalDonationsCount,
                 PendingDonationsCount = pendingDonationsCount,
+                PendingRegistrationsCount = pendingRegistrations,
+                TotalRegistrationsCount = totalRegistrations,
                 PendingMiladCount = pendingMilads,
                 TotalMiladCount = totalMilads,
                 TotalEventsCount = totalEvents,
@@ -105,8 +123,10 @@ namespace AdDiin.Controllers
                 UnreadContactCount = unreadContact,
                 ActiveConversationsCount = activeConversations,
                 RecentDonations = recentDonations,
+                RecentRegistrations = recentRegistrations,
                 RecentMiladRequests = recentMilads,
                 UpcomingEvents = upcomingEvents,
+                ActivePrograms = activePrograms,
                 DonationsByCategory = categoryBreakdown
             };
 
@@ -376,6 +396,41 @@ namespace AdDiin.Controllers
             await _activityService.DeleteAsync(id);
             TempData["SuccessMessage"] = "Activity deleted.";
             return RedirectToAction(nameof(Activities));
+        }
+
+        // ================= PROGRAM REGISTRATIONS =================
+        public async Task<IActionResult> Registrations(string? status, int? activityId, string? search)
+        {
+            var list = await _activityService.GetAllRegistrationsAsync(status, activityId, search);
+            var activities = await _activityService.GetAllActivitiesAsync();
+
+            var vm = new AdminRegistrationsViewModel
+            {
+                Registrations = list,
+                StatusFilter = status,
+                ActivityFilter = activityId,
+                SearchQuery = search,
+                AvailableActivities = activities
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegistrationReview(int id, string status, string? adminRemarks)
+        {
+            var success = await _activityService.ReviewRegistrationAsync(id, status, adminRemarks);
+            if (success)
+            {
+                TempData["SuccessMessage"] = $"Registration status updated to '{status}'.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update registration status.";
+            }
+
+            return RedirectToAction(nameof(Registrations));
         }
 
         // ================= CONTACT MESSAGES =================

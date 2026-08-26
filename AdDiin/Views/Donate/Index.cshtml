@@ -1,140 +1,89 @@
-﻿@model AdDiin.Models.ViewModels.DonationInitiateViewModel
+@model AdDiin.Models.ViewModels.DonationInitiateViewModel
 @{
-    ViewData["Title"] = "Online Donations & Zakat Platform";
+    ViewData["Title"] = "Verified Charity & Donations | ADDiin";
 }
 
-<div class="bg-emerald-dark text-white py-5">
-    <div class="container text-center py-3">
-        <h1 class="display-5 fw-extrabold mb-2">💝 Online Donations & Zakat</h1>
-        <p class="text-white-75 max-w-700 mx-auto">
-            100% transparent and digital donation portal empowering community welfare, mosque maintenance, and emergency relief.
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div class="bg-gradient-to-r from-emerald-950 via-teal-900 to-slate-900 rounded-3xl p-8 sm:p-10 text-white shadow-xl text-center space-y-3">
+        <span class="px-3.5 py-1 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold rounded-full uppercase tracking-wider">
+            Verified Humanitarian Giving
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Channel Your Sadaqah & Zakat</h1>
+        <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+            100% transparent digital giving. Automatic digital receipt generated instantly with transaction verification.
         </p>
     </div>
-</div>
 
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card card-custom p-4 p-md-5 border rounded-4 bg-white shadow-sm">
-                <h4 class="fw-bold mb-4 text-dark text-center">Select Fund & Amount</h4>
-
-                <form asp-action="Initiate" method="post" id="donationForm">
-                    @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-
-                    <!-- Category Selector -->
-                    <div class="mb-4">
-                        <label asp-for="Category" class="form-label fw-bold">Donation Purpose / Category *</label>
-                        <select asp-for="Category" class="form-select py-2 fs-6" id="categorySelect">
-                            <option value="general">General Mosque Maintenance Fund</option>
-                            <option value="zakat">Obligatory Zakat Fund</option>
-                            <option value="iftar">Ramadan Daily Iftar Program</option>
-                            <option value="durjog">Disaster & Flood Relief (Durjog)</option>
-                            <option value="sitarto">Winter Warmth Clothes & Blankets (Sitarto)</option>
-                            <option value="gachropon">Green Mosque Tree Plantation (Gachropon - SDG 9)</option>
-                            <option value="kurbani">Qurbani Meat Distribution</option>
-                            <option value="orphan">Orphan Sponsorship & Education</option>
-                        </select>
-                        <span asp-validation-for="Category" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Amount Chips & Custom Input -->
-                    <div class="mb-4">
-                        <label asp-for="Amount" class="form-label fw-bold">Donation Amount (BDT ৳) *</label>
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="500">৳ 500</button>
-                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="1000">৳ 1,000</button>
-                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="2500">৳ 2,500</button>
-                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="5000">৳ 5,000</button>
-                            <button type="button" class="btn btn-outline-emerald btn-sm rounded-pill px-3 py-2 fw-semibold amount-btn" data-amt="10000">৳ 10,000</button>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light fw-bold">৳ BDT</span>
-                            <input asp-for="Amount" class="form-control py-2 fs-5 fw-bold text-emerald" id="customAmount" type="number" step="any" min="10" />
-                        </div>
-                        <span asp-validation-for="Amount" class="text-danger small"></span>
-                    </div>
-
-                    <!-- Anonymous Checkbox -->
-                    <div class="form-check p-3 bg-light rounded-3 mb-4 border">
-                        <input asp-for="IsAnonymous" class="form-check-input ms-0 me-2" id="anonymousCheck" />
-                        <label asp-for="IsAnonymous" class="form-check-label fw-semibold">Make this an Anonymous Donation</label>
-                        <small class="d-block text-muted">Your name will not appear on public donor boards or receipts.</small>
-                    </div>
-
-                    <!-- Donor Details -->
-                    <div id="donorDetailsBlock">
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="Name" class="form-label fw-semibold">Full Name</label>
-                                <input asp-for="Name" class="form-control py-2" placeholder="Your Name" />
-                                <span asp-validation-for="Name" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Phone" class="form-label fw-semibold">Phone Number *</label>
-                                <input asp-for="Phone" class="form-control py-2" placeholder="+880 1XXXXXXXXX" />
-                                <span asp-validation-for="Phone" class="text-danger small"></span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label fw-semibold">Email Address (For Digital Invoice)</label>
-                            <input asp-for="Email" class="form-control py-2" placeholder="name@example.com" />
-                            <span asp-validation-for="Email" class="text-danger small"></span>
-                        </div>
-                    </div>
-
-                    <!-- Payment Method -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">Select Payment Gateway</label>
-                        <div class="row g-2">
-                            <div class="col-6 col-md-3">
-                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
-                                    <input type="radio" asp-for="PaymentMethod" value="bkash" class="form-check-input mb-1 d-block mx-auto" checked />
-                                    <span class="small fw-bold text-danger">bKash</span>
-                                </label>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
-                                    <input type="radio" asp-for="PaymentMethod" value="nagad" class="form-check-input mb-1 d-block mx-auto" />
-                                    <span class="small fw-bold text-warning">Nagad</span>
-                                </label>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
-                                    <input type="radio" asp-for="PaymentMethod" value="rocket" class="form-check-input mb-1 d-block mx-auto" />
-                                    <span class="small fw-bold text-primary">Rocket</span>
-                                </label>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <label class="p-3 border rounded-3 text-center d-block cursor-pointer bg-light h-100">
-                                    <input type="radio" asp-for="PaymentMethod" value="sslcommerz" class="form-check-input mb-1 d-block mx-auto" />
-                                    <span class="small fw-bold text-emerald">Cards/Bank</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="Notes" class="form-label fw-semibold">Special Prayers / Notes (Optional)</label>
-                        <textarea asp-for="Notes" rows="2" class="form-control" placeholder="Any specific Dua intention or instructions..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-emerald-gradient w-100 py-3 rounded-pill fw-bold shadow-lg fs-5">
-                        <i class="bi bi-lock-fill me-2"></i> Proceed to Secure Payment
-                    </button>
-                </form>
+    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+        <form asp-controller="Donate" asp-action="ProcessDonation" method="post" class="space-y-5">
+            @Html.AntiForgeryToken()
+            
+            <!-- Category Selection -->
+            <div>
+                <label class="text-xs font-bold text-slate-700 uppercase">Select Charity Cause</label>
+                <select name="Category" class="mt-1 w-full text-xs font-bold bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-3">
+                    <option value="zakat" selected="@(Model.Category == "zakat")">Zakat Fund (Destitute & Debt Relief)</option>
+                    <option value="orphan" selected="@(Model.Category == "orphan")">Orphan Care & Student Sponsorship</option>
+                    <option value="sitarto" selected="@(Model.Category == "sitarto")">Winter Warmth & Blanket Distribution</option>
+                    <option value="iftar" selected="@(Model.Category == "iftar")">Ramadan Food Packs & Iftar</option>
+                    <option value="durjog" selected="@(Model.Category == "durjog")">Emergency Disaster & Flood Relief</option>
+                    <option value="general" selected="@(Model.Category == "general")">General Sadaqah & Islamic Education</option>
+                </select>
             </div>
-        </div>
+
+            <!-- Amount Presets -->
+            <div>
+                <label class="text-xs font-bold text-slate-700 uppercase">Donation Amount (BDT)</label>
+                <div class="grid grid-cols-4 gap-2.5 my-2">
+                    <button type="button" onclick="setAmount(500)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳500</button>
+                    <button type="button" onclick="setAmount(1000)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳1,000</button>
+                    <button type="button" onclick="setAmount(5000)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳5,000</button>
+                    <button type="button" onclick="setAmount(10000)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳10,000</button>
+                </div>
+                <input type="number" id="donationAmountInput" name="Amount" value="@Model.Amount" min="10" required class="w-full text-base font-black px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl font-mono" placeholder="Custom Amount in BDT" />
+            </div>
+
+            <!-- Donor Details -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div>
+                    <label class="text-xs font-bold text-slate-700">Donor Name</label>
+                    <input type="text" name="Name" value="@Model.Name" required class="mt-1 w-full text-xs font-semibold px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700">Email Address (for Receipt)</label>
+                    <input type="email" name="Email" value="@Model.Email" required class="mt-1 w-full text-xs font-semibold px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700">Phone Number</label>
+                    <input type="tel" name="Phone" value="@Model.Phone" required class="mt-1 w-full text-xs font-semibold px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700">Payment Gateway</label>
+                    <select name="PaymentMethod" class="mt-1 w-full text-xs font-bold bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5">
+                        <option value="bkash">bKash Online</option>
+                        <option value="nagad">Nagad Direct</option>
+                        <option value="rocket">Rocket</option>
+                        <option value="card">Visa / Mastercard / Amex</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 pt-2">
+                <input type="checkbox" name="IsAnonymous" value="true" id="anonChk" class="w-4 h-4 accent-emerald-600 rounded" />
+                <label for="anonChk" class="text-xs text-slate-600">Make this donation anonymous (Hide name on public donor list)</label>
+            </div>
+
+            <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm rounded-2xl shadow-lg shadow-emerald-900/30 transition">
+                Proceed to Secure Donation (SSLCommerz)
+            </button>
+        </form>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        document.querySelectorAll('.amount-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('customAmount').value = this.getAttribute('data-amt');
-            });
-        });
-    </script>
+<script>
+    function setAmount(val) {
+        document.getElementById('donationAmountInput').value = val;
+    }
+</script>
 }

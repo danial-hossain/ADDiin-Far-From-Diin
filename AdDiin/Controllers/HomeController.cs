@@ -71,7 +71,7 @@ namespace AdDiin.Controllers
             }
 
             await _contactService.SubmitMessageAsync(model);
-            TempData["SuccessMessage"] = "JazakAllah Khair! Your message has been sent successfully. The Mosque administration will respond to you shortly.";
+            TempData["SuccessMessage"] = "JazakAllah Khair! Your message has been sent successfully. The ADDiin team will respond to you shortly.";
             return RedirectToAction(nameof(Contact));
         }
 

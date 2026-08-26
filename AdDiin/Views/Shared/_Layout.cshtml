@@ -13,7 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Ad-Diin | Smart Mosque Management Platform</title>
+    <title>@ViewData["Title"] - ADDiin | Personal Islamic Development & Community Platform</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,97 +60,103 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans antialiased">
-    <!-- Header / Navbar (Matching original React Header.tsx) -->
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+    
+    <!-- Header / User-Centric Navbar -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo & Brand -->
+                
+                <!-- Brand: ADDiin -->
                 <a href="/" class="flex items-center gap-3 group text-decoration-none">
-                    <div class="w-11 h-11 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-xl flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-105 transition-transform duration-200">
+                    <div class="w-11 h-11 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-105 transition-transform duration-200">
                         <span>🕌</span>
                     </div>
                     <div>
                         <div class="flex items-baseline gap-1.5">
-                            <span class="text-2xl font-extrabold text-slate-900 tracking-tight">Ad-Diin</span>
+                            <span class="text-2xl font-extrabold text-slate-900 tracking-tight">ADDiin</span>
                             <span class="text-xl font-bold font-arabic text-amber-500">الدين</span>
                         </div>
-                        <p class="text-[10px] text-slate-500 tracking-wider uppercase font-semibold">Smart Mosque Platform</p>
+                        <p class="text-[10px] text-slate-500 tracking-wider uppercase font-semibold">Personal Islamic Growth Platform</p>
                     </div>
                 </a>
 
-                <!-- Desktop Navigation -->
-                <nav class="hidden lg:flex items-center gap-1">
-                    <a href="/" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Home</a>
-                    <a href="/prayer-times" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Prayer Times</a>
-                    <a href="/events" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Events</a>
-                    <a href="/activities" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Activities</a>
-                    <a href="/zakat" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Zakat</a>
-                    <a href="/diin-ai" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors flex items-center gap-1">
-                        <span class="px-1.5 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full">AI</span> Diin AI
+                <!-- Desktop Navigation: Exactly requested navbar items -->
+                <nav class="hidden xl:flex items-center gap-1">
+                    <a href="/" class="px-3 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Home</a>
+                    <a href="/prayer-times" class="px-3 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Prayer Times</a>
+                    <a href="/islamic-calendar" class="px-3 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Islamic Calendar</a>
+                    <a href="/activities" class="px-3 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Activities & Programs</a>
+                    <a href="/my-deen" class="px-3 py-2 text-sm font-semibold rounded-xl text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors flex items-center gap-1.5">
+                        <i class="bi bi-compass-fill text-emerald-600"></i> My Deen
                     </a>
-                    <a href="/milad" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Milad Booking</a>
-                    <a href="/about" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">About</a>
-                    <a href="/contact" class="px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Contact</a>
+                    <a href="/zakat" class="px-3 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors">Zakat & Donate</a>
+                    <a href="/diin-ai" class="px-3 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors flex items-center gap-1">
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-900 rounded-full">AI</span> Diin AI
+                    </a>
+                    <a href="/notifications" class="px-2.5 py-2 text-sm font-medium rounded-xl text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/80 transition-colors relative" title="Notifications">
+                        <i class="bi bi-bell-fill text-base text-slate-600"></i>
+                        <span class="hidden" id="navNotifBadge"></span>
+                    </a>
                 </nav>
 
-                <!-- Actions / Auth -->
-                <div class="flex items-center gap-3">
-                    <!-- Quick Donate Button -->
-                    <a href="/donate" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
-                        <i class="bi bi-heart-fill text-amber-300"></i>
-                        <span>Donate</span>
-                    </a>
-
+                <!-- Actions / User Auth -->
+                <div class="flex items-center gap-2.5">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <!-- User Dropdown Menu -->
+                        <!-- User Profile Dropdown -->
                         <div class="relative group">
                             <button type="button" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl text-sm font-semibold text-slate-800 transition">
-                                <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
+                                <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                                     @(currentUser?.FullName?.FirstOrDefault() ?? 'U')
                                 </div>
-                                <span class="hidden md:inline">@(currentUser?.FullName?.Split(' ').FirstOrDefault() ?? "Account")</span>
+                                <span class="hidden md:inline font-medium">@(currentUser?.FullName?.Split(' ').FirstOrDefault() ?? "Profile")</span>
                                 <i class="bi bi-chevron-down text-xs text-slate-500"></i>
                             </button>
 
                             <!-- Dropdown Box -->
-                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 hidden group-hover:block transition-all">
+                            <div class="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 hidden group-hover:block transition-all z-50">
                                 <div class="px-4 py-2.5 border-b border-slate-100">
                                     <p class="text-sm font-bold text-slate-900 truncate">@currentUser?.FullName</p>
                                     <p class="text-xs text-slate-500 truncate">@currentUser?.Email</p>
                                     @if (isAdmin)
                                     {
-                                        <span class="inline-block mt-1 px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold rounded-full">Administrator</span>
+                                        <span class="inline-block mt-1 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">Community Admin</span>
                                     }
                                 </div>
 
                                 @if (isAdmin)
                                 {
-                                    <a href="/admin/panel" class="flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 font-semibold hover:bg-red-50">
+                                    <a href="/admin/panel" class="flex items-center gap-2.5 px-4 py-2 text-sm text-purple-700 font-semibold hover:bg-purple-50">
                                         <i class="bi bi-speedometer2"></i> Admin Panel
+                                    </a>
+                                    <a href="/admin/registrations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-purple-700 font-medium hover:bg-purple-50">
+                                        <i class="bi bi-card-checklist"></i> Program Registrations
                                     </a>
                                     <div class="my-1 border-t border-slate-100"></div>
                                 }
 
-                                <a href="/user-profile" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-                                    <i class="bi bi-person text-emerald-600"></i> My Profile
+                                <a href="/user-profile" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                    <i class="bi bi-person-circle text-emerald-600"></i> Profile & Stats
                                 </a>
-                                <a href="/my-donations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-                                    <i class="bi bi-wallet2 text-emerald-600"></i> My Donations
+                                <a href="/my-deen" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                    <i class="bi bi-compass text-emerald-600"></i> My Deen Hub
                                 </a>
-                                <a href="/my-milad-requests" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-                                    <i class="bi bi-calendar-check text-emerald-600"></i> My Milad Requests
+                                <a href="/my-activities" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                    <i class="bi bi-calendar-check text-emerald-600"></i> My Activities
                                 </a>
-                                <a href="/messaging" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-                                    <i class="bi bi-chat-dots text-emerald-600"></i> Support Messages
+                                <a href="/my-donations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                    <i class="bi bi-heart text-emerald-600"></i> My Charity
+                                </a>
+                                <a href="/notifications" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                    <i class="bi bi-bell text-emerald-600"></i> Notifications
                                 </a>
 
                                 <div class="my-1 border-t border-slate-100"></div>
 
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium">
                                         <i class="bi bi-box-arrow-right"></i> Logout
                                     </button>
                                 </form>
@@ -161,38 +167,41 @@
                     {
                         <!-- Auth buttons -->
                         <div class="flex items-center gap-2">
-                            <a href="/user-login" class="text-sm font-semibold text-slate-700 hover:text-emerald-700 px-3 py-2 rounded-lg hover:bg-slate-100 transition">
+                            <a href="/user-login" class="text-sm font-semibold text-slate-700 hover:text-emerald-700 px-3.5 py-2 rounded-xl hover:bg-slate-100 transition">
                                 Login
                             </a>
-                            <a href="/user-registration" class="hidden sm:inline-block text-sm font-semibold text-emerald-700 border border-emerald-600 hover:bg-emerald-50 px-3.5 py-2 rounded-xl transition">
+                            <a href="/user-registration" class="text-sm font-semibold text-emerald-700 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 px-4 py-2 rounded-xl transition">
                                 Register
                             </a>
                         </div>
                     }
 
                     <!-- Mobile Menu Button -->
-                    <button type="button" id="mobileMenuBtn" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg">
+                    <button type="button" id="mobileMenuBtn" class="xl:hidden p-2.5 text-slate-700 hover:bg-slate-100 rounded-xl">
                         <i class="bi bi-list text-2xl"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Mobile Dropdown Navigation -->
-            <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-200 py-3 space-y-1">
-                <a href="/" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Home</a>
-                <a href="/prayer-times" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Prayer Times</a>
-                <a href="/events" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Events</a>
-                <a href="/activities" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Activities</a>
-                <a href="/zakat" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Zakat Calculator</a>
-                <a href="/diin-ai" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Diin AI Assistant</a>
-                <a href="/milad" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Milad Booking</a>
-                <a href="/about" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">About Us</a>
-                <a href="/contact" class="block px-3 py-2 text-base font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Contact</a>
+            <div id="mobileMenu" class="hidden xl:hidden border-t border-slate-200 py-3 space-y-1">
+                <a href="/" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Home</a>
+                <a href="/prayer-times" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Prayer Times</a>
+                <a href="/islamic-calendar" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Islamic Calendar</a>
+                <a href="/activities" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Activities & Programs</a>
+                <a href="/my-deen" class="block px-3 py-2 text-sm font-semibold rounded-lg text-emerald-700 bg-emerald-50">My Deen (Daily Hub)</a>
+                <a href="/zakat" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Zakat & Donate</a>
+                <a href="/diin-ai" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Diin AI Assistant</a>
+                <a href="/notifications" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Notifications</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a href="/user-profile" class="block px-3 py-2 text-sm font-medium rounded-lg text-slate-700 hover:bg-emerald-50">Profile & Statistics</a>
+                }
             </div>
         </div>
     </header>
 
-    <!-- Main Body -->
+    <!-- Main Content Area -->
     <main class="flex-1">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
             <partial name="_NotificationToast" />
@@ -200,86 +209,83 @@
         @RenderBody()
     </main>
 
-    <!-- Footer (Matching original React Footer.tsx) -->
+    <!-- Footer: User-Centric Digital Islamic Platform -->
     <footer class="bg-slate-900 text-slate-300 border-t border-slate-800 mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                <!-- Col 1: Brand & Purpose -->
+                <!-- Col 1: Platform Purpose -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white text-xl">
+                        <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white text-xl shadow-md">
                             <span>🕌</span>
                         </div>
                         <div>
-                            <span class="text-xl font-bold text-white">Ad-Diin</span>
-                            <p class="text-xs text-emerald-400 font-semibold">Smart Mosque Platform</p>
+                            <span class="text-xl font-bold text-white tracking-tight">ADDiin</span>
+                            <p class="text-xs text-emerald-400 font-semibold">Islamic Growth & Community</p>
                         </div>
                     </div>
                     <p class="text-sm text-slate-400 leading-relaxed">
-                        A centralized platform for mosque daily operations, transparent community donations, verified Zakat calculation, and authentic Islamic learning.
+                        An integrated digital platform that helps users stay consistent in their Islamic activities, track their personal progress, discover Islamic programs, and engage with their faith through modern technology.
                     </p>
-                    <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50">
-                        <div class="flex items-center gap-2 text-xs font-bold text-amber-400 mb-1">
-                            <i class="bi bi-award-fill"></i>
-                        </div>
-                        <p class="text-[11px] text-slate-400">
-                            Empowering religious institutions through modern digital public infrastructure and financial transparency.
+                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+                        <p class="text-[11px] text-amber-300 font-semibold">
+                            ✨ "Your Digital Companion for Daily Islamic Growth"
                         </p>
                     </div>
                 </div>
 
-                <!-- Col 2: Quick Links -->
+                <!-- Col 2: Core Platform Links -->
                 <div>
-                    <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-4">Quick Links</h4>
+                    <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-4">Core Modules</h4>
                     <ul class="space-y-2.5 text-sm">
-                        <li><a href="/" class="hover:text-emerald-400 transition-colors">Home</a></li>
-                        <li><a href="/prayer-times" class="hover:text-emerald-400 transition-colors">Prayer Times</a></li>
-                        <li><a href="/events" class="hover:text-emerald-400 transition-colors">Islamic Events</a></li>
-                        <li><a href="/activities" class="hover:text-emerald-400 transition-colors">Ongoing Activities</a></li>
-                        <li><a href="/zakat" class="hover:text-emerald-400 transition-colors">Zakat Calculator</a></li>
+                        <li><a href="/my-deen" class="hover:text-emerald-400 transition-colors">My Deen Activity Hub</a></li>
+                        <li><a href="/prayer-times" class="hover:text-emerald-400 transition-colors">Prayer Times & Azan Reminders</a></li>
+                        <li><a href="/islamic-calendar" class="hover:text-emerald-400 transition-colors">Islamic Hijri Calendar</a></li>
+                        <li><a href="/activities" class="hover:text-emerald-400 transition-colors">Activities & Programs</a></li>
                         <li><a href="/diin-ai" class="hover:text-emerald-400 transition-colors">Diin AI Assistant</a></li>
+                        <li><a href="/zakat" class="hover:text-emerald-400 transition-colors">Zakat & Philanthropy</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 3: Community Services -->
+                <!-- Col 3: Programs & Activities -->
                 <div>
-                    <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-4">Services & Welfare</h4>
+                    <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-4">Discover Programs</h4>
                     <ul class="space-y-2.5 text-sm">
-                        <li><a href="/donate?category=zakat" class="hover:text-emerald-400 transition-colors">Zakat Fund</a></li>
-                        <li><a href="/donate?category=iftar" class="hover:text-emerald-400 transition-colors">Ramadan Iftar Drive</a></li>
-                        <li><a href="/donate?category=durjog" class="hover:text-emerald-400 transition-colors">Disaster Relief Fund</a></li>
-                        <li><a href="/donate?category=sitarto" class="hover:text-emerald-400 transition-colors">Winter Clothes Campaign</a></li>
-                        <li><a href="/milad" class="hover:text-emerald-400 transition-colors">Milad & Dua Mehfil</a></li>
-                        <li><a href="/sdg9" class="hover:text-emerald-400 transition-colors">SDG 9 Innovation Report</a></li>
+                        <li><a href="/activities?category=Waz+Mahfil" class="hover:text-emerald-400 transition-colors">Waz Mahfil</a></li>
+                        <li><a href="/activities?category=Islamic+Seminar" class="hover:text-emerald-400 transition-colors">Islamic Seminars</a></li>
+                        <li><a href="/activities?category=Quran+Competition" class="hover:text-emerald-400 transition-colors">Quran Competitions</a></li>
+                        <li><a href="/activities?category=Islamic+Workshop" class="hover:text-emerald-400 transition-colors">Interactive Workshops</a></li>
+                        <li><a href="/activities?category=Islamic+Gathering" class="hover:text-emerald-400 transition-colors">Family Halaqahs & Gatherings</a></li>
+                        <li><a href="/donate" class="hover:text-emerald-400 transition-colors">Verified Charity Causes</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 4: Mosque Contact -->
+                <!-- Col 4: Platform Connect & Support -->
                 <div>
-                    <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-4">Mosque Complex</h4>
+                    <h4 class="text-white font-bold text-sm tracking-wider uppercase mb-4">Community Connect</h4>
                     <ul class="space-y-3 text-sm text-slate-400">
                         <li class="flex items-start gap-2.5">
-                            <i class="bi bi-geo-alt-fill text-emerald-400 mt-1"></i>
-                            <span>Tejgaon / Dhanmondi Central Mosque Complex, Dhaka-1208, Bangladesh</span>
-                        </li>
-                        <li class="flex items-center gap-2.5">
-                            <i class="bi bi-telephone-fill text-emerald-400"></i>
-                            <span>+880 1700-000000 / +880 1811-111111</span>
+                            <i class="bi bi-globe2 text-emerald-400 mt-1"></i>
+                            <span>ADDiin Digital Platform — Universal Islamic Public Good</span>
                         </li>
                         <li class="flex items-center gap-2.5">
                             <i class="bi bi-envelope-fill text-emerald-400"></i>
-                            <span>info@addiin.com</span>
+                            <span>support@addiin.com</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="bi bi-shield-check text-emerald-400"></i>
+                            <span>Verified Islamic Content & Non-profit Transparency</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-                <p>&copy; @DateTime.UtcNow.Year Ad-Diin Platform. All rights reserved.</p>
+                <p>&copy; @DateTime.UtcNow.Year ADDiin Platform. Built for Islamic personal growth and community engagement.</p>
                 <div class="flex gap-6">
                     <a href="/privacy" class="hover:text-slate-400 transition">Privacy Policy</a>
-                    <a href="/contact" class="hover:text-slate-400 transition">Support</a>
-                    <a href="/sdg9" class="hover:text-slate-400 transition">SDG 9 Alignment</a>
+                    <a href="/contact" class="hover:text-slate-400 transition">Support & Feedback</a>
+                    <a href="/sdg9" class="hover:text-slate-400 transition">SDG 9 Digital Innovation</a>
                 </div>
             </div>
         </div>
@@ -290,8 +296,26 @@
         document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
             document.getElementById('mobileMenu')?.classList.toggle('hidden');
         });
+
+        // Realtime notification badge check
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <text>
+            fetch('/Notifications/GetUnreadCount')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.unreadCount > 0) {
+                        const badge = document.getElementById('navNotifBadge');
+                        if (badge) {
+                            badge.className = 'absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center animate-pulse';
+                            badge.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+                        }
+                    }
+                })
+                .catch(() => {});
+            </text>
+        }
     </script>
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

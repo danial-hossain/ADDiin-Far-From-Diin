@@ -51,6 +51,8 @@ builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IDiinAIService, DiinAIService>();
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IMyDeenService, MyDeenService>();
 builder.Services.AddSingleton<IAboutService, AboutService>();
 
 var app = builder.Build();
@@ -81,24 +83,31 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Route Aliases matching original React routes exactly
+// Route Aliases matching user-centric structure
 app.MapControllerRoute(name: "about", pattern: "about", defaults: new { controller = "Home", action = "About" });
 app.MapControllerRoute(name: "contact", pattern: "contact", defaults: new { controller = "Home", action = "Contact" });
 app.MapControllerRoute(name: "sdg9", pattern: "sdg9", defaults: new { controller = "Home", action = "SDG9" });
 app.MapControllerRoute(name: "privacy", pattern: "privacy", defaults: new { controller = "Home", action = "Privacy" });
 
+app.MapControllerRoute(name: "mydeen", pattern: "my-deen", defaults: new { controller = "MyDeen", action = "Index" });
+app.MapControllerRoute(name: "notifications", pattern: "notifications", defaults: new { controller = "Notifications", action = "Index" });
+app.MapControllerRoute(name: "calendar", pattern: "islamic-calendar", defaults: new { controller = "IslamicCalendar", action = "Index" });
+
 app.MapControllerRoute(name: "prayertimes", pattern: "prayer-times", defaults: new { controller = "PrayerTimes", action = "Index" });
-app.MapControllerRoute(name: "events", pattern: "events", defaults: new { controller = "Events", action = "Index" });
+app.MapControllerRoute(name: "events", pattern: "events", defaults: new { controller = "IslamicCalendar", action = "Index" });
+app.MapControllerRoute(name: "activitiesPrograms", pattern: "activities-and-programs", defaults: new { controller = "Activities", action = "Index" });
 app.MapControllerRoute(name: "activities", pattern: "activities", defaults: new { controller = "Activities", action = "Index" });
 app.MapControllerRoute(name: "activityDetails", pattern: "activities/{id:int}", defaults: new { controller = "Activities", action = "Details" });
+app.MapControllerRoute(name: "myActivities", pattern: "my-activities", defaults: new { controller = "Activities", action = "MyActivities" });
 
 app.MapControllerRoute(name: "zakat", pattern: "zakat", defaults: new { controller = "Zakat", action = "Index" });
 app.MapControllerRoute(name: "donate", pattern: "donate", defaults: new { controller = "Donate", action = "Index" });
+app.MapControllerRoute(name: "zakatDonate", pattern: "zakat-and-donate", defaults: new { controller = "Zakat", action = "Index" });
 app.MapControllerRoute(name: "donateSuccess", pattern: "donate/success", defaults: new { controller = "Donate", action = "Success" });
 app.MapControllerRoute(name: "myDonations", pattern: "my-donations", defaults: new { controller = "Donate", action = "MyDonations" });
 
-app.MapControllerRoute(name: "milad", pattern: "milad", defaults: new { controller = "Milad", action = "Create" });
-app.MapControllerRoute(name: "myMilads", pattern: "my-milad-requests", defaults: new { controller = "Milad", action = "MyRequests" });
+app.MapControllerRoute(name: "milad", pattern: "milad", defaults: new { controller = "Activities", action = "Index" });
+app.MapControllerRoute(name: "myMilads", pattern: "my-milad-requests", defaults: new { controller = "Activities", action = "MyActivities" });
 
 app.MapControllerRoute(name: "messaging", pattern: "messaging", defaults: new { controller = "Messages", action = "Index" });
 app.MapControllerRoute(name: "diinai", pattern: "diin-ai", defaults: new { controller = "DiinAI", action = "Index" });
@@ -108,6 +117,8 @@ app.MapControllerRoute(name: "userRegistration", pattern: "user-registration", d
 app.MapControllerRoute(name: "userProfile", pattern: "user-profile", defaults: new { controller = "Account", action = "Profile" });
 app.MapControllerRoute(name: "verifyEmail", pattern: "verify-email", defaults: new { controller = "Account", action = "VerifyEmail" });
 
+app.MapControllerRoute(name: "adminRegistrations", pattern: "admin/registrations", defaults: new { controller = "Admin", action = "Registrations" });
+app.MapControllerRoute(name: "adminPrograms", pattern: "admin/programs", defaults: new { controller = "Admin", action = "Activities" });
 app.MapControllerRoute(name: "adminPanel", pattern: "admin/panel", defaults: new { controller = "Admin", action = "Dashboard" });
 app.MapControllerRoute(name: "adminDashboard", pattern: "admin-dashboard", defaults: new { controller = "Admin", action = "Dashboard" });
 
