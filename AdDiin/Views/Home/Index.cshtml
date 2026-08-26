@@ -81,12 +81,13 @@
 
                     @if (Model.NextPrayer != null)
                     {
+                        var next12 = DateTime.Today.Add(Model.NextPrayer.PrayerTimeValue).ToString("hh:mm tt");
                         <div class="my-5 p-5 bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200/80 rounded-2xl text-center shadow-xs">
                             <p class="text-xs uppercase font-extrabold tracking-wider text-emerald-800 mb-1">
                                 @Model.NextPrayer.DisplayNameEn (@Model.NextPrayer.DisplayNameBn)
                             </p>
                             <div class="text-4xl font-black text-emerald-950 tracking-tight my-1 font-mono">
-                                @Model.NextPrayer.PrayerTimeValue.ToString(@"hh\:mm")
+                                @next12
                             </div>
                             <p class="text-xs text-slate-600 mt-1">
                                 Remaining: <strong class="text-emerald-700 font-bold">@Model.TimeUntilNextPrayer.Hours hrs @Model.TimeUntilNextPrayer.Minutes mins</strong>
@@ -99,10 +100,11 @@
                         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Today's 5 Prayers (Azan)</p>
                         @foreach (var prayer in (Model.AzanPrayers.Any() ? Model.AzanPrayers : Model.JamaatPrayers).Take(5))
                         {
+                            var time12 = DateTime.Today.Add(prayer.PrayerTimeValue).ToString("hh:mm tt");
                             <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 hover:bg-emerald-50/60 transition text-sm">
                                 <span class="font-semibold text-slate-700">@prayer.DisplayNameEn</span>
                                 <span class="font-bold font-mono px-2.5 py-1 bg-white border border-slate-200 text-slate-800 rounded-lg text-xs">
-                                    @prayer.PrayerTimeValue.ToString(@"hh\:mm")
+                                    @time12
                                 </span>
                             </div>
                         }
