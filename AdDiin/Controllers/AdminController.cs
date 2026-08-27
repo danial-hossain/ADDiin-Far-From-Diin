@@ -22,6 +22,7 @@ namespace AdDiin.Controllers
         private readonly IContactService _contactService;
         private readonly IMessagingService _messagingService;
         private readonly IAboutService _aboutService;
+        private readonly IPhotoService _photoService;
 
         public AdminController(
             ApplicationDbContext context,
@@ -33,7 +34,8 @@ namespace AdDiin.Controllers
             IActivityService activityService,
             IContactService contactService,
             IMessagingService messagingService,
-            IAboutService aboutService)
+            IAboutService aboutService,
+            IPhotoService photoService)
         {
             _context = context;
             _userManager = userManager;
@@ -45,6 +47,7 @@ namespace AdDiin.Controllers
             _contactService = contactService;
             _messagingService = messagingService;
             _aboutService = aboutService;
+            _photoService = photoService;
         }
 
         public async Task<IActionResult> Dashboard()
@@ -359,33 +362,115 @@ namespace AdDiin.Controllers
         }
 
         // ================= ACTIVITIES =================
-        public async Task<IActionResult> Activities()
+        public async Task<IActionResult> Activities(string? search, string? category)
         {
             var activities = await _activityService.GetAllActivitiesAsync();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var s = search.Trim().ToLower();
+                activities = activities.Where(a => a.Title.ToLower().Contains(s) || 
+                                                  a.Description.ToLower().Contains(s) || 
+                                                  (a.Location != null && a.Location.ToLower().Contains(s)) ||
+                                                  (a.Organizer != null && a.Organizer.ToLower().Contains(s))).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(category) && !category.Equals("all", StringComparison.OrdinalIgnoreCase))
+            {
+                activities = activities.Where(a => a.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            ViewBag.Search = search;
+            ViewBag.Category = category;
             return View(activities);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ActivityCreate(Activity model)
+        public async Task<IActionResult> ActivityCreate(Activity model, IFormFile? imageFile)
         {
+            ModelState.Remove(nameof(model.Registrations));
+
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    try
+                    {
+                        var uploadRes = await _photoService.AddPhotoAsync(imageFile, "ad-diin/activities");
+                        if (uploadRes != null && uploadRes.SecureUrl != null)
+                        {
+                            model.ImageUrl = uploadRes.SecureUrl.ToString();
+                            model.ImagePublicId = uploadRes.PublicId;
+                        }
+                        else if (uploadRes?.Error != null)
+                        {
+                            TempData["ErrorMessage"] = $"Cloudinary upload warning: {uploadRes.Error.Message}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = $"Cloudinary upload error: {ex.Message}";
+                    }
+                }
+
                 await _activityService.CreateAsync(model);
-                TempData["SuccessMessage"] = "Activity added successfully.";
+                TempData["SuccessMessage"] = "Activity created successfully!";
+            }
+            else
+            {
+                var errors = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                TempData["ErrorMessage"] = $"Validation error: {errors}";
             }
             return RedirectToAction(nameof(Activities));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ActivityEdit(int id, Activity model)
+        public async Task<IActionResult> ActivityEdit(int id, Activity model, IFormFile? imageFile)
         {
+            ModelState.Remove(nameof(model.Registrations));
+
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    try
+                    {
+                        var uploadRes = await _photoService.AddPhotoAsync(imageFile, "ad-diin/activities");
+                        if (uploadRes != null && uploadRes.SecureUrl != null)
+                        {
+                            model.ImageUrl = uploadRes.SecureUrl.ToString();
+                            model.ImagePublicId = uploadRes.PublicId;
+                        }
+                        else if (uploadRes?.Error != null)
+                        {
+                            TempData["ErrorMessage"] = $"Cloudinary upload warning: {uploadRes.Error.Message}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = $"Cloudinary upload error: {ex.Message}";
+                    }
+                }
+
                 await _activityService.UpdateAsync(id, model);
-                TempData["SuccessMessage"] = "Activity updated successfully.";
+                TempData["SuccessMessage"] = "Activity updated successfully!";
             }
+            else
+            {
+                var errors = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                TempData["ErrorMessage"] = $"Validation error: {errors}";
+            }
+            return RedirectToAction(nameof(Activities));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActivityToggle(int id)
+        {
+            await _activityService.ToggleActiveAsync(id);
+            TempData["SuccessMessage"] = "Activity visibility status toggled.";
             return RedirectToAction(nameof(Activities));
         }
 
@@ -394,7 +479,7 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> ActivityDelete(int id)
         {
             await _activityService.DeleteAsync(id);
-            TempData["SuccessMessage"] = "Activity deleted.";
+            TempData["SuccessMessage"] = "Activity deleted successfully.";
             return RedirectToAction(nameof(Activities));
         }
 

@@ -34,7 +34,10 @@
                     🌙
                 </div>
                 <div>
-                    <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-md uppercase">Next Islamic Occasion</span>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-extrabold rounded-md uppercase">Next Islamic Occasion</span>
+                        <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-md uppercase">@nextOccasion.EventType</span>
+                    </div>
                     <h3 class="text-xl font-extrabold text-slate-900 mt-1">@nextOccasion.EventName</h3>
                     <p class="text-xs text-slate-500">@nextOccasion.HijriDate • @nextOccasion.EventDate.ToString("MMMM dd, yyyy")</p>
                 </div>
@@ -95,9 +98,17 @@
                             🌙
                         </div>
                         <div class="space-y-1">
-                            <span class="px-2.5 py-0.5 bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-bold rounded-md uppercase">
-                                @ev.HijriMonth
-                            </span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md uppercase">
+                                    @(string.IsNullOrEmpty(ev.EventType) ? "Religious" : ev.EventType)
+                                </span>
+                                @if (!string.IsNullOrEmpty(ev.HijriMonth))
+                                {
+                                    <span class="px-2.5 py-0.5 bg-purple-50 border border-purple-200 text-purple-700 text-[10px] font-bold rounded-md uppercase">
+                                        @ev.HijriMonth
+                                    </span>
+                                }
+                            </div>
                             <h4 class="font-extrabold text-slate-900 text-base">@ev.EventName</h4>
                             <p class="text-xs text-slate-600 leading-relaxed">@ev.Description</p>
                         </div>
