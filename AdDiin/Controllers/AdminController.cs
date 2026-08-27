@@ -144,7 +144,7 @@ namespace AdDiin.Controllers
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var s = search.Trim();
-                query = query.Where(u => u.FullName.Contains(s) || (u.Email != null && u.Email.Contains(s)) || (u.PhoneNumber != null && u.PhoneNumber.Contains(s)));
+                query = query.Where(u => u.FullName.Contains(s) || (u.Email != null && u.Email.Contains(s)) || (u.PhoneNumber != null && u.PhoneNumber.Contains(s)) || (u.City != null && u.City.Contains(s)));
             }
 
             if (!string.IsNullOrWhiteSpace(status) && status != "all")
@@ -155,12 +155,43 @@ namespace AdDiin.Controllers
 
             var users = await query.OrderByDescending(u => u.CreatedAt).ToListAsync();
 
+            var allAdmins = await _userManager.GetUsersInRoleAsync("Admin");
+            var adminIds = allAdmins.Select(a => a.Id).ToHashSet();
+
+            if (!string.IsNullOrWhiteSpace(role) && role != "all")
+            {
+                if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    users = users.Where(u => adminIds.Contains(u.Id)).ToList();
+                }
+                else if (role.Equals("Member", StringComparison.OrdinalIgnoreCase) || role.Equals("User", StringComparison.OrdinalIgnoreCase))
+                {
+                    users = users.Where(u => !adminIds.Contains(u.Id)).ToList();
+                }
+            }
+
+            var userRolesDict = new Dictionary<int, IList<string>>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userRolesDict[user.Id] = roles.Any() ? roles : new List<string> { "Member" };
+            }
+
+            var allUsersCount = await _userManager.Users.CountAsync();
+            var activeUsersCount = await _userManager.Users.CountAsync(u => u.IsActive);
+            var inactiveUsersCount = allUsersCount - activeUsersCount;
+
             var vm = new AdminUsersViewModel
             {
                 Users = users,
+                UserRoles = userRolesDict,
                 SearchQuery = search,
                 RoleFilter = role,
-                StatusFilter = status
+                StatusFilter = status,
+                TotalCount = allUsersCount,
+                ActiveCount = activeUsersCount,
+                InactiveCount = inactiveUsersCount,
+                AdminCount = adminIds.Count
             };
 
             return View(vm);
@@ -245,9 +276,27 @@ namespace AdDiin.Controllers
         }
 
         // ================= PRAYER TIMES =================
-        public async Task<IActionResult> PrayerTimes()
+        public async Task<IActionResult> PrayerTimes(string? search, string? category, string? type)
         {
             var prayers = await _prayerService.GetAllAsync();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var q = search.Trim().ToLower();
+                prayers = prayers.Where(p => (p.PrayerName != null && p.PrayerName.ToLower().Contains(q)) ||
+                                             (p.DisplayNameEn != null && p.DisplayNameEn.ToLower().Contains(q)) ||
+                                             (p.DisplayNameBn != null && p.DisplayNameBn.Contains(q))).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                prayers = prayers.Where(p => string.Equals(p.Category, category, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                prayers = prayers.Where(p => string.Equals(p.PrayerType, type, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            ViewBag.Search = search;
+            ViewBag.Category = category;
+            ViewBag.Type = type;
             return View(prayers);
         }
 
@@ -280,6 +329,7 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> PrayerTimeToggle(int id)
         {
             await _prayerService.ToggleActiveAsync(id);
+            TempData["SuccessMessage"] = "Prayer time status updated.";
             return RedirectToAction(nameof(PrayerTimes));
         }
 
@@ -293,9 +343,22 @@ namespace AdDiin.Controllers
         }
 
         // ================= EVENTS =================
-        public async Task<IActionResult> Events()
+        public async Task<IActionResult> Events(string? search, string? type)
         {
             var events = await _eventService.GetAllEventsAsync();
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var q = search.Trim().ToLower();
+                events = events.Where(e => (e.EventName != null && e.EventName.ToLower().Contains(q)) ||
+                                           (e.HijriDate != null && e.HijriDate.ToLower().Contains(q)) ||
+                                           (e.Description != null && e.Description.ToLower().Contains(q))).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                events = events.Where(e => string.Equals(e.EventType, type, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            ViewBag.Search = search;
+            ViewBag.Type = type;
             return View(events);
         }
 
@@ -319,6 +382,20 @@ namespace AdDiin.Controllers
             {
                 await _eventService.UpdateAsync(id, model);
                 TempData["SuccessMessage"] = "Islamic event updated successfully.";
+            }
+            return RedirectToAction(nameof(Events));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EventToggle(int id)
+        {
+            var evt = await _eventService.GetByIdAsync(id);
+            if (evt != null)
+            {
+                evt.IsActive = !evt.IsActive;
+                await _eventService.UpdateAsync(id, evt);
+                TempData["SuccessMessage"] = $"Event '{evt.EventName}' is now {(evt.IsActive ? "active" : "hidden")}.";
             }
             return RedirectToAction(nameof(Events));
         }
@@ -359,6 +436,64 @@ namespace AdDiin.Controllers
         {
             var vm = await _donationService.GetAdminDonationsAsync(category, status, search);
             return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DonationCreateManual(string name, string? email, string? phone, string category, decimal amount, string? paymentMethod, string status, string? notes)
+        {
+            if (amount <= 0)
+            {
+                TempData["ErrorMessage"] = "Donation amount must be greater than zero.";
+                return RedirectToAction(nameof(Donations));
+            }
+
+            await _donationService.CreateManualDonationAsync(name, email, phone, category, amount, paymentMethod, status, notes);
+            TempData["SuccessMessage"] = $"Manual donation record of ৳{amount:N0} added successfully!";
+            return RedirectToAction(nameof(Donations));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DonationEdit(int id, string name, string? email, string? phone, string category, decimal amount, string? paymentMethod, string status, string? notes)
+        {
+            var donation = await _donationService.UpdateDonationAsync(id, name, email, phone, category, amount, paymentMethod, status, notes);
+            if (donation != null)
+            {
+                TempData["SuccessMessage"] = $"Donation record ({donation.TranId}) updated successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Donation record not found.";
+            }
+            return RedirectToAction(nameof(Donations));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DonationUpdateStatus(int id, string status)
+        {
+            var donation = await _context.Donations.FindAsync(id);
+            if (donation != null)
+            {
+                donation.PaymentStatus = status.ToLower();
+                donation.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Donation status updated to '{status}'.";
+            }
+            return RedirectToAction(nameof(Donations));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DonationDelete(int id)
+        {
+            var success = await _donationService.DeleteDonationAsync(id);
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Donation record deleted.";
+            }
+            return RedirectToAction(nameof(Donations));
         }
 
         // ================= ACTIVITIES =================

@@ -29,10 +29,15 @@ namespace AdDiin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string? category = null, decimal? amount = null)
         {
+            var stats = await _donationService.GetPublicDonationStatsAsync();
+
             var vm = new DonationInitiateViewModel
             {
                 Category = string.IsNullOrWhiteSpace(category) ? "general" : category.ToLower(),
-                Amount = amount.HasValue && amount.Value > 0 ? amount.Value : 1000
+                Amount = amount.HasValue && amount.Value > 0 ? amount.Value : 1000,
+                TotalDonationsRaised = stats.totalRaised,
+                TotalDonorsCount = stats.donorsCount,
+                CategoryBreakdown = stats.breakdown
             };
 
             if (User.Identity?.IsAuthenticated == true)
@@ -55,6 +60,10 @@ namespace AdDiin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var stats = await _donationService.GetPublicDonationStatsAsync();
+                model.TotalDonationsRaised = stats.totalRaised;
+                model.TotalDonorsCount = stats.donorsCount;
+                model.CategoryBreakdown = stats.breakdown;
                 return View("Index", model);
             }
 

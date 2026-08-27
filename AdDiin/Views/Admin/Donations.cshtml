@@ -1,119 +1,362 @@
-﻿@model AdDiin.Models.ViewModels.AdminDonationsViewModel
+@model AdDiin.Models.ViewModels.AdminDonationsViewModel
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Donations & Zakat Records";
+    ViewData["Title"] = "Donations & Zakat Records | Admin Panel";
+    var currentCategory = Model.SelectedCategory ?? "";
+    var currentStatus = Model.SelectedStatus ?? "";
 }
 
-<!-- Summary Statistics -->
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="card card-custom p-3 border-0 bg-white shadow-sm">
-            <div class="text-muted small text-uppercase fw-semibold">Total Completed Collections</div>
-            <div class="display-6 fw-extrabold text-emerald my-1">৳ @Model.TotalCompletedAmount.ToString("N2")</div>
-            <small class="text-muted">Total valid received contributions</small>
+<div class="space-y-6 pb-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-500/20">
+                <i class="bi bi-heart-fill"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Verified Donations & Zakat</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Track collections, examine payment gateway receipts, and manage donor transactions</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="/donate" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">
+                <i class="bi bi-box-arrow-up-right"></i> View Public Donate Page
+            </a>
+            <button type="button" onclick="openManualModal()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition">
+                <i class="bi bi-plus-circle-fill text-sm"></i> Record Manual Donation
+            </button>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card card-custom p-3 border-0 bg-white shadow-sm">
-            <div class="text-muted small text-uppercase fw-semibold">Total Transactions</div>
-            <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalCount</div>
-            <small class="text-muted">All donation intents & payments</small>
+
+    <!-- Summary Statistics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Collections -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Total Completed Amount</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">৳@Model.TotalCompletedAmount.ToString("N2")</h3>
+                <span class="text-[11px] text-slate-400">Verified & received funds</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+        </div>
+
+        <!-- Total Transactions -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Transactions</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@Model.TotalCount</h3>
+                <span class="text-[11px] text-slate-400">All recorded attempts</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-receipt"></i>
+            </div>
+        </div>
+
+        <!-- Pending Count -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Pending / Incomplete</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@Model.PendingCount</h3>
+                <span class="text-[11px] text-slate-400">Awaiting confirmation</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+        </div>
+
+        <!-- Completed Success Rate or Count -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Success Ratio</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">
+                    @(Model.TotalCount > 0 ? $"{(Model.Donations.Count(d => d.PaymentStatus == "completed") * 100 / (double)Model.TotalCount):F0}%" : "100%")
+                </h3>
+                <span class="text-[11px] text-slate-400">Completed transactions</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-pie-chart-fill"></i>
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card card-custom p-3 border-0 bg-white shadow-sm">
-            <div class="text-muted small text-uppercase fw-semibold">Pending / Incomplete</div>
-            <div class="display-6 fw-extrabold text-warning my-1">@Model.PendingCount</div>
-            <small class="text-muted">Unfinished checkout sessions</small>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        <form method="get" class="flex items-center gap-2 max-w-lg w-full">
+            <input type="hidden" name="category" value="@currentCategory" />
+            <input type="hidden" name="status" value="@currentStatus" />
+            <div class="relative flex-1">
+                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="search" value="@Model.SearchQuery" placeholder="Search by name, email, phone, or Tran ID..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition" />
+            </div>
+            @if (!string.IsNullOrEmpty(Model.SearchQuery) || !string.IsNullOrEmpty(currentCategory) || !string.IsNullOrEmpty(currentStatus))
+            {
+                <a href="/Admin/Donations" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold" title="Reset Filters">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            }
+            <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">Filter</button>
+        </form>
+
+        <!-- Status & Category Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1 text-xs">
+            <a href="/Admin/Donations?search=@Model.SearchQuery" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(string.IsNullOrEmpty(currentStatus) && string.IsNullOrEmpty(currentCategory) ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                All
+            </a>
+            <a href="/Admin/Donations?status=completed&category=@currentCategory&search=@Model.SearchQuery" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentStatus == "completed" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Completed
+            </a>
+            <a href="/Admin/Donations?status=pending&category=@currentCategory&search=@Model.SearchQuery" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentStatus == "pending" ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Pending
+            </a>
+            <a href="/Admin/Donations?category=zakat&status=@currentStatus&search=@Model.SearchQuery" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "zakat" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Zakat
+            </a>
+            <a href="/Admin/Donations?category=general&status=@currentStatus&search=@Model.SearchQuery" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "general" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                General
+            </a>
+            <a href="/Admin/Donations?category=orphan&status=@currentStatus&search=@Model.SearchQuery" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "orphan" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Orphan Care
+            </a>
         </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
+        @if (!Model.Donations.Any())
+        {
+            <div class="py-16 text-center">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl mb-3">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">No Donation Records Found</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">There are no donations matching your selected criteria. Try adjusting the search or filters.</p>
+                <a href="/Admin/Donations" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-xs hover:bg-emerald-700 transition">
+                    Reset Filter
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="py-3.5 px-4">Transaction ID</th>
+                            <th class="py-3.5 px-4">Donor Information</th>
+                            <th class="py-3.5 px-4">Category</th>
+                            <th class="py-3.5 px-4">Amount</th>
+                            <th class="py-3.5 px-4">Payment Method</th>
+                            <th class="py-3.5 px-4">Status</th>
+                            <th class="py-3.5 px-4">Date & Time</th>
+                            <th class="py-3.5 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        @foreach (var d in Model.Donations)
+                        {
+                            <tr class="hover:bg-slate-50/60 transition">
+                                <td class="py-4 px-4 font-mono font-bold text-slate-900">
+                                    <span class="bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-[11px]">@d.TranId</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-bold text-slate-900">
+                                        @(d.IsAnonymous ? "Anonymous Donor" : (d.Name ?? "Direct Donor"))
+                                    </div>
+                                    <div class="text-[11px] text-slate-400 mt-0.5">
+                                        @(d.Email ?? d.Phone ?? "No contact details")
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide bg-slate-100 text-slate-700 border border-slate-200/60">
+                                        @d.Category
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-sm font-black text-emerald-700">
+                                        ৳@d.Amount.ToString("N2")
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="font-medium text-slate-600 uppercase text-[11px]">
+                                        <i class="bi bi-credit-card text-slate-400 mr-1"></i>
+                                        @(d.PaymentMethod ?? "SSLCommerz")
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    @if (d.PaymentStatus == "completed")
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                            Completed
+                                        </span>
+                                    }
+                                    else if (d.PaymentStatus == "pending")
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                            Pending
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-100 text-red-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                            @d.PaymentStatus
+                                        </span>
+                                    }
+                                </td>
+                                <td class="py-4 px-4 text-slate-500 text-[11px]">
+                                    <div>@d.CreatedAt.ToString("dd MMM yyyy")</div>
+                                    <div class="text-[10px] text-slate-400">@d.CreatedAt.ToString("hh:mm tt")</div>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        @if (d.PaymentStatus == "completed")
+                                        {
+                                            <a asp-controller="Donate" asp-action="Receipt" asp-route-tranId="@d.TranId" target="_blank" class="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 font-bold text-[11px] rounded-lg transition" title="View Official Receipt">
+                                                <i class="bi bi-file-earmark-text"></i> Receipt
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="DonationUpdateStatus" method="post" class="m-0 inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@d.Id" />
+                                                <input type="hidden" name="status" value="completed" />
+                                                <button type="submit" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg transition" title="Mark as completed">
+                                                    Verify
+                                                </button>
+                                            </form>
+                                        }
+
+                                        <form asp-action="DonationDelete" asp-route-id="@d.Id" method="post" class="m-0 inline" onsubmit="return confirm('Are you sure you want to delete donation record @d.TranId?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center transition" title="Delete record">
+                                                <i class="bi bi-trash3 text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
 
-<!-- Filters -->
-<div class="card card-custom p-4 border-0 bg-white shadow-sm mb-4">
-    <form method="get" class="row g-2 align-items-center">
-        <div class="col-md-4">
-            <input type="text" name="search" value="@Model.SearchQuery" class="form-control" placeholder="Search by name, email, phone, or Tran ID..." />
+<!-- ================= MANUAL DONATION MODAL ================= -->
+<div id="manualModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in duration-200">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Record Offline / Manual Donation</h3>
+                    <p class="text-[11px] text-slate-500">Add cash, bank transfer, or offline charity contributions</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeManualModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition">
+                <i class="bi bi-x-lg text-xs"></i>
+            </button>
         </div>
-        <div class="col-md-3">
-            <select name="category" class="form-select">
-                <option value="">All Categories</option>
-                <option value="general">General Fund</option>
-                <option value="zakat">Zakat</option>
-                <option value="iftar">Iftar</option>
-                <option value="durjog">Disaster Relief</option>
-                <option value="sitarto">Winter Clothes</option>
-                <option value="gachropon">Tree Plantation</option>
-                <option value="orphan">Orphan Care</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select name="status" class="form-select">
-                <option value="">All Statuses</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-                <option value="cancelled">Cancelled</option>
-            </select>
-        </div>
-        <div class="col-md-2 d-flex gap-2">
-            <button type="submit" class="btn btn-emerald flex-grow-1">Filter</button>
-            <a asp-action="Donations" class="btn btn-outline-secondary">Reset</a>
-        </div>
-    </form>
-</div>
 
-<!-- Transactions Table -->
-<div class="card card-custom p-4 border-0 bg-white shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 small">
-            <thead class="table-light">
-                <tr>
-                    <th>Transaction ID</th>
-                    <th>Donor Details</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Gateway / Method</th>
-                    <th>Status</th>
-                    <th>Date & Time</th>
-                    <th class="text-end">Receipt</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var d in Model.Donations)
-                {
-                    <tr>
-                        <td class="font-monospace fw-bold">@d.TranId</td>
-                        <td>
-                            <div class="fw-semibold">@(d.IsAnonymous ? "Anonymous" : (d.Name ?? "Direct Donor"))</div>
-                            <small class="text-muted">@(d.Email ?? d.Phone ?? "N/A")</small>
-                        </td>
-                        <td class="text-uppercase"><span class="badge bg-light text-dark border">@d.Category</span></td>
-                        <td class="fw-bold text-emerald fs-6">৳ @d.Amount.ToString("N2")</td>
-                        <td class="text-uppercase text-muted">@(d.PaymentMethod ?? "SSLCommerz")</td>
-                        <td>
-                            @if (d.PaymentStatus == "completed")
-                            {
-                                <span class="badge bg-success bg-opacity-10 text-success">Completed</span>
-                            }
-                            else if (d.PaymentStatus == "pending")
-                            {
-                                <span class="badge bg-warning bg-opacity-15 text-dark">Pending</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger bg-opacity-10 text-danger">@d.PaymentStatus</span>
-                            }
-                        </td>
-                        <td class="text-muted">@d.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</td>
-                        <td class="text-end">
-                            <a asp-controller="Donate" asp-action="Receipt" asp-route-tranId="@d.TranId" target="_blank" class="btn btn-outline-secondary btn-sm py-0 px-2 rounded-pill">
-                                Receipt
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <form asp-action="DonationCreateManual" method="post" class="p-6 space-y-4">
+            @Html.AntiForgeryToken()
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Donor Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" required placeholder="e.g. Abdullah Khan" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Amount (BDT) <span class="text-red-500">*</span></label>
+                    <input type="number" step="0.01" min="1" name="amount" required placeholder="5000" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
+                    <input type="email" name="email" placeholder="donor@example.com" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                    <input type="text" name="phone" placeholder="017xxxxxxxx" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Category <span class="text-red-500">*</span></label>
+                    <select name="category" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none bg-white">
+                        <option value="general">General Fund</option>
+                        <option value="zakat">Zakat</option>
+                        <option value="iftar">Iftar Program</option>
+                        <option value="durjog">Disaster Relief</option>
+                        <option value="sitarto">Winter Clothes</option>
+                        <option value="gachropon">Tree Plantation</option>
+                        <option value="orphan">Orphan Care</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Payment Method</label>
+                    <select name="paymentMethod" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none bg-white">
+                        <option value="Cash">Cash In Hand</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="bKash (Manual)">bKash (Manual)</option>
+                        <option value="Nagad (Manual)">Nagad (Manual)</option>
+                        <option value="Cheque">Cheque</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Status</label>
+                <select name="status" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none bg-white">
+                    <option value="completed">Completed (Confirmed)</option>
+                    <option value="pending">Pending Verification</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Notes / Remarks</label>
+                <textarea name="notes" rows="2" placeholder="Optional notes regarding this donation..." class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"></textarea>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeManualModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md shadow-emerald-600/20 transition inline-flex items-center gap-2">
+                    <i class="bi bi-check-circle-fill"></i> Save Donation Record
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function openManualModal() {
+            document.getElementById('manualModal').classList.remove('hidden');
+        }
+
+        function closeManualModal() {
+            document.getElementById('manualModal').classList.add('hidden');
+        }
+
+        window.addEventListener('click', function(e) {
+            const manualModal = document.getElementById('manualModal');
+            if (e.target === manualModal) closeManualModal();
+        });
+
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeManualModal();
+            }
+        });
+    </script>
+}

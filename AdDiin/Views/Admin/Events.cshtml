@@ -1,101 +1,470 @@
-﻿@model List<AdDiin.Models.Entities.IslamicEvent>
+@model List<AdDiin.Models.Entities.IslamicEvent>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Islamic Events Management";
+    ViewData["Title"] = "Islamic Events & Milestones | Admin Panel";
+    var currentSearch = ViewBag.Search as string ?? "";
+    var currentType = ViewBag.Type as string ?? "";
+    var totalEvents = Model.Count;
+    var activeEvents = Model.Count(e => e.IsActive);
+    var upcomingEvents = Model.Count(e => e.EventDate.Date >= DateTime.Today);
+    var specialCount = Model.Count(e => (e.EventType ?? "").ToLower() == "special" || (e.EventType ?? "").ToLower() == "festival");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Events & Milestones Calendar</h5>
-    <button class="btn btn-emerald btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createEventModal">
-        <i class="bi bi-plus-lg me-1"></i> Add Event
-    </button>
-</div>
-
-<div class="card card-custom p-4 border-0 bg-white shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 small">
-            <thead class="table-light">
-                <tr>
-                    <th>Event Name</th>
-                    <th>Gregorian Date</th>
-                    <th>Hijri Date</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var e in Model)
-                {
-                    <tr>
-                        <td class="fw-bold text-dark">@e.EventName</td>
-                        <td>@e.EventDate.ToString("dd MMMM, yyyy")</td>
-                        <td>@e.HijriDate</td>
-                        <td><span class="badge bg-light text-dark border text-uppercase">@e.EventType</span></td>
-                        <td>
-                            <span class="badge @(e.IsActive ? "bg-success bg-opacity-10 text-success" : "bg-secondary")">
-                                @(e.IsActive ? "Active" : "Hidden")
-                            </span>
-                        </td>
-                        <td class="text-end">
-                            <form asp-action="EventDelete" asp-route-id="@e.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this event?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Add Modal -->
-<div class="modal fade" id="createEventModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content rounded-4 border-0">
-            <form asp-action="EventCreate" method="post">
-                @Html.AntiForgeryToken()
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add Islamic Event</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body space-y-3">
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Event Name</label>
-                        <input name="EventName" class="form-control" required />
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Gregorian Date</label>
-                            <input name="EventDate" type="date" class="form-control" required />
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Event Type</label>
-                            <select name="EventType" class="form-select">
-                                <option value="religious">Religious</option>
-                                <option value="special">Special Night</option>
-                                <option value="festival">Festival</option>
-                                <option value="historical">Historical</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Hijri Date (e.g. 27 Ramadan 1447h)</label>
-                        <input name="HijriDate" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Description</label>
-                        <textarea name="Description" rows="3" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-emerald">Save Event</button>
-                </div>
-            </form>
+<div class="space-y-6 pb-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-500/20">
+                <i class="bi bi-moon-stars-fill"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Islamic Calendar & Events</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Manage Islamic milestones, holy nights, festivals, and historical dates for the community</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="/IslamicCalendar" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">
+                <i class="bi bi-box-arrow-up-right"></i> View Public Calendar
+            </a>
+            <button type="button" onclick="openCreateModal()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition cursor-pointer">
+                <i class="bi bi-plus-circle-fill text-sm"></i> Add New Event
+            </button>
         </div>
     </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Events</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@totalEvents</h3>
+                <span class="text-[11px] text-slate-400">All registered dates</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-calendar3"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Active & Published</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@activeEvents</h3>
+                <span class="text-[11px] text-slate-400">Visible to community</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Upcoming Milestones</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@upcomingEvents</h3>
+                <span class="text-[11px] text-slate-400">Future Islamic dates</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-clock-history"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Special Nights & Eids</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@specialCount</h3>
+                <span class="text-[11px] text-slate-400">Festivals & sacred nights</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-stars"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        <form method="get" class="flex items-center gap-2 max-w-md w-full">
+            <input type="hidden" name="type" value="@currentType" />
+            <div class="relative flex-1">
+                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="search" value="@currentSearch" placeholder="Search by event name, hijri date, description..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition" />
+            </div>
+            @if (!string.IsNullOrEmpty(currentSearch) || !string.IsNullOrEmpty(currentType))
+            {
+                <a href="/Admin/Events" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold" title="Reset filters">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            }
+            <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer">Filter</button>
+        </form>
+
+        <!-- Type Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1 text-xs">
+            <a href="/Admin/Events?search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(string.IsNullOrEmpty(currentType) ? "bg-emerald-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                All Types
+            </a>
+            <a href="/Admin/Events?type=religious&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentType.ToLower() == "religious" ? "bg-emerald-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Religious
+            </a>
+            <a href="/Admin/Events?type=special&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentType.ToLower() == "special" ? "bg-purple-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Special Nights
+            </a>
+            <a href="/Admin/Events?type=festival&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentType.ToLower() == "festival" ? "bg-amber-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Festivals & Eids
+            </a>
+            <a href="/Admin/Events?type=historical&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentType.ToLower() == "historical" ? "bg-blue-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Historical
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        @if (!Model.Any())
+        {
+            <div class="py-16 text-center">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl mb-3">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">No Islamic Events Found</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">There are no events matching your criteria. Add a new event or clear your search filters.</p>
+                <button type="button" onclick="openCreateModal()" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-sm hover:bg-emerald-700 transition cursor-pointer">
+                    <i class="bi bi-plus-lg"></i> Add First Event
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="py-3.5 px-4">Event Name & Details</th>
+                            <th class="py-3.5 px-4">Gregorian Date</th>
+                            <th class="py-3.5 px-4">Hijri Date</th>
+                            <th class="py-3.5 px-4">Event Type</th>
+                            <th class="py-3.5 px-4">Status</th>
+                            <th class="py-3.5 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        @foreach (var e in Model)
+                        {
+                            var isToday = e.EventDate.Date == DateTime.Today;
+                            var typeClass = (e.EventType ?? "").ToLower() switch
+                            {
+                                "special" => "bg-purple-100 text-purple-800 border-purple-200",
+                                "festival" => "bg-amber-100 text-amber-800 border-amber-200",
+                                "historical" => "bg-blue-100 text-blue-800 border-blue-200",
+                                _ => "bg-emerald-100 text-emerald-800 border-emerald-200"
+                            };
+
+                            <tr class="hover:bg-slate-50/60 transition group">
+                                <!-- Name & Description -->
+                                <td class="py-4 px-4">
+                                    <div class="space-y-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-slate-900 text-sm">@e.EventName</span>
+                                            @if (isToday)
+                                            {
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-white animate-pulse">TODAY</span>
+                                            }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(e.Description))
+                                        {
+                                            <p class="text-[11px] text-slate-500 max-w-sm truncate" title="@e.Description">@e.Description</p>
+                                        }
+                                    </div>
+                                </td>
+
+                                <!-- Gregorian Date -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <div class="space-y-0.5">
+                                        <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                                            <i class="bi bi-calendar-event text-emerald-600"></i>
+                                            <span>@e.EventDate.ToString("dd MMMM, yyyy")</span>
+                                        </div>
+                                        <span class="text-[10px] text-slate-400 font-medium">@e.EventDate.ToString("dddd")</span>
+                                    </div>
+                                </td>
+
+                                <!-- Hijri Date -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    @if (!string.IsNullOrEmpty(e.HijriDate))
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
+                                            <i class="bi bi-moon-stars text-emerald-600"></i> @e.HijriDate
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-slate-400 text-xs italic">N/A</span>
+                                    }
+                                </td>
+
+                                <!-- Event Type -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide border @typeClass">
+                                        @e.EventType
+                                    </span>
+                                </td>
+
+                                <!-- Status Toggle -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <form asp-action="EventToggle" asp-route-id="@e.Id" method="post" class="inline m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" title="Click to toggle visibility" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer @(e.IsActive ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                                            <span class="w-1.5 h-1.5 rounded-full @(e.IsActive ? "bg-emerald-600" : "bg-slate-400")"></span>
+                                            @(e.IsActive ? "Published" : "Hidden")
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="py-4 px-4 text-right whitespace-nowrap">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <!-- Edit Modal Trigger -->
+                                        <button type="button"
+                                                onclick="openEditModal(this)"
+                                                data-id="@e.Id"
+                                                data-name="@e.EventName"
+                                                data-date="@e.EventDate.ToString("yyyy-MM-dd")"
+                                                data-hijridate="@e.HijriDate"
+                                                data-type="@e.EventType"
+                                                data-desc="@e.Description"
+                                                data-order="@e.DisplayOrder"
+                                                data-isactive="@e.IsActive.ToString().ToLower()"
+                                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 flex items-center justify-center transition cursor-pointer"
+                                                title="Edit Event">
+                                            <i class="bi bi-pencil-square text-xs"></i>
+                                        </button>
+
+                                        <!-- Delete Form -->
+                                        <form asp-action="EventDelete" asp-route-id="@e.Id" method="post" class="m-0 inline" onsubmit="return confirm('Are you sure you want to delete \'@e.EventName\'?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center transition cursor-pointer" title="Delete Event">
+                                                <i class="bi bi-trash3 text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>
+
+<!-- ================= CREATE EVENT MODAL ================= -->
+<div id="createModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in duration-200">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Add Islamic Event</h3>
+                    <p class="text-[11px] text-slate-500">Record a holy date, milestone, or special night</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeCreateModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition cursor-pointer">
+                <i class="bi bi-x-lg text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form asp-action="EventCreate" method="post" class="p-6 space-y-4">
+            @Html.AntiForgeryToken()
+
+            <!-- Event Name -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Event Name <span class="text-red-500">*</span></label>
+                <input type="text" name="EventName" required placeholder="e.g. Shab-e-Barat, Eid-ul-Fitr, Ashura" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+            </div>
+
+            <!-- Gregorian Date & Type -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Gregorian Date <span class="text-red-500">*</span></label>
+                    <input type="date" name="EventDate" required value="@DateTime.Today.ToString("yyyy-MM-dd")" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Event Type <span class="text-red-500">*</span></label>
+                    <select name="EventType" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none bg-white">
+                        <option value="religious" selected>Religious</option>
+                        <option value="special">Special Night</option>
+                        <option value="festival">Festival / Eid</option>
+                        <option value="historical">Historical Event</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Hijri Date & Display Order -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Hijri Date Formatted</label>
+                    <input type="text" name="HijriDate" placeholder="e.g. 15 Shaban 1448h" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Display Order</label>
+                    <input type="number" name="DisplayOrder" value="0" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Description & Significance</label>
+                <textarea name="Description" rows="3" placeholder="Provide background, significance, recommended prayers or observances..." class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"></textarea>
+            </div>
+
+            <!-- Publish Checkbox -->
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" id="createIsActive" name="IsActive" value="true" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                <label for="createIsActive" class="text-xs font-semibold text-slate-700 cursor-pointer">Publish immediately (Active & visible on Islamic Calendar)</label>
+            </div>
+
+            <!-- Footer -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeCreateModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md shadow-emerald-600/20 transition inline-flex items-center gap-2 cursor-pointer">
+                    <i class="bi bi-check-lg"></i> Save Event
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= EDIT EVENT MODAL ================= -->
+<div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in duration-200">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                    <i class="bi bi-pencil-fill"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Edit Islamic Event</h3>
+                    <p class="text-[11px] text-slate-500">Update event information, dates, or significance</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition cursor-pointer">
+                <i class="bi bi-x-lg text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="editForm" method="post" class="p-6 space-y-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="editId" name="Id" />
+
+            <!-- Event Name -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Event Name <span class="text-red-500">*</span></label>
+                <input type="text" id="editEventName" name="EventName" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+            </div>
+
+            <!-- Gregorian Date & Type -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Gregorian Date <span class="text-red-500">*</span></label>
+                    <input type="date" id="editEventDate" name="EventDate" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Event Type <span class="text-red-500">*</span></label>
+                    <select id="editEventType" name="EventType" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none bg-white">
+                        <option value="religious">Religious</option>
+                        <option value="special">Special Night</option>
+                        <option value="festival">Festival / Eid</option>
+                        <option value="historical">Historical Event</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Hijri Date & Display Order -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Hijri Date Formatted</label>
+                    <input type="text" id="editHijriDate" name="HijriDate" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Display Order</label>
+                    <input type="number" id="editDisplayOrder" name="DisplayOrder" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Description & Significance</label>
+                <textarea id="editDescription" name="Description" rows="3" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none"></textarea>
+            </div>
+
+            <!-- Publish Checkbox -->
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" id="editIsActive" name="IsActive" value="true" class="w-4 h-4 text-purple-600 rounded border-slate-300 focus:ring-purple-500" />
+                <label for="editIsActive" class="text-xs font-semibold text-slate-700 cursor-pointer">Active & visible on Islamic Calendar</label>
+            </div>
+
+            <!-- Footer -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-black shadow-md shadow-purple-600/20 transition inline-flex items-center gap-2 cursor-pointer">
+                    <i class="bi bi-check-lg"></i> Update Event
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openCreateModal() {
+            document.getElementById('createModal').classList.remove('hidden');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.add('hidden');
+        }
+
+        function openEditModal(button) {
+            const id = button.getAttribute('data-id');
+            const form = document.getElementById('editForm');
+            form.action = `/Admin/EventEdit/${id}`;
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editEventName').value = button.getAttribute('data-name') || '';
+            document.getElementById('editEventDate').value = button.getAttribute('data-date') || '';
+            document.getElementById('editHijriDate').value = button.getAttribute('data-hijridate') || '';
+            document.getElementById('editEventType').value = button.getAttribute('data-type') || 'religious';
+            document.getElementById('editDescription').value = button.getAttribute('data-desc') || '';
+            document.getElementById('editDisplayOrder').value = button.getAttribute('data-order') || '0';
+
+            const isActive = button.getAttribute('data-isactive') === 'true';
+            document.getElementById('editIsActive').checked = isActive;
+
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        // Close modals on clicking backdrop
+        window.addEventListener('click', function(e) {
+            const createModal = document.getElementById('createModal');
+            const editModal = document.getElementById('editModal');
+            if (e.target === createModal) closeCreateModal();
+            if (e.target === editModal) closeEditModal();
+        });
+
+        // Close on ESC
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCreateModal();
+                closeEditModal();
+            }
+        });
+    </script>
+}
