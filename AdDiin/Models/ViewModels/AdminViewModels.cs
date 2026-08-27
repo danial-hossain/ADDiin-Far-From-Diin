@@ -43,9 +43,14 @@ namespace AdDiin.Models.ViewModels
     public class AdminUsersViewModel
     {
         public List<ApplicationUser> Users { get; set; } = new();
+        public Dictionary<int, IList<string>> UserRoles { get; set; } = new();
         public string? SearchQuery { get; set; }
         public string? RoleFilter { get; set; }
         public string? StatusFilter { get; set; }
+        public int TotalCount { get; set; }
+        public int ActiveCount { get; set; }
+        public int InactiveCount { get; set; }
+        public int AdminCount { get; set; }
     }
 
     public class AdminRegistrationsViewModel
