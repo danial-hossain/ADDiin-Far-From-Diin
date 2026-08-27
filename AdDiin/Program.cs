@@ -53,6 +53,7 @@ builder.Services.AddScoped<IDiinAIService, DiinAIService>();
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMyDeenService, MyDeenService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddSingleton<IAboutService, AboutService>();
 
 var app = builder.Build();
