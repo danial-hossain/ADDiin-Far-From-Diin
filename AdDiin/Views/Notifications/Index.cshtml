@@ -29,170 +29,103 @@
         </div>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        
-        <!-- Notifications Feed (2 Cols) -->
-        <div class="lg:col-span-2 space-y-6">
-            
-            <!-- Category Filter Tabs -->
-            <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-200 flex flex-wrap gap-1.5">
-                <a href="/notifications?category=all" class="px-4 py-2 text-xs font-bold rounded-xl transition @(Model.SelectedCategory == "all" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-100")">
-                    All Alerts
-                </a>
-                <a href="/notifications?category=prayer" class="px-4 py-2 text-xs font-bold rounded-xl transition @(Model.SelectedCategory == "prayer" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-100")">
-                    Prayer Times
-                </a>
-                <a href="/notifications?category=fasting" class="px-4 py-2 text-xs font-bold rounded-xl transition @(Model.SelectedCategory == "fasting" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-100")">
-                    Sunnah Fasting
-                </a>
-                <a href="/notifications?category=event" class="px-4 py-2 text-xs font-bold rounded-xl transition @(Model.SelectedCategory == "event" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-100")">
-                    Islamic Events
-                </a>
-                <a href="/notifications?category=activity" class="px-4 py-2 text-xs font-bold rounded-xl transition @(Model.SelectedCategory == "activity" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-100")">
-                    Programs
-                </a>
-            </div>
-
-            <!-- List of Notifications -->
-            <div class="space-y-3">
-                @if (!Model.Notifications.Any())
-                {
-                    <div class="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
-                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl">
-                            <i class="bi bi-bell-slash"></i>
-                        </div>
-                        <h4 class="text-base font-bold text-slate-800">No Notifications in this Category</h4>
-                        <p class="text-xs text-slate-500 max-w-sm mx-auto">
-                            You're all caught up! Islamic events and daily reminders will appear here.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    @foreach (var notif in Model.Notifications)
-                    {
-                        var iconClass = notif.Category switch
-                        {
-                            "prayer" => "bi-clock-fill text-emerald-600 bg-emerald-50 border-emerald-200",
-                            "fasting" => "bi-brightness-high-fill text-amber-600 bg-amber-50 border-amber-200",
-                            "event" => "bi-moon-stars-fill text-purple-600 bg-purple-50 border-purple-200",
-                            "activity" => "bi-calendar-event-fill text-blue-600 bg-blue-50 border-blue-200",
-                            _ => "bi-bell-fill text-slate-600 bg-slate-100 border-slate-200"
-                        };
-
-                        var iconName = notif.Category switch
-                        {
-                            "prayer" => "bi-clock-fill",
-                            "fasting" => "bi-brightness-high-fill",
-                            "event" => "bi-moon-stars-fill",
-                            "activity" => "bi-calendar-event-fill",
-                            _ => "bi-bell-fill"
-                        };
-
-                        <div id="notif-card-@notif.Id" class="bg-white rounded-2xl p-4 sm:p-5 border @(notif.IsRead ? "border-slate-200/80 bg-white" : "border-emerald-300 bg-emerald-50/20 shadow-xs") flex items-start justify-between gap-4 transition-all">
-                            <div class="flex items-start gap-3.5">
-                                <div class="w-10 h-10 rounded-xl border flex items-center justify-center text-lg shrink-0 @iconClass">
-                                    <i class="bi @iconName"></i>
-                                </div>
-                                <div class="space-y-1">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <h4 class="text-sm font-extrabold text-slate-900">@notif.Title</h4>
-                                        <span class="px-2 py-0.5 text-[10px] font-bold rounded-md uppercase bg-slate-100 text-slate-600 border border-slate-200">
-                                            @notif.Category
-                                        </span>
-                                        @if (!notif.IsRead)
-                                        {
-                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        }
-                                    </div>
-                                    <p class="text-xs text-slate-600 leading-relaxed">@notif.Message</p>
-                                    <div class="flex items-center gap-3 pt-1 text-[11px] text-slate-400">
-                                        <span><i class="bi bi-clock me-1"></i>@notif.CreatedAt.ToString("MMM dd, yyyy • hh:mm tt")</span>
-                                        @if (!string.IsNullOrEmpty(notif.LinkUrl))
-                                        {
-                                            <a href="@notif.LinkUrl" class="font-bold text-emerald-700 hover:text-emerald-800">View Details &rarr;</a>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-
-                            @if (!notif.IsRead)
-                            {
-                                <button type="button" onclick="markAsRead(@notif.Id)" class="shrink-0 p-1.5 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="Mark as Read">
-                                    <i class="bi bi-check-lg text-base"></i>
-                                </button>
-                            }
-                        </div>
-                    }
-                }
-            </div>
-        </div>
-
-        <!-- Notification Preferences Sidebar (1 Col) -->
-        <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200 space-y-6">
-            <div>
-                <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="bi bi-sliders text-emerald-600"></i> Reminder Settings
-                </h3>
-                <p class="text-xs text-slate-500 mt-1">Configure your automated daily notifications</p>
-            </div>
-
-            <form asp-action="UpdatePreferences" method="post" class="space-y-4">
-                @Html.AntiForgeryToken()
-
-                <div class="space-y-3">
-                    <label class="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Prayer Times Alerts</p>
-                            <p class="text-[11px] text-slate-500">Reminders for daily 5 salah & Azan times</p>
-                        </div>
-                        <input type="checkbox" name="PrayerReminder" value="true" @(Model.Settings.PrayerReminder ? "checked" : "") class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" />
-                    </label>
-
-                    <label class="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Islamic Calendar & Events</p>
-                            <p class="text-[11px] text-slate-500">Holy nights, Eid, and Sunnah fasting days</p>
-                        </div>
-                        <input type="checkbox" name="CalendarReminder" value="true" @(Model.Settings.CalendarReminder ? "checked" : "") class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" />
-                    </label>
-
-                    <label class="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Quran Reading Habit</p>
-                            <p class="text-[11px] text-slate-500">Daily Quran reading target reminders</p>
-                        </div>
-                        <input type="checkbox" name="QuranReminder" value="true" @(Model.Settings.QuranReminder ? "checked" : "") class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" />
-                    </label>
-
-                    <label class="flex items-center justify-between p-3 rounded-2xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
-                        <div>
-                            <p class="text-xs font-bold text-slate-800">Adhkar & Dhikr Habits</p>
-                            <p class="text-[11px] text-slate-500">Morning/Evening Adhkar and Tasbih targets</p>
-                        </div>
-                        <input type="checkbox" name="AdhkarReminder" value="true" @(Model.Settings.AdhkarReminder ? "checked" : "") class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" />
-                    </label>
+    <!-- Main Feed (Single Centered Column like Facebook) -->
+    <div class="max-w-4xl mx-auto space-y-4">
+        @if (!Model.Notifications.Any())
+        {
+            <div class="bg-white rounded-3xl p-16 text-center border border-slate-200 space-y-3">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl">
+                    <i class="bi bi-bell-slash"></i>
                 </div>
+                <h4 class="text-base font-bold text-slate-800">No Notifications</h4>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                    You're all caught up! When new Islamic events, donation receipts, or program updates happen, they will appear here.
+                </p>
+            </div>
+        }
+        else
+        {
+            @foreach (var notif in Model.Notifications)
+            {
+                var iconClass = notif.Category switch
+                {
+                    "prayer" => "bi-clock-fill text-emerald-600 bg-emerald-50 border-emerald-200",
+                    "fasting" => "bi-brightness-high-fill text-amber-600 bg-amber-50 border-amber-200",
+                    "event" => "bi-moon-stars-fill text-purple-600 bg-purple-50 border-purple-200",
+                    "activity" => "bi-calendar-event-fill text-blue-600 bg-blue-50 border-blue-200",
+                    "donation" => "bi-heart-fill text-rose-600 bg-rose-50 border-rose-200",
+                    _ => "bi-bell-fill text-emerald-600 bg-emerald-50 border-emerald-200"
+                };
 
-                <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition">
-                    Save Reminder Preferences
-                </button>
-            </form>
-        </div>
+                var iconName = notif.Category switch
+                {
+                    "prayer" => "bi-clock-fill",
+                    "fasting" => "bi-brightness-high-fill",
+                    "event" => "bi-moon-stars-fill",
+                    "activity" => "bi-calendar-event-fill",
+                    "donation" => "bi-heart-fill",
+                    _ => "bi-bell-fill"
+                };
 
+                <div id="notif-card-@notif.Id" class="bg-white rounded-2xl p-4 sm:p-5 border @(notif.IsRead ? "border-slate-200/80 bg-white" : "border-emerald-300 bg-emerald-50/20 shadow-xs") flex items-start justify-between gap-4 transition-all hover:border-slate-300">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-2xl border flex items-center justify-center text-lg shrink-0 @iconClass">
+                            <i class="bi @iconName"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h4 class="text-sm font-extrabold text-slate-900">@notif.Title</h4>
+                                @if (!notif.IsRead)
+                                {
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span class="px-2 py-0.5 text-[9px] font-black rounded-full uppercase bg-emerald-100 text-emerald-800">New</span>
+                                }
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">@notif.Message</p>
+                            <div class="flex items-center gap-3 pt-1 text-[11px] text-slate-400">
+                                <span><i class="bi bi-clock me-1"></i>@notif.CreatedAt.ToString("MMM dd, yyyy • hh:mm tt")</span>
+                                @if (!string.IsNullOrEmpty(notif.LinkUrl))
+                                {
+                                    <a href="@notif.LinkUrl" class="font-bold text-emerald-700 hover:text-emerald-800">View &rarr;</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1 shrink-0">
+                        @if (!notif.IsRead)
+                        {
+                            <button type="button" onclick="markAsRead(@notif.Id)" class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-emerald-700 rounded-xl hover:bg-emerald-50 border border-slate-200 transition flex items-center gap-1">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Mark read</span>
+                            </button>
+                        }
+                        <button type="button" onclick="deleteNotification(@notif.Id)" class="p-1.5 text-slate-400 hover:text-red-600 rounded-xl hover:bg-red-50 transition" title="Delete notification">
+                            <i class="bi bi-trash3 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        }
     </div>
 </div>
+
+<form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
 
 @section Scripts {
 <script>
     async function markAsRead(id) {
         try {
+            const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value || '';
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('__RequestVerificationToken', token);
+
             const res = await fetch(`/Notifications/MarkRead?id=${id}`, {
                 method: 'POST',
-                headers: {
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                }
+                body: formData
             });
             const data = await res.json();
             if (data.success) {
@@ -202,8 +135,54 @@
                     card.classList.add('border-slate-200/80');
                     const dot = card.querySelector('.bg-emerald-500');
                     if (dot) dot.remove();
+                    const newBadge = card.querySelector('.bg-emerald-100');
+                    if (newBadge) newBadge.remove();
                     const btn = card.querySelector('button');
                     if (btn) btn.remove();
+                }
+
+                // Update navbar bell badge
+                const badge = document.getElementById('navNotifBadge');
+                if (badge) {
+                    if (data.unreadCount > 0) {
+                        badge.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function deleteNotification(id) {
+        try {
+            const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value || '';
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('__RequestVerificationToken', token);
+
+            const res = await fetch(`/Notifications/Delete?id=${id}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                const card = document.getElementById(`notif-card-${id}`);
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => card.remove(), 250);
+                }
+
+                const badge = document.getElementById('navNotifBadge');
+                if (badge) {
+                    if (data.unreadCount > 0) {
+                        badge.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+                    } else {
+                        badge.classList.add('hidden');
+                    }
                 }
             }
         } catch (e) {

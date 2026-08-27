@@ -49,9 +49,9 @@
                     <p class="text-[10px] text-slate-500 uppercase font-bold">Days Left</p>
                 </div>
                 <div class="h-8 w-px bg-slate-200"></div>
-                <a href="/notifications" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition">
-                    Set Reminder
-                </a>
+                <button type="button" onclick="setOccasionReminder(@nextOccasion.Id, this)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5">
+                    <i class="bi bi-bell-fill"></i> <span>Set Reminder</span>
+                </button>
             </div>
         </div>
     }
@@ -114,12 +114,90 @@
                         </div>
                     </div>
 
-                    <div class="text-left sm:text-right text-xs">
-                        <p class="font-extrabold text-slate-900">@ev.HijriDate</p>
-                        <p class="text-slate-500">@ev.EventDate.ToString("MMMM dd, yyyy")</p>
+                    <div class="flex items-center gap-4">
+                        <div class="text-left sm:text-right text-xs">
+                            <p class="font-extrabold text-slate-900">@ev.HijriDate</p>
+                            <p class="text-slate-500">@ev.EventDate.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                        <button type="button" onclick="setOccasionReminder(@ev.Id, this)" class="px-3 py-2 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition flex items-center gap-1.5 shrink-0">
+                            <i class="bi bi-bell"></i> <span>Remind Me</span>
+                        </button>
                     </div>
                 </div>
             }
         </div>
     </div>
 </div>
+
+<form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+<script>
+    async function setOccasionReminder(eventId, btn) {
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Setting...';
+
+        try {
+            const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value || '';
+            const formData = new FormData();
+            formData.append('eventId', eventId);
+            formData.append('__RequestVerificationToken', token);
+
+            const res = await fetch('/IslamicCalendar/SetEventReminder', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                btn.className = 'px-3.5 py-2 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl border border-emerald-300 transition flex items-center gap-1.5 shrink-0';
+                btn.innerHTML = '<i class="bi bi-check2-circle"></i> <span>Reminder Active</span>';
+                
+                // Show floating toast alert
+                showQuickAlert(data.message, 'success');
+
+                // Refresh unread count badge in navbar if exists
+                fetch('/Notifications/GetUnreadCount')
+                    .then(r => r.json())
+                    .then(countData => {
+                        const badge = document.getElementById('navNotifBadge');
+                        if (badge && countData.unreadCount > 0) {
+                            badge.className = 'absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center animate-pulse';
+                            badge.textContent = countData.unreadCount > 9 ? '9+' : countData.unreadCount;
+                            badge.classList.remove('hidden');
+                        }
+                    }).catch(() => {});
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+                if (data.requireLogin) {
+                    window.location.href = '/user-login';
+                } else {
+                    showQuickAlert(data.message || 'Could not set reminder', 'error');
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+            showQuickAlert('An error occurred while setting reminder.', 'error');
+        }
+    }
+
+    function showQuickAlert(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-6 right-6 z-50 px-5 py-3 rounded-2xl shadow-xl border text-sm font-bold flex items-center gap-2.5 transition-all transform duration-300 ${
+            type === 'success' ? 'bg-slate-900 text-white border-emerald-500' : 'bg-red-900 text-white border-red-500'
+        }`;
+        toast.innerHTML = `<i class="bi ${type === 'success' ? 'bi-check-circle-fill text-emerald-400' : 'bi-exclamation-circle-fill text-red-400'} text-lg"></i> <span>${message}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+</script>
+}

@@ -212,15 +212,20 @@
                                     }
                                 </td>
 
-                                <!-- Status Toggle -->
+                                <!-- Status -->
                                 <td class="py-4 px-4 whitespace-nowrap">
-                                    <form asp-action="ToggleUser" asp-route-id="@u.Id" method="post" class="inline m-0">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" title="Click to toggle account active status" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer @(u.IsActive ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" : "bg-rose-100 text-rose-800 hover:bg-rose-200")">
-                                            <span class="w-1.5 h-1.5 rounded-full @(u.IsActive ? "bg-emerald-600" : "bg-rose-600")"></span>
-                                            @(u.IsActive ? "Active" : "Blocked")
-                                        </button>
-                                    </form>
+                                    @if (u.IsActive)
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Blocked
+                                        </span>
+                                    }
                                 </td>
 
                                 <!-- Registration Date -->
@@ -236,7 +241,24 @@
 
                                 <!-- Actions -->
                                 <td class="py-4 px-4 text-right whitespace-nowrap">
-                                    <div class="flex items-center justify-end gap-1.5">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <!-- Explicit Block / Unblock Button -->
+                                        <form asp-action="ToggleUser" asp-route-id="@u.Id" method="post" class="m-0 inline" onsubmit="return confirm('@(u.IsActive ? $"Are you sure you want to BLOCK {u.FullName}? They will not be able to log in." : $"Unblock and activate {u.FullName}?")');">
+                                            @Html.AntiForgeryToken()
+                                            @if (u.IsActive)
+                                            {
+                                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-bold transition cursor-pointer shadow-2xs" title="Block User Access">
+                                                    <i class="bi bi-slash-circle text-amber-600"></i> Block
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition cursor-pointer shadow-2xs" title="Unblock / Activate User">
+                                                    <i class="bi bi-check-circle-fill text-emerald-600"></i> Unblock
+                                                </button>
+                                            }
+                                        </form>
+
                                         <!-- Edit Role Modal Trigger -->
                                         <button type="button"
                                                 onclick="openRoleModal(this)"
@@ -244,7 +266,7 @@
                                                 data-name="@u.FullName"
                                                 data-email="@u.Email"
                                                 data-role="@(isAdmin ? "Admin" : "Member")"
-                                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 flex items-center justify-center transition cursor-pointer"
+                                                class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 border border-slate-200 flex items-center justify-center transition cursor-pointer"
                                                 title="Change Role & Access">
                                             <i class="bi bi-shield-shaded text-xs"></i>
                                         </button>
@@ -252,7 +274,7 @@
                                         <!-- Delete Form -->
                                         <form asp-action="DeleteUser" asp-route-id="@u.Id" method="post" class="m-0 inline" onsubmit="return confirm('Are you sure you want to permanently delete \'@u.FullName\'?');">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 flex items-center justify-center transition cursor-pointer" title="Delete User">
+                                            <button type="submit" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 flex items-center justify-center transition cursor-pointer" title="Delete User">
                                                 <i class="bi bi-trash3 text-xs"></i>
                                             </button>
                                         </form>
