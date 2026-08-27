@@ -59,6 +59,18 @@ namespace AdDiin.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var success = await _notificationService.DeleteNotificationAsync(id, user.Id);
+            var unreadCount = await _notificationService.GetUnreadCountAsync(user.Id);
+
+            return Json(new { success, unreadCount });
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAllRead()
         {
@@ -87,12 +99,18 @@ namespace AdDiin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdatePreferences(UserDeenSettings model)
+        public async Task<IActionResult> UpdatePreferences(bool prayerReminder, bool calendarReminder, bool quranReminder, bool adhkarReminder)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            await _myDeenService.UpdateSettingsAsync(user.Id, model);
+            var settings = await _myDeenService.GetOrCreateSettingsAsync(user.Id);
+            settings.PrayerReminder = prayerReminder;
+            settings.CalendarReminder = calendarReminder;
+            settings.QuranReminder = quranReminder;
+            settings.AdhkarReminder = adhkarReminder;
+
+            await _myDeenService.UpdateSettingsAsync(user.Id, settings);
             TempData["SuccessMessage"] = "Notification preferences updated successfully!";
             return RedirectToAction(nameof(Index));
         }
