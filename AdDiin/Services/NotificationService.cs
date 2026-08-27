@@ -1,4 +1,4 @@
-﻿using AdDiin.Data;
+using AdDiin.Data;
 using AdDiin.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +12,7 @@ namespace AdDiin.Services
         Task<bool> MarkAsReadAsync(int notificationId, int userId);
         Task<bool> MarkAllAsReadAsync(int userId);
         Task SeedDefaultRemindersAsync(int userId);
+        Task<bool> DeleteNotificationAsync(int notificationId, int userId);
     }
 
     public class NotificationService : INotificationService
@@ -25,6 +26,18 @@ namespace AdDiin.Services
 
         public async Task<UserNotification> CreateNotificationAsync(int userId, string title, string message, string category = "general", string? linkUrl = null)
         {
+            // Avoid creating identical duplicate unread notifications
+            var existing = await _context.UserNotifications
+                .FirstOrDefaultAsync(n => n.UserId == userId && n.Title == title && !n.IsRead);
+
+            if (existing != null)
+            {
+                existing.CreatedAt = DateTime.UtcNow;
+                existing.Message = message;
+                await _context.SaveChangesAsync();
+                return existing;
+            }
+
             var notification = new UserNotification
             {
                 UserId = userId,
@@ -134,6 +147,18 @@ namespace AdDiin.Services
                 _context.UserNotifications.AddRange(defaults);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> DeleteNotificationAsync(int notificationId, int userId)
+        {
+            var item = await _context.UserNotifications
+                .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+
+            if (item == null) return false;
+
+            _context.UserNotifications.Remove(item);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

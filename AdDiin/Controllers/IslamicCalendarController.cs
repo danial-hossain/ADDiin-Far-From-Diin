@@ -54,5 +54,27 @@ namespace AdDiin.Controllers
 
             return View(vm);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetEventReminder([FromServices] INotificationService notificationService, [FromServices] Microsoft.AspNetCore.Identity.UserManager<AdDiin.Models.Entities.ApplicationUser> userManager, int eventId)
+        {
+            if (User.Identity?.IsAuthenticated != true)
+            {
+                return Json(new { success = false, message = "Please login first to set reminders.", requireLogin = true });
+            }
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null) return Json(new { success = false, message = "User not found." });
+
+            var ev = await _eventService.GetByIdAsync(eventId);
+            if (ev == null) return Json(new { success = false, message = "Islamic event not found." });
+
+            var title = $"Reminder: {ev.EventName}";
+            var message = $"Upcoming Islamic occasion on {ev.EventDate:MMMM dd, yyyy} ({ev.HijriDate}). {ev.Description}";
+
+            await notificationService.CreateNotificationAsync(user.Id, title, message, "event", "/islamic-calendar");
+
+            return Json(new { success = true, message = $"Reminder set for {ev.EventName}!" });
+        }
     }
 }
