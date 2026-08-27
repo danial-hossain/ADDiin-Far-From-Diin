@@ -13,6 +13,7 @@ namespace AdDiin.Services
         Task<Activity> CreateAsync(Activity activity);
         Task<Activity?> UpdateAsync(int id, Activity updated);
         Task<bool> DeleteAsync(int id);
+        Task<bool> ToggleActiveAsync(int id);
 
         // Program Registrations
         Task<ProgramRegistration> RegisterForProgramAsync(ProgramRegistrationInputModel model, int? userId);
@@ -89,6 +90,7 @@ namespace AdDiin.Services
             item.Title = updated.Title;
             item.Description = updated.Description;
             if (!string.IsNullOrEmpty(updated.ImageUrl)) item.ImageUrl = updated.ImageUrl;
+            if (!string.IsNullOrEmpty(updated.ImagePublicId)) item.ImagePublicId = updated.ImagePublicId;
             item.Category = updated.Category;
             item.Location = updated.Location;
             item.Organizer = updated.Organizer;
@@ -111,6 +113,17 @@ namespace AdDiin.Services
             if (item == null) return false;
 
             _context.Activities.Remove(item);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ToggleActiveAsync(int id)
+        {
+            var item = await _context.Activities.FindAsync(id);
+            if (item == null) return false;
+
+            item.IsActive = !item.IsActive;
+            item.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }
