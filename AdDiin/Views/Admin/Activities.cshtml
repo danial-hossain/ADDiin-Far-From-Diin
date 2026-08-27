@@ -1,113 +1,635 @@
-﻿@model List<AdDiin.Models.Entities.Activity>
+@model List<AdDiin.Models.Entities.Activity>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Activities & Initiatives Management";
+    ViewData["Title"] = "Activities & Programs Management";
+    var currentSearch = ViewBag.Search as string ?? "";
+    var currentCategory = ViewBag.Category as string ?? "";
+    var totalActivities = Model.Count;
+    var activeActivities = Model.Count(a => a.IsActive);
+    var upcomingCount = Model.Count(a => a.ProgramDate.HasValue && a.ProgramDate.Value >= DateTime.Today);
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Mosque Activities List</h5>
-    <button class="btn btn-emerald btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createActivityModal">
-        <i class="bi bi-plus-lg me-1"></i> Add Activity
-    </button>
-</div>
-
-<div class="card card-custom p-4 border-0 bg-white shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 small">
-            <thead class="table-light">
-                <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Order</th>
-                    <th>Status</th>
-                    <th>Image</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var a in Model)
-                {
-                    <tr>
-                        <td>
-                            <div class="fw-bold">@a.Title</div>
-                            <small class="text-muted text-truncate d-inline-block" style="max-width: 250px;">@a.Description</small>
-                        </td>
-                        <td><span class="badge bg-light text-dark border text-uppercase">@a.Category</span></td>
-                        <td>@a.DisplayOrder</td>
-                        <td>
-                            <span class="badge @(a.IsActive ? "bg-success bg-opacity-10 text-success" : "bg-secondary")">
-                                @(a.IsActive ? "Active" : "Hidden")
-                            </span>
-                        </td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(a.ImageUrl))
-                            {
-                                <img src="@a.ImageUrl" class="rounded" style="width: 40px; height: 30px; object-fit: cover;" />
-                            }
-                            else
-                            {
-                                <span class="text-muted">None</span>
-                            }
-                        </td>
-                        <td class="text-end">
-                            <form asp-action="ActivityDelete" asp-route-id="@a.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this activity?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Add Activity Modal -->
-<div class="modal fade" id="createActivityModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content rounded-4 border-0">
-            <form asp-action="ActivityCreate" method="post">
-                @Html.AntiForgeryToken()
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add New Activity</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body space-y-3">
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Activity Title</label>
-                        <input name="Title" class="form-control" required />
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Category</label>
-                            <select name="Category" class="form-select">
-                                <option value="education">Education</option>
-                                <option value="charity">Charity</option>
-                                <option value="youth">Youth</option>
-                                <option value="community">Community</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold">Display Order</label>
-                            <input name="DisplayOrder" type="number" class="form-control" value="0" />
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Image URL (Optional)</label>
-                        <input name="ImageUrl" class="form-control" placeholder="https://..." />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Description</label>
-                        <textarea name="Description" rows="4" class="form-control" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-emerald">Save Activity</button>
-                </div>
-            </form>
+<div class="space-y-6 pb-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-500/20">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">Activities & Programs</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Manage community events, lectures, seminars, and upload posters directly to Cloudinary</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="/activities" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">
+                <i class="bi bi-box-arrow-up-right"></i> View Live Page
+            </a>
+            <button type="button" onclick="openCreateModal()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-extrabold rounded-xl shadow-md shadow-emerald-600/25 transition">
+                <i class="bi bi-plus-circle-fill text-sm"></i> Add New Activity
+            </button>
         </div>
     </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Activities</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@totalActivities</h3>
+            </div>
+            <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-bold">
+                <i class="bi bi-collection"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Active & Published</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@activeActivities</h3>
+            </div>
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-bold">
+                <i class="bi bi-check-circle"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Upcoming Dates</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@upcomingCount</h3>
+            </div>
+            <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg font-bold">
+                <i class="bi bi-calendar-event"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Cloud Storage</p>
+                <h3 class="text-xs font-extrabold text-slate-700 mt-1">Cloudinary Connected</h3>
+                <span class="text-[10px] text-slate-400">Folder: ad-diin/activities</span>
+            </div>
+            <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg font-bold">
+                <i class="bi bi-cloud-arrow-up"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        <!-- Search -->
+        <form method="get" class="flex items-center gap-2 max-w-md w-full">
+            <input type="hidden" name="category" value="@currentCategory" />
+            <div class="relative flex-1">
+                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="search" value="@currentSearch" placeholder="Search by title, instructor, location..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition" />
+            </div>
+            @if (!string.IsNullOrEmpty(currentSearch))
+            {
+                <a href="/Admin/Activities?category=@currentCategory" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            }
+            <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">Filter</button>
+        </form>
+
+        <!-- Category Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1 text-xs">
+            <a href="/Admin/Activities?search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(string.IsNullOrEmpty(currentCategory) ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                All
+            </a>
+            <a href="/Admin/Activities?category=Islamic Seminar&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "Islamic Seminar" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Seminars
+            </a>
+            <a href="/Admin/Activities?category=Waz Mahfil&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "Waz Mahfil" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Waz Mahfil
+            </a>
+            <a href="/Admin/Activities?category=Quran Competition&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "Quran Competition" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Quran
+            </a>
+            <a href="/Admin/Activities?category=Islamic Workshop&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "Islamic Workshop" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Workshops
+            </a>
+            <a href="/Admin/Activities?category=Youth&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "Youth" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Youth
+            </a>
+            <a href="/Admin/Activities?category=Charity&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentCategory == "Charity" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Charity
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        @if (!Model.Any())
+        {
+            <div class="py-16 text-center">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl mb-3">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">No Activities Found</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">There are no activities matching your current filters. Add a new activity or reset your search filters.</p>
+                <button type="button" onclick="openCreateModal()" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-sm hover:bg-emerald-700 transition">
+                    <i class="bi bi-plus-lg"></i> Create First Activity
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="py-3.5 px-4">Program & Banner</th>
+                            <th class="py-3.5 px-4">Category</th>
+                            <th class="py-3.5 px-4">Schedule & Venue</th>
+                            <th class="py-3.5 px-4">Capacity</th>
+                            <th class="py-3.5 px-4">Order</th>
+                            <th class="py-3.5 px-4">Status</th>
+                            <th class="py-3.5 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        @foreach (var a in Model)
+                        {
+                            <tr class="hover:bg-slate-50/60 transition group">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative w-14 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-xs group-hover:shadow-sm transition">
+                                            @if (!string.IsNullOrEmpty(a.ImageUrl))
+                                            {
+                                                <img src="@a.ImageUrl" alt="@a.Title" class="w-full h-full object-cover" loading="lazy" />
+                                            }
+                                            else
+                                            {
+                                                <div class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
+                                                    <i class="bi bi-image text-lg"></i>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="min-w-0 max-w-xs md:max-w-sm">
+                                            <a href="/activities/@a.Id" target="_blank" class="font-bold text-slate-900 hover:text-emerald-600 transition block truncate text-xs">
+                                                @a.Title
+                                            </a>
+                                            <p class="text-[11px] text-slate-400 truncate mt-0.5" title="@a.Description">@a.Description</p>
+                                            @if (!string.IsNullOrEmpty(a.Instructor))
+                                            {
+                                                <span class="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded mt-1">
+                                                    <i class="bi bi-person-fill"></i> @a.Instructor
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide bg-slate-100 text-slate-700 border border-slate-200/60">
+                                        @a.Category
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="space-y-0.5">
+                                        <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                                            <i class="bi bi-calendar3 text-emerald-600 text-[11px]"></i>
+                                            <span>@(a.ProgramDate?.ToString("MMM dd, yyyy") ?? "Open Date")</span>
+                                        </div>
+                                        <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                                            <i class="bi bi-clock text-slate-400"></i>
+                                            <span>@(a.StartTime ?? "05:00 PM") - @(a.EndTime ?? "07:00 PM")</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(a.Location))
+                                        {
+                                            <div class="text-[10px] text-slate-400 flex items-center gap-1 truncate max-w-[180px]">
+                                                <i class="bi bi-geo-alt"></i> @a.Location
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
+                                        <i class="bi bi-people text-slate-400"></i> @(a.MaxCapacity?.ToString() ?? "Unlimited")
+                                    </span>
+                                </td>
+                                <td class="py-4 px-4 font-mono font-semibold text-slate-500">
+                                    #@a.DisplayOrder
+                                </td>
+                                <td class="py-4 px-4">
+                                    <form asp-action="ActivityToggle" asp-route-id="@a.Id" method="post" class="inline m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" title="Click to toggle visibility" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition @(a.IsActive ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                                            <span class="w-1.5 h-1.5 rounded-full @(a.IsActive ? "bg-emerald-600" : "bg-slate-400")"></span>
+                                            @(a.IsActive ? "Published" : "Draft / Hidden")
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <!-- Edit button with data attributes -->
+                                        <button type="button" 
+                                                onclick="openEditModal(this)"
+                                                data-id="@a.Id"
+                                                data-title="@a.Title"
+                                                data-description="@a.Description"
+                                                data-category="@a.Category"
+                                                data-location="@a.Location"
+                                                data-organizer="@a.Organizer"
+                                                data-instructor="@a.Instructor"
+                                                data-programdate="@(a.ProgramDate?.ToString("yyyy-MM-dd") ?? "")"
+                                                data-starttime="@a.StartTime"
+                                                data-endtime="@a.EndTime"
+                                                data-maxcapacity="@a.MaxCapacity"
+                                                data-displayorder="@a.DisplayOrder"
+                                                data-isactive="@a.IsActive.ToString().ToLower()"
+                                                data-imageurl="@a.ImageUrl"
+                                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 flex items-center justify-center transition"
+                                                title="Edit Activity">
+                                            <i class="bi bi-pencil-square text-xs"></i>
+                                        </button>
+
+                                        <!-- Delete button -->
+                                        <form asp-action="ActivityDelete" asp-route-id="@a.Id" method="post" class="m-0 inline" onsubmit="return confirm('Are you sure you want to delete \'@a.Title\'?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center transition" title="Delete Activity">
+                                                <i class="bi bi-trash3 text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>
+
+<!-- ================= CREATE ACTIVITY MODAL ================= -->
+<div id="createModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in duration-200">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Create New Activity</h3>
+                    <p class="text-[11px] text-slate-500">Upload banner directly to Cloudinary and publish program</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeCreateModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition">
+                <i class="bi bi-x-lg text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Modal Form -->
+        <form asp-action="ActivityCreate" method="post" enctype="multipart/form-data" class="p-6 space-y-4">
+            @Html.AntiForgeryToken()
+
+            <!-- Image Upload Dropzone (Direct PC to Cloudinary) -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Activity Banner Image <span class="text-emerald-600 font-normal">(Uploaded directly to Cloudinary)</span>
+                </label>
+                <div class="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/30 rounded-2xl p-4 transition text-center relative cursor-pointer group" onclick="document.getElementById('createImageInput').click()">
+                    <input type="file" id="createImageInput" name="imageFile" accept="image/*" class="hidden" onchange="previewImage(event, 'createPreview', 'createPlaceholder')" />
+                    
+                    <div id="createPlaceholder" class="space-y-2">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl shadow-xs group-hover:scale-105 transition">
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Click to choose image from PC</p>
+                            <p class="text-[11px] text-slate-400">PNG, JPG, WEBP or JPEG (Max 10MB)</p>
+                        </div>
+                    </div>
+
+                    <div id="createPreview" class="hidden">
+                        <img id="createPreviewImg" class="max-h-48 mx-auto rounded-xl shadow-sm border border-slate-200 object-cover" />
+                        <p class="text-[11px] text-emerald-600 font-bold mt-2"><i class="bi bi-check-circle-fill"></i> Selected - ready for Cloudinary upload</p>
+                    </div>
+                </div>
+                <div class="mt-1.5 flex items-center gap-2">
+                    <span class="text-[11px] text-slate-400">Or Image URL:</span>
+                    <input type="text" name="ImageUrl" placeholder="https://res.cloudinary.com/..." class="flex-1 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+                </div>
+            </div>
+
+            <!-- Title & Category -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Title <span class="text-red-500">*</span></label>
+                    <input type="text" name="Title" required placeholder="e.g. Youth Quran Recitation Competition" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Category <span class="text-red-500">*</span></label>
+                    <select name="Category" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none bg-white">
+                        <option value="Islamic Seminar">Islamic Seminar</option>
+                        <option value="Waz Mahfil">Waz Mahfil</option>
+                        <option value="Quran Competition">Quran Competition</option>
+                        <option value="Islamic Workshop">Islamic Workshop</option>
+                        <option value="Islamic Gathering">Islamic Gathering</option>
+                        <option value="Community Islamic Programs">Community Islamic Programs</option>
+                        <option value="Youth">Youth Initiative</option>
+                        <option value="Charity">Charity & Welfare</option>
+                        <option value="Education">Islamic Education</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Program Date & Times -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Program Date</label>
+                    <input type="date" name="ProgramDate" value="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Start Time</label>
+                    <input type="text" name="StartTime" value="05:00 PM" placeholder="05:00 PM" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">End Time</label>
+                    <input type="text" name="EndTime" value="07:00 PM" placeholder="07:00 PM" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Location & Instructor -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Location / Venue</label>
+                    <input type="text" name="Location" value="Central Islamic Center & Online" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Instructor / Key Speaker</label>
+                    <input type="text" name="Instructor" placeholder="e.g. Shaykh Ahmadullah" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Organizer, Capacity, Display Order -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Organizer</label>
+                    <input type="text" name="Organizer" value="ADDiin Community" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Max Capacity</label>
+                    <input type="number" name="MaxCapacity" value="150" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Display Order</label>
+                    <input type="number" name="DisplayOrder" value="0" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Description <span class="text-red-500">*</span></label>
+                <textarea name="Description" rows="3" required placeholder="Provide details about the activity, prerequisites, benefits, schedule..." class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"></textarea>
+            </div>
+
+            <!-- Active Checkbox -->
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" id="createIsActive" name="IsActive" value="true" checked class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                <label for="createIsActive" class="text-xs font-semibold text-slate-700 cursor-pointer">Publish immediately (Active & visible to public)</label>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeCreateModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md shadow-emerald-600/20 transition inline-flex items-center gap-2">
+                    <i class="bi bi-cloud-check"></i> Upload to Cloudinary & Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= EDIT ACTIVITY MODAL ================= -->
+<div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in duration-200">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                    <i class="bi bi-pencil-fill"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Edit Activity</h3>
+                    <p class="text-[11px] text-slate-500">Update activity details or replace image banner on Cloudinary</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition">
+                <i class="bi bi-x-lg text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Modal Form -->
+        <form id="editForm" method="post" enctype="multipart/form-data" class="p-6 space-y-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="editId" name="Id" />
+
+            <!-- Image Upload Dropzone -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Banner Image <span class="text-emerald-600 font-normal">(Upload new file from PC to update Cloudinary image)</span>
+                </label>
+                <div class="border-2 border-dashed border-slate-300 hover:border-purple-500 bg-slate-50 hover:bg-purple-50/30 rounded-2xl p-4 transition text-center relative cursor-pointer group" onclick="document.getElementById('editImageInput').click()">
+                    <input type="file" id="editImageInput" name="imageFile" accept="image/*" class="hidden" onchange="previewImage(event, 'editPreview', 'editPlaceholder')" />
+                    
+                    <div id="editPlaceholder" class="space-y-2">
+                        <img id="editCurrentImg" class="max-h-40 mx-auto rounded-xl shadow-xs border border-slate-200 object-cover mb-2 hidden" />
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mx-auto text-lg group-hover:scale-105 transition">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Click to replace image from PC</p>
+                            <p class="text-[11px] text-slate-400">Leave unchanged to keep current image</p>
+                        </div>
+                    </div>
+
+                    <div id="editPreview" class="hidden">
+                        <img id="editPreviewImg" class="max-h-48 mx-auto rounded-xl shadow-sm border border-slate-200 object-cover" />
+                        <p class="text-[11px] text-purple-600 font-bold mt-2"><i class="bi bi-check-circle-fill"></i> New Image Selected</p>
+                    </div>
+                </div>
+                <div class="mt-1.5 flex items-center gap-2">
+                    <span class="text-[11px] text-slate-400">Image URL:</span>
+                    <input type="text" id="editImageUrl" name="ImageUrl" placeholder="https://..." class="flex-1 px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:bg-white focus:outline-none focus:ring-1 focus:ring-purple-500" />
+                </div>
+            </div>
+
+            <!-- Title & Category -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Title <span class="text-red-500">*</span></label>
+                    <input type="text" id="editTitle" name="Title" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Category <span class="text-red-500">*</span></label>
+                    <select id="editCategory" name="Category" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none bg-white">
+                        <option value="Islamic Seminar">Islamic Seminar</option>
+                        <option value="Waz Mahfil">Waz Mahfil</option>
+                        <option value="Quran Competition">Quran Competition</option>
+                        <option value="Islamic Workshop">Islamic Workshop</option>
+                        <option value="Islamic Gathering">Islamic Gathering</option>
+                        <option value="Community Islamic Programs">Community Islamic Programs</option>
+                        <option value="Youth">Youth Initiative</option>
+                        <option value="Charity">Charity & Welfare</option>
+                        <option value="Education">Islamic Education</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Program Date & Times -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Program Date</label>
+                    <input type="date" id="editProgramDate" name="ProgramDate" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Start Time</label>
+                    <input type="text" id="editStartTime" name="StartTime" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">End Time</label>
+                    <input type="text" id="editEndTime" name="EndTime" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Location & Instructor -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Location / Venue</label>
+                    <input type="text" id="editLocation" name="Location" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Instructor / Key Speaker</label>
+                    <input type="text" id="editInstructor" name="Instructor" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Organizer, Capacity, Display Order -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Organizer</label>
+                    <input type="text" id="editOrganizer" name="Organizer" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Max Capacity</label>
+                    <input type="number" id="editMaxCapacity" name="MaxCapacity" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Display Order</label>
+                    <input type="number" id="editDisplayOrder" name="DisplayOrder" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none" />
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Description <span class="text-red-500">*</span></label>
+                <textarea id="editDescription" name="Description" rows="3" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none"></textarea>
+            </div>
+
+            <!-- Active Checkbox -->
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" id="editIsActive" name="IsActive" value="true" class="w-4 h-4 text-purple-600 rounded border-slate-300 focus:ring-purple-500" />
+                <label for="editIsActive" class="text-xs font-semibold text-slate-700 cursor-pointer">Active & visible to public</label>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-black shadow-md shadow-purple-600/20 transition inline-flex items-center gap-2">
+                    <i class="bi bi-check-lg"></i> Update Activity
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openCreateModal() {
+            document.getElementById('createModal').classList.remove('hidden');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.add('hidden');
+        }
+
+        function openEditModal(button) {
+            const id = button.getAttribute('data-id');
+            const form = document.getElementById('editForm');
+            form.action = `/Admin/ActivityEdit/${id}`;
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editTitle').value = button.getAttribute('data-title') || '';
+            document.getElementById('editDescription').value = button.getAttribute('data-description') || '';
+            document.getElementById('editCategory').value = button.getAttribute('data-category') || 'Islamic Seminar';
+            document.getElementById('editLocation').value = button.getAttribute('data-location') || '';
+            document.getElementById('editOrganizer').value = button.getAttribute('data-organizer') || '';
+            document.getElementById('editInstructor').value = button.getAttribute('data-instructor') || '';
+            document.getElementById('editProgramDate').value = button.getAttribute('data-programdate') || '';
+            document.getElementById('editStartTime').value = button.getAttribute('data-starttime') || '';
+            document.getElementById('editEndTime').value = button.getAttribute('data-endtime') || '';
+            document.getElementById('editMaxCapacity').value = button.getAttribute('data-maxcapacity') || '150';
+            document.getElementById('editDisplayOrder').value = button.getAttribute('data-displayorder') || '0';
+            document.getElementById('editImageUrl').value = button.getAttribute('data-imageurl') || '';
+
+            const isActive = button.getAttribute('data-isactive') === 'true';
+            document.getElementById('editIsActive').checked = isActive;
+
+            const currentImageUrl = button.getAttribute('data-imageurl');
+            const currentImgEl = document.getElementById('editCurrentImg');
+            if (currentImageUrl && currentImageUrl.trim() !== '') {
+                currentImgEl.src = currentImageUrl;
+                currentImgEl.classList.remove('hidden');
+            } else {
+                currentImgEl.classList.add('hidden');
+            }
+
+            // Reset file picker preview
+            document.getElementById('editPreview').classList.add('hidden');
+            document.getElementById('editPlaceholder').classList.remove('hidden');
+
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        function previewImage(event, previewContainerId, placeholderId) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById(previewContainerId);
+                    const previewImg = previewContainer.querySelector('img');
+                    const placeholder = document.getElementById(placeholderId);
+
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                    if (placeholder) placeholder.classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Close modals on clicking backdrop
+        window.addEventListener('click', function(e) {
+            const createModal = document.getElementById('createModal');
+            const editModal = document.getElementById('editModal');
+            if (e.target === createModal) closeCreateModal();
+            if (e.target === editModal) closeEditModal();
+        });
+
+        // Close on ESC
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCreateModal();
+                closeEditModal();
+            }
+        });
+    </script>
+}
