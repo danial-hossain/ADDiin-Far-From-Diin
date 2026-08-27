@@ -1,89 +1,262 @@
 @model AdDiin.Models.ViewModels.DonationInitiateViewModel
 @{
     ViewData["Title"] = "Verified Charity & Donations | ADDiin";
+    var selectedCat = Model.Category?.ToLower() ?? "general";
 }
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-    <div class="bg-gradient-to-r from-emerald-950 via-teal-900 to-slate-900 rounded-3xl p-8 sm:p-10 text-white shadow-xl text-center space-y-3">
-        <span class="px-3.5 py-1 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold rounded-full uppercase tracking-wider">
-            Verified Humanitarian Giving
-        </span>
-        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Channel Your Sadaqah & Zakat</h1>
-        <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
-            100% transparent digital giving. Automatic digital receipt generated instantly with transaction verification.
-        </p>
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- Hero Banner -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-2xl border border-emerald-800/30">
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 space-y-4 text-center max-w-2xl mx-auto">
+            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-extrabold rounded-full uppercase tracking-wider">
+                <i class="bi bi-shield-check text-sm"></i> 100% Verified Islamic Giving
+            </span>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+                Channel Your <span class="text-emerald-400">Zakat & Sadaqah</span>
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                Empower vulnerable communities across Bangladesh. Instant official digital receipts with automated SSLCommerz secured transactions.
+            </p>
+        </div>
     </div>
 
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
-        <form asp-controller="Donate" asp-action="ProcessDonation" method="post" class="space-y-5">
+    <!-- Main Donation Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-200 space-y-8">
+        <form asp-controller="Donate" asp-action="Initiate" method="post" id="donationForm" class="space-y-8">
             @Html.AntiForgeryToken()
-            
-            <!-- Category Selection -->
-            <div>
-                <label class="text-xs font-bold text-slate-700 uppercase">Select Charity Cause</label>
-                <select name="Category" class="mt-1 w-full text-xs font-bold bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-3">
-                    <option value="zakat" selected="@(Model.Category == "zakat")">Zakat Fund (Destitute & Debt Relief)</option>
-                    <option value="orphan" selected="@(Model.Category == "orphan")">Orphan Care & Student Sponsorship</option>
-                    <option value="sitarto" selected="@(Model.Category == "sitarto")">Winter Warmth & Blanket Distribution</option>
-                    <option value="iftar" selected="@(Model.Category == "iftar")">Ramadan Food Packs & Iftar</option>
-                    <option value="durjog" selected="@(Model.Category == "durjog")">Emergency Disaster & Flood Relief</option>
-                    <option value="general" selected="@(Model.Category == "general")">General Sadaqah & Islamic Education</option>
-                </select>
+            <input type="hidden" name="Category" id="selectedCategoryInput" value="@selectedCat" />
+
+            <!-- Category Cards Selection -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="bi bi-grid-fill text-emerald-600"></i> Step 1: Choose Donation Category
+                    </label>
+                    <span class="text-[11px] text-slate-400 font-semibold" id="categoryCountLabel">10 Causes Available</span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3" id="categoryGrid">
+                    <!-- Zakat -->
+                    <button type="button" onclick="selectCategory('zakat')" data-cat="zakat" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "zakat" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Zakat Fund</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">জাকাত ও ঋণমুক্তি</p>
+                        </div>
+                    </button>
+
+                    <!-- Orphan -->
+                    <button type="button" onclick="selectCategory('orphan')" data-cat="orphan" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "orphan" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Orphan Care</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">এতিম প্রতিপালন</p>
+                        </div>
+                    </button>
+
+                    <!-- Winter Clothes -->
+                    <button type="button" onclick="selectCategory('sitarto')" data-cat="sitarto" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "sitarto" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-snow"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Winter Clothes</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">শীতার্তদের শীতবস্ত্র</p>
+                        </div>
+                    </button>
+
+                    <!-- Ramadan Iftar -->
+                    <button type="button" onclick="selectCategory('iftar')" data-cat="iftar" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "iftar" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-moon-stars-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Ramadan Iftar</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">ইফতার ও খাদ্য সহায়তা</p>
+                        </div>
+                    </button>
+
+                    <!-- Disaster Relief -->
+                    <button type="button" onclick="selectCategory('durjog')" data-cat="durjog" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "durjog" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-tsunami"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Disaster Relief</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">বন্যা ও দুর্যোগ সহায়তা</p>
+                        </div>
+                    </button>
+
+                    <!-- Tree Plantation -->
+                    <button type="button" onclick="selectCategory('gachropon')" data-cat="gachropon" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "gachropon" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-tree-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Tree Plantation</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">বৃক্ষরোপণ সদকাহ</p>
+                        </div>
+                    </button>
+
+                    <!-- Qurbani -->
+                    <button type="button" onclick="selectCategory('kurbani')" data-cat="kurbani" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "kurbani" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-gift-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Qurbani Meat</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">কুরবানি গোশত বিতরণ</p>
+                        </div>
+                    </button>
+
+                    <!-- Education -->
+                    <button type="button" onclick="selectCategory('education')" data-cat="education" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "education" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Islamic Education</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">মাদ্রাসা ও দ্বীনি শিক্ষা</p>
+                        </div>
+                    </button>
+
+                    <!-- Medical -->
+                    <button type="button" onclick="selectCategory('medical')" data-cat="medical" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "medical" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-red-100 text-red-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">Medical Aid</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">জরুরি চিকিৎসা সহায়তা</p>
+                        </div>
+                    </button>
+
+                    <!-- General Sadaqah -->
+                    <button type="button" onclick="selectCategory('general')" data-cat="general" class="cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 @(selectedCat == "general" ? "border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs" : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/80")">
+                        <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-base font-bold">
+                            <i class="bi bi-stars"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900 leading-tight">General Sadaqah</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">সাধারণ সদকাহ ও মসজিদ</p>
+                        </div>
+                    </button>
+                </div>
             </div>
 
-            <!-- Amount Presets -->
-            <div>
-                <label class="text-xs font-bold text-slate-700 uppercase">Donation Amount (BDT)</label>
-                <div class="grid grid-cols-4 gap-2.5 my-2">
-                    <button type="button" onclick="setAmount(500)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳500</button>
-                    <button type="button" onclick="setAmount(1000)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳1,000</button>
-                    <button type="button" onclick="setAmount(5000)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳5,000</button>
-                    <button type="button" onclick="setAmount(10000)" class="py-2.5 bg-slate-100 hover:bg-emerald-50 hover:border-emerald-400 border border-slate-200 text-xs font-bold rounded-xl transition">৳10,000</button>
-                </div>
-                <input type="number" id="donationAmountInput" name="Amount" value="@Model.Amount" min="10" required class="w-full text-base font-black px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl font-mono" placeholder="Custom Amount in BDT" />
-            </div>
+            <!-- Amount Presets & Input -->
+            <div class="space-y-3">
+                <label class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                    <i class="bi bi-coin text-emerald-600"></i> Step 2: Select or Enter Amount (BDT)
+                </label>
 
-            <!-- Donor Details -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div>
-                    <label class="text-xs font-bold text-slate-700">Donor Name</label>
-                    <input type="text" name="Name" value="@Model.Name" required class="mt-1 w-full text-xs font-semibold px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                    <button type="button" onclick="setAmount(500)" class="amt-btn py-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-500 border border-slate-200 text-xs font-black rounded-xl transition text-slate-800">৳500</button>
+                    <button type="button" onclick="setAmount(1000)" class="amt-btn py-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-500 border border-slate-200 text-xs font-black rounded-xl transition text-slate-800">৳1,000</button>
+                    <button type="button" onclick="setAmount(2500)" class="amt-btn py-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-500 border border-slate-200 text-xs font-black rounded-xl transition text-slate-800">৳2,500</button>
+                    <button type="button" onclick="setAmount(5000)" class="amt-btn py-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-500 border border-slate-200 text-xs font-black rounded-xl transition text-slate-800">৳5,000</button>
+                    <button type="button" onclick="setAmount(10000)" class="amt-btn py-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-500 border border-slate-200 text-xs font-black rounded-xl transition text-slate-800">৳10,000</button>
+                    <button type="button" onclick="setAmount(25000)" class="amt-btn py-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-500 border border-slate-200 text-xs font-black rounded-xl transition text-slate-800">৳25,000</button>
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700">Email Address (for Receipt)</label>
-                    <input type="email" name="Email" value="@Model.Email" required class="mt-1 w-full text-xs font-semibold px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700">Phone Number</label>
-                    <input type="tel" name="Phone" value="@Model.Phone" required class="mt-1 w-full text-xs font-semibold px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700">Payment Gateway</label>
-                    <select name="PaymentMethod" class="mt-1 w-full text-xs font-bold bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5">
-                        <option value="bkash">bKash Online</option>
-                        <option value="nagad">Nagad Direct</option>
-                        <option value="rocket">Rocket</option>
-                        <option value="card">Visa / Mastercard / Amex</option>
-                    </select>
+
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold text-slate-400">৳</span>
+                    <input type="number" id="donationAmountInput" name="Amount" value="@Model.Amount" min="10" max="10000000" required class="w-full text-xl sm:text-2xl font-black pl-10 pr-4 py-3.5 bg-slate-50/70 border border-slate-200 rounded-2xl font-mono focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition" placeholder="Enter custom amount in BDT" />
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 pt-2">
-                <input type="checkbox" name="IsAnonymous" value="true" id="anonChk" class="w-4 h-4 accent-emerald-600 rounded" />
-                <label for="anonChk" class="text-xs text-slate-600">Make this donation anonymous (Hide name on public donor list)</label>
+            <!-- Donor Information -->
+            <div class="space-y-4 pt-2">
+                <label class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                    <i class="bi bi-person-circle text-emerald-600"></i> Step 3: Donor Information
+                </label>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                        <input type="text" name="Name" value="@Model.Name" placeholder="Your Name" class="w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address <span class="text-emerald-600">(For Receipt)</span></label>
+                        <input type="email" name="Email" value="@Model.Email" placeholder="yourname@gmail.com" class="w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                        <input type="tel" name="Phone" value="@Model.Phone" required placeholder="01XXXXXXXXX" class="w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Special Intention / Dua Request (Optional)</label>
+                    <input type="text" name="Notes" placeholder="e.g., For parents' maghfirah / On behalf of family" class="w-full text-xs px-3.5 py-2 bg-slate-50/70 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                </div>
+
+                <div class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <input type="checkbox" name="IsAnonymous" value="true" id="anonChk" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                    <label for="anonChk" class="text-xs text-slate-700 font-semibold cursor-pointer">
+                        Donate Anonymously (Hide your name on the public donor recognition board)
+                    </label>
+                </div>
             </div>
 
-            <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm rounded-2xl shadow-lg shadow-emerald-900/30 transition">
-                Proceed to Secure Donation (SSLCommerz)
-            </button>
+            <!-- SSLCommerz Payment Gateway Showcase & Submit -->
+            <div class="pt-4 border-t border-slate-100 space-y-4">
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-slate-50 to-emerald-50/40 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-900">SSLCommerz Secured Payment Gateway</p>
+                            <p class="text-[11px] text-slate-500">Supports bKash, Nagad, Rocket, Cards, and 20+ Internet Banking Options</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-slate-400 text-xs font-bold">
+                        <span class="px-2 py-1 bg-white border border-slate-200 rounded-md text-[10px] text-slate-700">bKash</span>
+                        <span class="px-2 py-1 bg-white border border-slate-200 rounded-md text-[10px] text-slate-700">Nagad</span>
+                        <span class="px-2 py-1 bg-white border border-slate-200 rounded-md text-[10px] text-slate-700">Cards</span>
+                        <span class="px-2 py-1 bg-white border border-slate-200 rounded-md text-[10px] text-slate-700">Internet Bank</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitDonateBtn" class="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-base rounded-2xl shadow-xl shadow-emerald-700/25 transition duration-200 flex items-center justify-center gap-3 group">
+                    <i class="bi bi-lock-fill group-hover:scale-110 transition"></i>
+                    <span>Proceed to Pay with SSLCommerz</span>
+                    <i class="bi bi-arrow-right font-bold"></i>
+                </button>
+
+                <p class="text-center text-[11px] text-slate-400">
+                    🔒 256-bit SSL encrypted & authorized by Bangladesh Bank PCI-DSS guidelines.
+                </p>
+            </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
 <script>
+    function selectCategory(cat) {
+        document.getElementById('selectedCategoryInput').value = cat;
+
+        const allButtons = document.querySelectorAll('.cat-btn');
+        allButtons.forEach(btn => {
+            if (btn.getAttribute('data-cat') === cat) {
+                btn.className = 'cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 border-emerald-600 bg-emerald-50/70 ring-2 ring-emerald-500/20 shadow-xs';
+            } else {
+                btn.className = 'cat-btn p-3.5 rounded-2xl border text-left transition flex flex-col justify-between gap-2 border-slate-200 bg-slate-50/50 hover:bg-slate-100/80';
+            }
+        });
+    }
+
     function setAmount(val) {
         document.getElementById('donationAmountInput').value = val;
     }
 </script>
 }
+
