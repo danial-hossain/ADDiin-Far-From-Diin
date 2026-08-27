@@ -4,71 +4,147 @@
 }
 
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-    <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-emerald-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-amber-950 via-slate-900 to-emerald-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-amber-900/30">
         <div class="space-y-3 max-w-2xl">
-            <span class="px-3.5 py-1 bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold rounded-full uppercase tracking-wider">
-                Third Pillar of Islam
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1 bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold rounded-full uppercase tracking-wider">
+                <i class="bi bi-star-fill text-[10px]"></i> Third Pillar of Islam (রুকন)
             </span>
             <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Zakat Calculator & Guidance</h1>
-            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Accurately evaluate your annual Zakat (2.5%) based on current Gold & Silver Nisab thresholds. Fulfill your obligation transparently.
+            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                Accurately evaluate your annual Zakat (2.5%) based on current Gold & Silver Nisab thresholds. Fulfill your obligation transparently through SSLCommerz verified disbursement.
             </p>
         </div>
 
-        <div class="p-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center">
-            <p class="text-xs text-amber-300 uppercase font-bold tracking-wider">Current Nisab (Silver)</p>
-            <p class="text-2xl font-black text-white mt-1">৳115,500</p>
-            <p class="text-[11px] text-slate-300">52.5 Tolas / 612.36 Grams</p>
+        <div class="p-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center shrink-0">
+            <p class="text-[11px] text-amber-300 uppercase font-extrabold tracking-wider">Current Nisab (Silver Standard)</p>
+            <p class="text-2xl font-black text-white mt-1 font-mono">৳115,500</p>
+            <p class="text-[10px] text-slate-300">52.5 Tolas / 612.36 Grams</p>
         </div>
     </div>
 
     <!-- Calculator Card -->
     <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
-        <div class="pb-3 border-b border-slate-100">
-            <h3 class="font-extrabold text-slate-900 text-lg">Calculate Your Zakat</h3>
-            <p class="text-xs text-slate-500">Enter your assets owned continuously for one full lunar year (Hawl)</p>
+        <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+            <div>
+                <h3 class="font-extrabold text-slate-900 text-lg">Calculate Your Zakat</h3>
+                <p class="text-xs text-slate-500">Enter your assets owned continuously for one full lunar year (Hawl)</p>
+            </div>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                Rate: 2.5% (১/৪০ অংশ)
+            </span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
                 <label class="text-xs font-bold text-slate-700">Cash in Hand & Bank Accounts (৳)</label>
-                <input type="number" id="z_cash" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                <input type="number" id="z_cash" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div>
                 <label class="text-xs font-bold text-slate-700">Value of Gold & Silver Owned (৳)</label>
-                <input type="number" id="z_gold" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                <input type="number" id="z_gold" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div>
                 <label class="text-xs font-bold text-slate-700">Business Inventory & Merchandise (৳)</label>
-                <input type="number" id="z_business" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                <input type="number" id="z_business" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div>
                 <label class="text-xs font-bold text-slate-700">Investments, Shares & Savings Bonds (৳)</label>
-                <input type="number" id="z_invest" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" />
+                <input type="number" id="z_invest" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div class="sm:col-span-2">
                 <label class="text-xs font-bold text-red-600">Deductible Liabilities & Immediate Debts (৳)</label>
-                <input type="number" id="z_debts" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-red-50/50 border border-red-200 rounded-xl" />
+                <input type="number" id="z_debts" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-red-50/50 border border-red-200 rounded-xl focus:bg-white focus:outline-none focus:border-red-400" />
             </div>
         </div>
 
         <!-- Calculated Summary Box -->
-        <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-5">
             <div>
-                <span class="text-xs font-bold uppercase text-emerald-800 tracking-wider">Total Net Zakat Payable (2.5%)</span>
+                <span class="text-xs font-black uppercase text-emerald-800 tracking-wider">Total Net Zakat Payable (2.5%)</span>
                 <div class="text-3xl sm:text-4xl font-black text-emerald-950 font-mono mt-1" id="zakatResultDisplay">
                     ৳0
                 </div>
-                <p class="text-xs text-slate-600 mt-1" id="nisabStatus">Enter your asset values above</p>
+                <p class="text-xs text-slate-600 mt-1 font-semibold" id="nisabStatus">Enter your asset values above to compute</p>
             </div>
 
-            <a href="/donate?category=zakat" id="payZakatBtn" class="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-2xl shadow-md transition text-nowrap">
-                Pay Zakat Directly &rarr;
+            <a href="/donate?category=zakat" id="payZakatBtn" class="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg shadow-emerald-800/25 transition duration-200 flex items-center gap-2 whitespace-nowrap">
+                <span>Pay Calculated Zakat</span>
+                <i class="bi bi-arrow-right"></i>
             </a>
+        </div>
+    </div>
+
+    <!-- Zakat-Eligible Causes / Sectors Grid -->
+    <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-black text-slate-900">Distribute Zakat to Specific Causes</h3>
+                <p class="text-xs text-slate-500">Shariah-compliant Zakat distribution to verified 8 Asnaf categories</p>
+            </div>
+            <a href="/donate" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">View All Causes &rarr;</a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 1. Destitute & Debt Relief -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg font-bold">
+                        <i class="bi bi-person-heart"></i>
+                    </div>
+                    <h4 class="text-sm font-black text-slate-900">Destitute & Debt Relief</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Financial rehabilitation for insolvent families and debt-ridden individuals.</p>
+                </div>
+                <a href="/donate?category=zakat&amount=5000" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-bold text-xs rounded-xl text-center transition">
+                    Donate Zakat (৳5,000)
+                </a>
+            </div>
+
+            <!-- 2. Orphan & Student Education -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg font-bold">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <h4 class="text-sm font-black text-slate-900">Orphan & Student Aid</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Full education stipends, books, and living support for needy orphans.</p>
+                </div>
+                <a href="/donate?category=orphan&amount=3000" class="w-full py-2.5 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white font-bold text-xs rounded-xl text-center transition">
+                    Sponsor Orphan (৳3,000)
+                </a>
+            </div>
+
+            <!-- 3. Emergency Medical Aid -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg font-bold">
+                        <i class="bi bi-capsule"></i>
+                    </div>
+                    <h4 class="text-sm font-black text-slate-900">Emergency Medical Aid</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Life-saving operations, medicines, and hospital expenses for impoverished patients.</p>
+                </div>
+                <a href="/donate?category=medical&amount=5000" class="w-full py-2.5 bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white font-bold text-xs rounded-xl text-center transition">
+                    Support Patient (৳5,000)
+                </a>
+            </div>
+
+            <!-- 4. Winter & Flood Relief -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center text-lg font-bold">
+                        <i class="bi bi-box2-heart-fill"></i>
+                    </div>
+                    <h4 class="text-sm font-black text-slate-900">Winter & Disaster Relief</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Emergency food parcels, shelter rehabilitation, and warm winter garments.</p>
+                </div>
+                <a href="/donate?category=durjog&amount=2500" class="w-full py-2.5 bg-cyan-50 hover:bg-cyan-600 text-cyan-700 hover:text-white font-bold text-xs rounded-xl text-center transition">
+                    Send Relief (৳2,500)
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -76,6 +152,8 @@
 @section Scripts {
 <script>
     const silverNisab = 115500;
+    let currentCalculatedZakat = 0;
+
     function calcZakat() {
         const cash = parseFloat(document.getElementById('z_cash').value) || 0;
         const gold = parseFloat(document.getElementById('z_gold').value) || 0;
@@ -86,15 +164,20 @@
         const netAssets = (cash + gold + business + invest) - debts;
         const resultEl = document.getElementById('zakatResultDisplay');
         const statusEl = document.getElementById('nisabStatus');
+        const payBtn = document.getElementById('payZakatBtn');
 
         if (netAssets >= silverNisab) {
-            const zakat = Math.round(netAssets * 0.025);
-            resultEl.textContent = '৳' + zakat.toLocaleString();
-            statusEl.textContent = '✅ Your net assets (৳' + netAssets.toLocaleString() + ') exceed Nisab threshold. Zakat is obligatory.';
+            currentCalculatedZakat = Math.round(netAssets * 0.025);
+            resultEl.textContent = '৳' + currentCalculatedZakat.toLocaleString();
+            statusEl.textContent = '✅ Net wealth (৳' + netAssets.toLocaleString() + ') exceeds Nisab (৳' + silverNisab.toLocaleString() + '). Zakat is obligatory.';
+            payBtn.href = '/donate?category=zakat&amount=' + currentCalculatedZakat;
         } else {
+            currentCalculatedZakat = 0;
             resultEl.textContent = '৳0';
-            statusEl.textContent = 'ℹ️ Net assets below Nisab (৳' + silverNisab.toLocaleString() + '). Zakat is not obligatory.';
+            statusEl.textContent = 'ℹ️ Net wealth is below Nisab (৳' + silverNisab.toLocaleString() + '). Zakat is not obligatory, but Sadaqah is encouraged.';
+            payBtn.href = '/donate?category=zakat';
         }
     }
 </script>
 }
+
