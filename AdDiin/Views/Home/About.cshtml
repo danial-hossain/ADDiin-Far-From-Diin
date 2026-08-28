@@ -1,132 +1,45 @@
-﻿@model AdDiin.Models.Entities.AboutContentModel
 @{
-    ViewData["Title"] = "About Us";
+    ViewData["Title"] = "About Us | ADDiin Platform";
 }
 
-<div class="bg-emerald-dark text-white py-5">
-    <div class="container text-center py-4">
-        <span class="badge bg-white bg-opacity-20 text-warning px-3 py-2 rounded-pill fw-semibold mb-2">@Model.HeroBadge</span>
-        <h1 class="display-4 fw-extrabold mb-3">@Model.HeroTitle</h1>
-        <p class="lead text-white-75 max-w-700 mx-auto">
-            @Model.HeroDescription
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <div class="text-center max-w-3xl mx-auto space-y-3">
+        <span class="px-3.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase tracking-wider">
+            Platform Vision & Mission
+        </span>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight">About ADDiin</h1>
+        <p class="text-base text-slate-600 leading-relaxed font-normal">
+            ADDiin — Personal Islamic Development & Community Engagement Platform
         </p>
     </div>
-</div>
 
-<div class="container my-5">
-    <div class="row g-3 mb-5">
-        @foreach (var stat in Model.Stats)
-        {
-            <div class="col-md-3 col-6">
-                <div class="card card-custom text-center p-4 border rounded-4 bg-white">
-                    <div class="display-5 fw-extrabold text-emerald mb-1">@stat.Value</div>
-                    <div class="text-muted fw-semibold small">@stat.Label</div>
-                </div>
+    <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-200 space-y-6 text-sm text-slate-700 leading-relaxed">
+        <h3 class="text-xl font-bold text-slate-900">Our Mission</h3>
+        <p>
+            An integrated digital platform that helps users stay consistent in their Islamic activities, track their personal progress, discover Islamic programs, and engage with their faith through modern technology.
+        </p>
+
+        <h3 class="text-xl font-bold text-slate-900 pt-4">User-Centric Architecture</h3>
+        <p>
+            ADDiin puts the believer at the center of their spiritual growth. Through intelligent habit trackers (My Deen), personalized Azan and prayer reminders, verified Islamic knowledge via Diin AI, and nationwide Islamic activity discovery, ADDiin equips Muslims worldwide to practice their faith with excellence (Ihsan) and consistency (Istiqamah).
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+            <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
+                <span class="text-2xl">📿</span>
+                <h4 class="font-bold text-slate-900 text-sm mt-2">Personal Growth</h4>
+                <p class="text-xs text-slate-600 mt-1">Dhikr counters, Quran bookmarks, Adhkar & Ruqyah checklists</p>
             </div>
-        }
-    </div>
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="card card-custom h-100 p-4 border rounded-4 border-emerald border-opacity-25 bg-emerald-light">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="bg-emerald text-white p-3 rounded-circle fs-4">
-                        <i class="bi bi-compass-fill"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0 text-emerald-dark">@Model.MissionTitle</h3>
-                </div>
-                <p class="text-dark leading-relaxed">
-                    @Model.MissionDescription
-                </p>
+            <div class="p-5 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+                <span class="text-2xl">🎟️</span>
+                <h4 class="font-bold text-slate-900 text-sm mt-2">Community Programs</h4>
+                <p class="text-xs text-slate-600 mt-1">Waz Mahfils, Quran competitions, and youth seminars</p>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card card-custom h-100 p-4 border rounded-4 border-warning border-opacity-25 bg-warning bg-opacity-10">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="bg-warning text-dark p-3 rounded-circle fs-4">
-                        <i class="bi bi-eye-fill"></i>
-                    </div>
-                    <h3 class="fw-bold mb-0 text-dark">@Model.VisionTitle</h3>
-                </div>
-                <p class="text-dark leading-relaxed">
-                    @Model.VisionDescription
-                </p>
+            <div class="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+                <span class="text-2xl">💡</span>
+                <h4 class="font-bold text-slate-900 text-sm mt-2">Diin AI Guidance</h4>
+                <p class="text-xs text-slate-600 mt-1">Authentic Islamic questions answered with Quran & Hadith</p>
             </div>
-        </div>
-    </div>
-
-    <div class="mb-5">
-        <div class="text-center max-w-700 mx-auto mb-4">
-            <h3 class="fw-bold">@Model.ValuesTitle</h3>
-            <p class="text-muted">@Model.ValuesDescription</p>
-        </div>
-        <div class="row g-4">
-            @foreach (var val in Model.Values)
-            {
-                <div class="col-md-6 col-lg-3">
-                    <div class="card card-custom h-100 p-4 border rounded-4 text-center">
-                        <div class="text-emerald fs-2 mb-2">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </div>
-                        <h5 class="fw-bold mb-2">@val.Title</h5>
-                        <p class="text-muted small leading-relaxed mb-0">@val.Description</p>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="mb-5">
-        <div class="text-center max-w-700 mx-auto mb-4">
-            <h3 class="fw-bold">@Model.ProgramsTitle</h3>
-            <p class="text-muted">@Model.ProgramsDescription</p>
-        </div>
-        <div class="row g-4">
-            @foreach (var prog in Model.Programs)
-            {
-                <div class="col-md-6">
-                    <div class="p-4 border rounded-4 bg-white d-flex gap-3 align-items-start">
-                        <div class="bg-emerald-light text-emerald p-3 rounded-3 fs-4">
-                            <i class="bi bi-book-half"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-1">@prog.Title</h5>
-                            <p class="text-muted small leading-relaxed mb-0">@prog.Description</p>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="mb-5">
-        <div class="text-center max-w-700 mx-auto mb-4">
-            <h3 class="fw-bold">@Model.CommunityHeadsTitle</h3>
-            <p class="text-muted">@Model.CommunityHeadsDescription</p>
-        </div>
-        <div class="row g-4 justify-content-center">
-            @foreach (var leader in Model.CommunityHeads)
-            {
-                <div class="col-md-4">
-                    <div class="card card-custom p-4 border rounded-4 text-center bg-white">
-                        <div class="avatar-circle-lg bg-emerald text-white fw-bold mx-auto mb-3">
-                            @(leader.Name.FirstOrDefault())
-                        </div>
-                        <h5 class="fw-bold mb-1">@leader.Name</h5>
-                        <div class="badge bg-emerald-light text-emerald mb-2">@leader.Role</div>
-                        <div class="text-muted small"><i class="bi bi-telephone me-1"></i> @leader.Phone</div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="card card-custom p-5 text-center bg-emerald-dark text-white rounded-4 border-0">
-        <h3 class="fw-bold text-white mb-2">@Model.CtaTitle</h3>
-        <p class="text-white-75 max-w-700 mx-auto mb-4">@Model.CtaDescription</p>
-        <div class="d-flex justify-content-center gap-3">
-            <a asp-controller="Home" asp-action="Contact" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-pill">Contact Us</a>
-            <a asp-controller="Donate" asp-action="Index" class="btn btn-outline-light px-4 py-2 rounded-pill">Support the Center</a>
         </div>
     </div>
 </div>

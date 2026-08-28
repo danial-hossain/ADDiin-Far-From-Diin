@@ -1,4 +1,4 @@
-﻿using AdDiin.Data;
+using AdDiin.Data;
 using AdDiin.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -114,21 +114,21 @@ namespace AdDiin.Services
         public async Task<(PrayerTime? NextPrayer, TimeSpan TimeRemaining)> GetNextPrayerAsync()
         {
             var nowTime = DateTime.Now.TimeOfDay;
-            var jamaatPrayers = await _context.PrayerTimes
-                .Where(p => p.IsActive && p.PrayerType == "jamaat")
+            var azanPrayers = await _context.PrayerTimes
+                .Where(p => p.IsActive && (p.PrayerType == "azan" || p.PrayerType == "fard" || p.Category == "fard"))
                 .OrderBy(p => p.PrayerTimeValue)
                 .ToListAsync();
 
-            if (!jamaatPrayers.Any()) return (null, TimeSpan.Zero);
+            if (!azanPrayers.Any()) return (null, TimeSpan.Zero);
 
-            var next = jamaatPrayers.FirstOrDefault(p => p.PrayerTimeValue > nowTime);
+            var next = azanPrayers.FirstOrDefault(p => p.PrayerTimeValue > nowTime);
             if (next != null)
             {
                 return (next, next.PrayerTimeValue - nowTime);
             }
 
             // Next prayer is Fajr tomorrow
-            var fajr = jamaatPrayers.First();
+            var fajr = azanPrayers.First();
             var timeRemaining = (TimeSpan.FromHours(24) - nowTime) + fajr.PrayerTimeValue;
             return (fajr, timeRemaining);
         }

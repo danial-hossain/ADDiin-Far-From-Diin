@@ -1,86 +1,383 @@
-﻿@model AdDiin.Models.ViewModels.AdminUsersViewModel
+@model AdDiin.Models.ViewModels.AdminUsersViewModel
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "User Accounts Management";
+    ViewData["Title"] = "User Management | Admin Panel";
+    var currentSearch = Model.SearchQuery ?? "";
+    var currentStatus = Model.StatusFilter ?? "";
+    var currentRole = Model.RoleFilter ?? "";
 }
 
-<div class="card card-custom p-4 border-0 bg-white shadow-sm mb-4">
-    <form method="get" class="row g-2 align-items-center">
-        <div class="col-md-6">
-            <input type="text" name="search" value="@Model.SearchQuery" class="form-control" placeholder="Search by name, email, or phone..." />
+<div class="space-y-6 pb-12">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-500/20">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-slate-900 tracking-tight">User Accounts & Roles</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Monitor registered members, assign administrator privileges, and control account security</p>
+            </div>
         </div>
-        <div class="col-md-3">
-            <select name="status" class="form-select">
-                <option value="all">All Statuses</option>
-                <option value="active">Active Accounts</option>
-                <option value="inactive">Inactive / Blocked</option>
-            </select>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">
+                <i class="bi bi-shield-check text-emerald-600"></i> Identity Role-Based Access
+            </span>
         </div>
-        <div class="col-md-3 d-flex gap-2">
-            <button type="submit" class="btn btn-emerald flex-grow-1">Filter</button>
-            <a asp-action="Users" class="btn btn-outline-secondary">Reset</a>
-        </div>
-    </form>
-</div>
+    </div>
 
-<div class="card card-custom p-4 border-0 bg-white shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0 small">
-            <thead class="table-light">
-                <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Registered</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var u in Model.Users)
-                {
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="avatar-circle-sm bg-emerald text-white fw-bold">
-                                    @(u.FullName.FirstOrDefault())
-                                </div>
-                                <div>
-                                    <div class="fw-bold">@u.FullName</div>
-                                    <small class="text-muted">@u.City</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>@u.Email</td>
-                        <td>@(u.PhoneNumber ?? "N/A")</td>
-                        <td>
-                            @if (u.IsActive)
-                            {
-                                <span class="badge bg-success bg-opacity-10 text-success">Active</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger bg-opacity-10 text-danger">Blocked</span>
-                            }
-                        </td>
-                        <td>@u.CreatedAt.ToString("dd MMM yyyy")</td>
-                        <td class="text-end">
-                            <form asp-action="ToggleUser" asp-route-id="@u.Id" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm @(u.IsActive ? "btn-outline-warning" : "btn-outline-success") rounded-pill py-0 px-2">
-                                    @(u.IsActive ? "Block" : "Activate")
-                                </button>
-                            </form>
-                            <form asp-action="DeleteUser" asp-route-id="@u.Id" method="post" class="d-inline" onsubmit="return confirm('Permanently delete this user?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill py-0 px-2">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Users</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@Model.TotalCount</h3>
+                <span class="text-[11px] text-slate-400">All registered accounts</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-person-lines-fill"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Active Accounts</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@Model.ActiveCount</h3>
+                <span class="text-[11px] text-slate-400">Permitted to login</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Blocked / Inactive</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@Model.InactiveCount</h3>
+                <span class="text-[11px] text-slate-400">Access suspended</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-person-x-fill"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Administrators</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-1">@Model.AdminCount</h3>
+                <span class="text-[11px] text-slate-400">Admin panel managers</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        <form method="get" class="flex items-center gap-2 max-w-md w-full">
+            <input type="hidden" name="status" value="@currentStatus" />
+            <input type="hidden" name="role" value="@currentRole" />
+            <div class="relative flex-1">
+                <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="search" value="@currentSearch" placeholder="Search name, email, phone, or city..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition" />
+            </div>
+            @if (!string.IsNullOrEmpty(currentSearch) || !string.IsNullOrEmpty(currentStatus) || !string.IsNullOrEmpty(currentRole))
+            {
+                <a href="/Admin/Users" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold" title="Reset filters">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            }
+            <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition cursor-pointer">Filter</button>
+        </form>
+
+        <!-- Role and Status Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1 text-xs">
+            <a href="/Admin/Users?search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(string.IsNullOrEmpty(currentStatus) && string.IsNullOrEmpty(currentRole) ? "bg-emerald-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                All Users
+            </a>
+            <a href="/Admin/Users?status=active&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentStatus == "active" ? "bg-emerald-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Active Only
+            </a>
+            <a href="/Admin/Users?status=inactive&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentStatus == "inactive" ? "bg-rose-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Blocked
+            </a>
+            <a href="/Admin/Users?role=Admin&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentRole == "Admin" ? "bg-purple-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Admins
+            </a>
+            <a href="/Admin/Users?role=Member&search=@currentSearch" class="px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition @(currentRole == "Member" ? "bg-teal-600 text-white shadow-xs" : "bg-slate-100 text-slate-600 hover:bg-slate-200")">
+                Members
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        @if (!Model.Users.Any())
+        {
+            <div class="py-16 text-center">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl mb-3">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">No Users Found</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">There are no user accounts matching your criteria. Try adjusting your search query or filters.</p>
+                <a href="/Admin/Users" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl shadow-sm hover:bg-slate-800 transition">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="py-3.5 px-4">User Details</th>
+                            <th class="py-3.5 px-4">Contact Info</th>
+                            <th class="py-3.5 px-4">Role</th>
+                            <th class="py-3.5 px-4">Status</th>
+                            <th class="py-3.5 px-4">Registered Date</th>
+                            <th class="py-3.5 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        @foreach (var u in Model.Users)
+                        {
+                            var roles = Model.UserRoles.ContainsKey(u.Id) ? Model.UserRoles[u.Id] : new List<string> { "Member" };
+                            var isAdmin = roles.Contains("Admin");
+                            var initial = !string.IsNullOrWhiteSpace(u.FullName) ? u.FullName.Trim().Substring(0, 1).ToUpper() : "U";
+
+                            <tr class="hover:bg-slate-50/60 transition group">
+                                <!-- User Avatar & Name -->
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-2xl @(isAdmin ? "bg-gradient-to-tr from-purple-600 to-indigo-600" : "bg-gradient-to-tr from-emerald-600 to-teal-500") text-white font-extrabold flex items-center justify-center text-sm shadow-xs shrink-0">
+                                            @if (!string.IsNullOrEmpty(u.ProfilePicture))
+                                            {
+                                                <img src="@u.ProfilePicture" alt="@u.FullName" class="w-full h-full object-cover rounded-2xl" />
+                                            }
+                                            else
+                                            {
+                                                <span>@initial</span>
+                                            }
+                                        </div>
+                                        <div class="space-y-0.5 min-w-0">
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="font-bold text-slate-900 text-sm block truncate">@u.FullName</span>
+                                                @if (isAdmin)
+                                                {
+                                                    <span class="text-[10px] text-purple-600 font-extrabold" title="Administrator"><i class="bi bi-shield-fill-check"></i></span>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(u.City) || !string.IsNullOrEmpty(u.Address))
+                                            {
+                                                <span class="text-[11px] text-slate-400 block truncate flex items-center gap-1">
+                                                    <i class="bi bi-geo-alt text-[10px]"></i> @(u.City ?? u.Address)
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Contact Info -->
+                                <td class="py-4 px-4">
+                                    <div class="space-y-1">
+                                        <div class="text-slate-800 font-semibold flex items-center gap-1.5">
+                                            <i class="bi bi-envelope text-slate-400"></i>
+                                            <span>@u.Email</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(u.PhoneNumber))
+                                        {
+                                            <div class="text-[11px] text-slate-500 font-mono flex items-center gap-1.5">
+                                                <i class="bi bi-telephone text-slate-400"></i>
+                                                <span>@u.PhoneNumber</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+
+                                <!-- Role -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    @if (isAdmin)
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide bg-purple-100 text-purple-800 border border-purple-200">
+                                            <i class="bi bi-shield-lock-fill"></i> Admin
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wide bg-slate-100 text-slate-700 border border-slate-200">
+                                            <i class="bi bi-person"></i> Member
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Status -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    @if (u.IsActive)
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Blocked
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Registration Date -->
+                                <td class="py-4 px-4 whitespace-nowrap">
+                                    <div class="space-y-0.5">
+                                        <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                                            <i class="bi bi-calendar-check text-slate-400"></i>
+                                            <span>@u.CreatedAt.ToString("dd MMM, yyyy")</span>
+                                        </div>
+                                        <span class="text-[10px] text-slate-400">@u.CreatedAt.ToString("hh:mm tt")</span>
+                                    </div>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="py-4 px-4 text-right whitespace-nowrap">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <!-- Explicit Block / Unblock Button -->
+                                        <form asp-action="ToggleUser" asp-route-id="@u.Id" method="post" class="m-0 inline" onsubmit="return confirm('@(u.IsActive ? $"Are you sure you want to BLOCK {u.FullName}? They will not be able to log in." : $"Unblock and activate {u.FullName}?")');">
+                                            @Html.AntiForgeryToken()
+                                            @if (u.IsActive)
+                                            {
+                                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 text-xs font-bold transition cursor-pointer shadow-2xs" title="Block User Access">
+                                                    <i class="bi bi-slash-circle text-amber-600"></i> Block
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition cursor-pointer shadow-2xs" title="Unblock / Activate User">
+                                                    <i class="bi bi-check-circle-fill text-emerald-600"></i> Unblock
+                                                </button>
+                                            }
+                                        </form>
+
+                                        <!-- Edit Role Modal Trigger -->
+                                        <button type="button"
+                                                onclick="openRoleModal(this)"
+                                                data-id="@u.Id"
+                                                data-name="@u.FullName"
+                                                data-email="@u.Email"
+                                                data-role="@(isAdmin ? "Admin" : "Member")"
+                                                class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 border border-slate-200 flex items-center justify-center transition cursor-pointer"
+                                                title="Change Role & Access">
+                                            <i class="bi bi-shield-shaded text-xs"></i>
+                                        </button>
+
+                                        <!-- Delete Form -->
+                                        <form asp-action="DeleteUser" asp-route-id="@u.Id" method="post" class="m-0 inline" onsubmit="return confirm('Are you sure you want to permanently delete \'@u.FullName\'?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200 flex items-center justify-center transition cursor-pointer" title="Delete User">
+                                                <i class="bi bi-trash3 text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
 </div>
+
+<!-- ================= ROLE MODAL ================= -->
+<div id="roleModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8 animate-in fade-in zoom-in duration-200">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900">Manage User Role</h3>
+                    <p class="text-[11px] text-slate-500">Configure permission level for this account</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeRoleModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition cursor-pointer">
+                <i class="bi bi-x-lg text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <form id="roleForm" asp-action="UpdateUserRole" method="post" class="p-6 space-y-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="roleUserId" name="id" />
+
+            <!-- User Info Display -->
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-sm">
+                    <i class="bi bi-person"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 id="roleUserName" class="text-xs font-bold text-slate-900 truncate"></h4>
+                    <p id="roleUserEmail" class="text-[11px] text-slate-500 truncate"></p>
+                </div>
+            </div>
+
+            <!-- Role Selector -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Assigned Role</label>
+                <select id="roleSelect" name="newRole" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none bg-white">
+                    <option value="Member">Member (Public community user)</option>
+                    <option value="Admin">Administrator (Full Admin Panel access)</option>
+                </select>
+                <p class="text-[11px] text-slate-400 mt-1.5">
+                    <i class="bi bi-info-circle me-1"></i> Administrators have full access to donations, programs, prayer times, events, and settings.
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button type="button" onclick="closeRoleModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">Cancel</button>
+                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-black shadow-md shadow-purple-600/20 transition inline-flex items-center gap-2 cursor-pointer">
+                    <i class="bi bi-check-lg"></i> Update Role
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openRoleModal(button) {
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const email = button.getAttribute('data-email');
+            const role = button.getAttribute('data-role');
+
+            document.getElementById('roleUserId').value = id;
+            document.getElementById('roleUserName').innerText = name || 'User';
+            document.getElementById('roleUserEmail').innerText = email || '';
+            document.getElementById('roleSelect').value = role || 'Member';
+
+            document.getElementById('roleModal').classList.remove('hidden');
+        }
+
+        function closeRoleModal() {
+            document.getElementById('roleModal').classList.add('hidden');
+        }
+
+        // Close modals on clicking backdrop
+        window.addEventListener('click', function(e) {
+            const roleModal = document.getElementById('roleModal');
+            if (e.target === roleModal) closeRoleModal();
+        });
+
+        // Close on ESC
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeRoleModal();
+            }
+        });
+    </script>
+}

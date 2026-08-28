@@ -1,4 +1,4 @@
-﻿using AdDiin.Models.Entities;
+using AdDiin.Models.Entities;
 using AdDiin.Models.ViewModels;
 using AdDiin.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -13,15 +13,18 @@ namespace AdDiin.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailVerificationService _emailService;
+        private readonly IMyDeenService _myDeenService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailVerificationService emailService)
+            IEmailVerificationService emailService,
+            IMyDeenService myDeenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _myDeenService = myDeenService;
         }
 
         [HttpGet]
@@ -56,7 +59,7 @@ namespace AdDiin.Controllers
 
             if (!user.IsActive)
             {
-                ModelState.AddModelError(string.Empty, "Your account has been deactivated. Please contact the Mosque administration.");
+                ModelState.AddModelError(string.Empty, "Your account has been deactivated. Please contact support.");
                 return View(model);
             }
 
@@ -223,35 +226,24 @@ namespace AdDiin.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction(nameof(Login));
 
-            var roles = await _userManager.GetRolesAsync(user);
-
-            var vm = new ProfileViewModel
-            {
-                FullName = user.FullName,
-                Email = user.Email!,
-                PhoneNumber = user.PhoneNumber,
-                Address = user.Address,
-                City = user.City,
-                PostalCode = user.PostalCode,
-                DateOfBirth = user.DateOfBirth,
-                Gender = user.Gender,
-                ProfilePicture = user.ProfilePicture,
-                Role = roles.FirstOrDefault() ?? "User",
-                CreatedAt = user.CreatedAt
-            };
-
+            var vm = await _myDeenService.GetProfileDashboardAsync(user);
             return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Profile(ProfileViewModel model)
+        public async Task<IActionResult> UpdateInfo(ProfileViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction(nameof(Login));
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _myDeenService.GetProfileDashboardAsync(user);
+                vm.ProfileForm = model;
+                return View("Profile", vm);
+            }
 
             user.FullName = model.FullName;
             user.PhoneNumber = model.PhoneNumber;
@@ -274,7 +266,9 @@ namespace AdDiin.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View(model);
+            var fullVm = await _myDeenService.GetProfileDashboardAsync(user);
+            fullVm.ProfileForm = model;
+            return View("Profile", fullVm);
         }
 
         [HttpGet]

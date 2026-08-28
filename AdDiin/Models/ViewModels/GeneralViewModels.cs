@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace AdDiin.Models.ViewModels
 {
@@ -67,6 +67,11 @@ namespace AdDiin.Models.ViewModels
         public string? Notes { get; set; }
 
         public string? PaymentMethod { get; set; } = "sslcommerz"; // bkash, nagad, rocket, card, sslcommerz
+
+        // Public live statistics
+        public decimal TotalDonationsRaised { get; set; }
+        public int TotalDonorsCount { get; set; }
+        public Dictionary<string, decimal> CategoryBreakdown { get; set; } = new();
     }
 
     public class DonationSuccessViewModel
