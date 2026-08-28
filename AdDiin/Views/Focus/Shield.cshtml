@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Spiritual Shield Active | ADDiin";
+    var blocked = ViewBag.BlockedDomain ?? "Distracting Website";
+}
+
+<div class="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-xl w-full bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-[32px] p-6 sm:p-10 text-center space-y-6 shadow-2xl relative overflow-hidden text-slate-100">
+        
+        <!-- Subtle Top Ambient Aura -->
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Header Badge & Icon -->
+        <div class="space-y-4">
+            <div class="relative inline-flex items-center justify-center">
+                <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-3xl shadow-xl shadow-emerald-900/40 border border-emerald-400/30">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <span class="absolute -bottom-1 -right-1 flex h-4 w-4">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-900"></span>
+                </span>
+            </div>
+
+            <div class="space-y-1.5">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] font-extrabold uppercase tracking-wider">
+                    <i class="bi bi-moon-stars-fill text-[10px]"></i> Far Mode • Digital Fast Active
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight capitalize">
+                    @blocked is Paused
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
+                    You set an intentional spiritual shield to step away from distraction and safeguard your mindfulness.
+                </p>
+            </div>
+        </div>
+
+        <!-- Quranic Reflection Box -->
+        <div class="rounded-2xl bg-gradient-to-br from-emerald-950/70 via-slate-900/90 to-teal-950/70 border border-emerald-500/20 p-5 text-left space-y-3 shadow-inner">
+            <div class="flex items-center justify-between">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-400 uppercase tracking-wide">
+                    <i class="bi bi-stars"></i> Spiritual Reflection
+                </span>
+                <span class="text-[10px] text-slate-400 font-medium">Surah Ar-Ra'd (13:28)</span>
+            </div>
+            <p class="text-2xl sm:text-3xl font-bold font-arabic text-amber-200/90 text-right leading-loose tracking-wide">
+                أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
+            </p>
+            <p class="text-xs text-slate-300 italic border-t border-emerald-500/10 pt-2.5">
+                "Unquestionably, by the remembrance of Allah hearts are assured."
+            </p>
+        </div>
+
+        <!-- Interactive Tasbih Pulse -->
+        <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between gap-4">
+            <div class="text-left space-y-0.5">
+                <p class="text-xs font-bold text-white">SubhanAllah Tasbih</p>
+                <p class="text-[11px] text-slate-400">Recite 33 times to calm your focus</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <span class="text-2xl font-black text-emerald-400 font-mono tracking-tight" id="tasbihCount">0</span>
+                    <span class="text-[10px] font-bold text-slate-500 block">/ 33</span>
+                </div>
+                <button type="button" onclick="incrementCounter()" class="h-12 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black text-sm shadow-lg shadow-emerald-900/30 transition flex items-center gap-1.5">
+                    <i class="bi bi-plus-lg text-xs"></i> <span>+1</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Clean Navigation Actions -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <a href="/focus" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
+                <i class="bi bi-shield-lock text-indigo-400"></i> Open Focus Dashboard
+            </a>
+            <a href="/my-deen" class="py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/20 transition flex items-center justify-center gap-2">
+                <i class="bi bi-compass"></i> Open My Deen Hub
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let count = 0;
+    function incrementCounter() {
+        count++;
+        document.getElementById('tasbihCount').textContent = count;
+        if (count === 33) {
+            alert('✨ MashaAllah! 33x SubhanAllah completed. May Allah bless your time!');
+        }
+    }
+</script>

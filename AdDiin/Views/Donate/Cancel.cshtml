@@ -1,0 +1,44 @@
+﻿@model AdDiin.Models.Entities.Donation
+@{
+    ViewData["Title"] = "Payment Cancelled | ADDiin";
+}
+
+<div class="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
+    <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-lg border border-amber-100 space-y-5">
+        <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-sm">
+            <i class="bi bi-dash-circle-fill"></i>
+        </div>
+
+        <span class="px-3.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wider">
+            Payment Cancelled
+        </span>
+
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Donation Payment Cancelled</h1>
+        <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+            You cancelled the payment on SSLCommerz gateway. You can resume and complete your donation whenever you are ready.
+        </p>
+
+        @if (Model != null)
+        {
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left text-xs space-y-2">
+                <div class="flex justify-between text-slate-500">
+                    <span>Transaction ID:</span>
+                    <span class="font-mono font-bold text-slate-800">@Model.TranId</span>
+                </div>
+                <div class="flex justify-between text-slate-500">
+                    <span>Selected Cause:</span>
+                    <span class="font-bold text-slate-800 capitalize">@Model.Category</span>
+                </div>
+            </div>
+        }
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <a href="/donate" class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl shadow-md transition">
+                <i class="bi bi-arrow-clockwise me-1"></i> Resume Donation
+            </a>
+            <a href="/" class="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
