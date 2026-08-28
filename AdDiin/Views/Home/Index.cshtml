@@ -1,100 +1,121 @@
-﻿@model AdDiin.Models.ViewModels.HomeViewModel
+@model AdDiin.Models.ViewModels.HomeViewModel
 @{
-    ViewData["Title"] = "Smart Mosque Management & Community Platform";
+    ViewData["Title"] = "ADDiin | Personal Islamic Development & Community Platform";
 }
 
-<!-- Hero Section (Matching original HeroSection.tsx) -->
-<section class="relative bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white overflow-hidden py-16 lg:py-24">
-    <!-- Subtle Background Elements -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(16,185,129,0.15),transparent_60%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(245,158,11,0.1),transparent_60%)]"></div>
+<!-- Hero Section: User-Centric Islamic Development -->
+<section class="relative bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 text-white overflow-hidden py-16 lg:py-24 border-b border-emerald-900/30">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.2),transparent_50%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(245,158,11,0.12),transparent_50%)]"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <!-- Hero Left Content -->
+            
+            <!-- Hero Left: Platform Mission & Purpose -->
             <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold tracking-wide">
-                    <span>✨ Welcome to Ad-Diin Platform</span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span class="text-amber-300">SDG 9 Digital Innovation</span>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 rounded-full text-xs font-bold tracking-wide shadow-xs">
+                    <span>✨ Your Digital Companion for Daily Islamic Growth</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span class="text-amber-300">Self-Development</span>
                 </div>
 
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
-                    Smart Mosque <br class="hidden sm:inline" />
-                    Management & <br />
-                    <span class="bg-gradient-to-r from-emerald-400 to-amber-300 bg-clip-text text-transparent">Islamic Community</span>
+                    Personal Islamic <br class="hidden sm:inline" />
+                    Development & <br />
+                    <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300 bg-clip-text text-transparent">Community Engagement</span>
                 </h1>
 
-                <p class="text-base sm:text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                    A centralized platform for mosque daily operations, live prayer & jamaat timings, transparent Zakat calculation, online donations, and AI-assisted Islamic education.
+                <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                    An integrated digital platform that helps users stay consistent in their Islamic activities, track their personal progress, discover Islamic programs, and engage with their faith through modern technology.
                 </p>
 
-                <div class="flex flex-wrap gap-4 justify-center lg:justify-start pt-2">
-                    <a href="/donate" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-amber-500/20 hover:scale-[1.02] transition-all">
-                        <i class="bi bi-heart-fill"></i>
-                        <span>Donate / Pay Zakat</span>
+                <div class="flex flex-wrap gap-3.5 justify-center lg:justify-start pt-3">
+                    <a href="/my-deen" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg shadow-emerald-900/40 hover:scale-[1.02] transition-all">
+                        <i class="bi bi-compass-fill text-amber-300 text-lg"></i>
+                        <span>Start My Deen Hub</span>
                     </a>
-                    <a href="/prayer-times" class="inline-flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 text-white font-semibold px-6 py-3.5 rounded-xl border border-slate-700 hover:border-slate-600 transition-all">
-                        <i class="bi bi-clock-history"></i>
+                    <a href="/activities" class="inline-flex items-center gap-2 bg-slate-800/90 hover:bg-slate-800 text-white font-semibold px-6 py-3.5 rounded-2xl border border-slate-700 hover:border-emerald-500/50 transition-all">
+                        <i class="bi bi-calendar2-event text-emerald-400"></i>
+                        <span>Discover Programs</span>
+                    </a>
+                    <a href="/prayer-times" class="inline-flex items-center gap-2 bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-200 font-medium px-5 py-3.5 rounded-2xl border border-emerald-500/30 transition-all">
+                        <i class="bi bi-clock"></i>
                         <span>Prayer Times</span>
                     </a>
-                    <a href="/diin-ai" class="inline-flex items-center gap-2 bg-emerald-600/30 hover:bg-emerald-600/40 text-emerald-200 font-bold px-6 py-3.5 rounded-xl border border-emerald-500/40 transition-all">
-                        <i class="bi bi-stars text-amber-300"></i>
-                        <span>Diin AI</span>
-                    </a>
+                </div>
+
+                <!-- Stats Badges -->
+                <div class="pt-4 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 border-t border-slate-800 text-left">
+                    <div>
+                        <p class="text-2xl font-black text-white">5 Daily</p>
+                        <p class="text-xs text-emerald-400 font-medium">Prayer Schedules & Reminders</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-black text-amber-300">Dhikr & Quran</p>
+                        <p class="text-xs text-slate-400 font-medium">Daily Target Tracking</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-black text-emerald-300">Waz & Events</p>
+                        <p class="text-xs text-slate-400 font-medium">Community Programs</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Hero Right Live Prayer Widget -->
+            <!-- Hero Right: Live Daily Deen Habit Card -->
             <div class="lg:col-span-5">
                 <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 text-slate-900">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
-                                🕌
+                            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl shadow-xs">
+                                ⏱️
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900 text-base">Next Congregation</h3>
-                                <p class="text-xs text-slate-500">Jamaat Prayer Time</p>
+                                <h3 class="font-bold text-slate-900 text-base">Next Daily Prayer</h3>
+                                <p class="text-xs text-slate-500">Personal Prayer Countdown</p>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-extrabold rounded-full animate-pulse">
-                            LIVE
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full animate-pulse">
+                            ACTIVE
                         </span>
                     </div>
 
                     @if (Model.NextPrayer != null)
                     {
-                        <div class="my-5 p-5 bg-emerald-50/80 border border-emerald-200/80 rounded-2xl text-center">
-                            <p class="text-xs uppercase font-bold tracking-wider text-emerald-800 mb-1">
+                        var next12 = DateTime.Today.Add(Model.NextPrayer.PrayerTimeValue).ToString("hh:mm tt");
+                        <div class="my-5 p-5 bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200/80 rounded-2xl text-center shadow-xs">
+                            <p class="text-xs uppercase font-extrabold tracking-wider text-emerald-800 mb-1">
                                 @Model.NextPrayer.DisplayNameEn (@Model.NextPrayer.DisplayNameBn)
                             </p>
-                            <div class="text-4xl font-extrabold text-emerald-900 tracking-tight my-1">
-                                @Model.NextPrayer.PrayerTimeValue.ToString(@"hh\:mm")
+                            <div class="text-4xl font-black text-emerald-950 tracking-tight my-1 font-mono">
+                                @next12
                             </div>
                             <p class="text-xs text-slate-600 mt-1">
-                                In approx <strong class="text-emerald-700 font-bold">@Model.TimeUntilNextPrayer.Hours hrs @Model.TimeUntilNextPrayer.Minutes mins</strong>
+                                Remaining: <strong class="text-emerald-700 font-bold">@Model.TimeUntilNextPrayer.Hours hrs @Model.TimeUntilNextPrayer.Minutes mins</strong>
                             </p>
                         </div>
                     }
 
                     <!-- 5 Daily Prayers List -->
-                    <div class="space-y-2 pt-2">
-                        @foreach (var prayer in Model.JamaatPrayers)
+                    <div class="space-y-2 pt-1">
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Today's 5 Prayers (Azan)</p>
+                        @foreach (var prayer in (Model.AzanPrayers.Any() ? Model.AzanPrayers : Model.JamaatPrayers).Take(5))
                         {
-                            <div class="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-slate-50 transition text-sm">
-                                <span class="font-medium text-slate-700">@prayer.DisplayNameEn</span>
-                                <span class="font-bold font-mono px-2.5 py-1 bg-slate-100 text-slate-800 rounded-lg text-xs">
-                                    @prayer.PrayerTimeValue.ToString(@"hh\:mm")
+                            var time12 = DateTime.Today.Add(prayer.PrayerTimeValue).ToString("hh:mm tt");
+                            <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 hover:bg-emerald-50/60 transition text-sm">
+                                <span class="font-semibold text-slate-700">@prayer.DisplayNameEn</span>
+                                <span class="font-bold font-mono px-2.5 py-1 bg-white border border-slate-200 text-slate-800 rounded-lg text-xs">
+                                    @time12
                                 </span>
                             </div>
                         }
                     </div>
 
-                    <div class="mt-4 pt-3 border-t border-slate-100 text-center">
+                    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
                         <a href="/prayer-times" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1">
-                            <span>View Azan, Tahajjud & Nafl Times</span>
-                            <i class="bi bi-arrow-right"></i>
+                            <span>Full Azan & Nafl Times</span> <i class="bi bi-arrow-right"></i>
+                        </a>
+                        <a href="/my-deen" class="text-xs font-bold bg-emerald-600 text-white px-3 py-1.5 rounded-xl hover:bg-emerald-700 transition">
+                            Open Habit Tracker
                         </a>
                     </div>
                 </div>
@@ -103,160 +124,190 @@
     </div>
 </section>
 
-<!-- Core Features Section -->
+<!-- Core Pillars / Platform Features -->
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <span class="px-3.5 py-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase tracking-wider">
-                Services & Platform Features
+                User-Centric Architecture
             </span>
             <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                Comprehensive Mosque Management
+                Empowering Your Personal Islamic Journey
             </h2>
             <p class="text-base text-slate-600 leading-relaxed">
-                Everything required to digitize our congregation, ensure financial integrity, and provide authentic religious services.
+                Everything required to build consistency in worship, track spiritual milestones, discover inspiring gatherings, and deepen authentic Islamic knowledge.
             </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- 1. Automated Prayer Times -->
-            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between">
+            
+            <!-- 1. My Deen Hub -->
+            <div class="bg-gradient-to-br from-emerald-50/50 to-teal-50/30 rounded-3xl p-8 border border-emerald-200/80 hover:shadow-xl transition-all flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-6">
-                        <i class="bi bi-clock-fill"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl mb-6 shadow-md shadow-emerald-600/30 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-compass-fill"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Automated Prayer Schedules</h3>
+                    <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-md uppercase">Core Module</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-2">My Deen Activity Hub</h3>
                     <p class="text-sm text-slate-600 leading-relaxed mb-6">
-                        Real-time daily Azan and Jamaat prayer schedules, live countdown to next congregation, and voluntary Nafl timings.
+                        Personal digital dashboard with interactive Dhikr Tasbih counters, Quran daily reading goals, Morning & Evening Adhkar checklists, Ruqyah daily routines, and consistency streak analytics.
                     </p>
                 </div>
-                <a href="/prayer-times" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
-                    <span>View Prayer Schedules</span> <i class="bi bi-arrow-right"></i>
+                <a href="/my-deen" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
+                    <span>Open My Deen Hub</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
 
-            <!-- 2. Zakat & Donations -->
-            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between">
+            <!-- 2. Activities & Programs Discovery -->
+            <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 hover:border-emerald-300 hover:shadow-xl transition-all flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-6">
-                        <i class="bi bi-calculator"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl mb-6 shadow-md shadow-blue-600/30 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-calendar2-range-fill"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Zakat Calculator & Philanthropy</h3>
+                    <span class="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-md uppercase">Discovery</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-2">Activities & Programs</h3>
                     <p class="text-sm text-slate-600 leading-relaxed mb-6">
-                        Authentic Nisab-based calculator for Gold and Silver wealth with instant transparent online donation processing.
+                        Discover and register for Waz Mahfils, Quran Competitions, Islamic Seminars, Workshops, and Community Islamic Programs with instant participation tracking.
                     </p>
                 </div>
-                <a href="/zakat" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
+                <a href="/activities" class="inline-flex items-center gap-1.5 text-sm font-bold text-blue-700 hover:text-blue-800">
+                    <span>Discover Programs</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 3. Diin AI Islamic Assistant -->
+            <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 hover:border-amber-300 hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl mb-6 shadow-md shadow-amber-500/30 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-stars"></i>
+                    </div>
+                    <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[11px] font-bold rounded-md uppercase">AI Guidance</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-2">Diin AI Assistant</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Ask religious questions 24/7 and receive verified guidance strictly referenced with Holy Qur'an Ayahs and Sahih Hadith literature.
+                    </p>
+                </div>
+                <a href="/diin-ai" class="inline-flex items-center gap-1.5 text-sm font-bold text-amber-700 hover:text-amber-800">
+                    <span>Chat with Diin AI</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 4. Islamic Calendar & Hijri Occasions -->
+            <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 hover:border-emerald-300 hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-purple-600 text-white flex items-center justify-center text-2xl mb-6 shadow-md shadow-purple-600/30 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </div>
+                    <span class="px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[11px] font-bold rounded-md uppercase">Occasions</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-2">Islamic Calendar & Sunnah Days</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Complete Hijri calendar, upcoming Islamic occasions (Ramadan, Eid, Day of Arafah, Ashura), and White Days / Monday-Thursday Sunnah fasting reminders.
+                    </p>
+                </div>
+                <a href="/islamic-calendar" class="inline-flex items-center gap-1.5 text-sm font-bold text-purple-700 hover:text-purple-800">
+                    <span>View Hijri Calendar</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 5. Zakat Calculator & Verified Philanthropy -->
+            <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 hover:border-amber-300 hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-2xl mb-6 shadow-md shadow-amber-600/30 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-calculator-fill"></i>
+                    </div>
+                    <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[11px] font-bold rounded-md uppercase">Philanthropy</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-2">Zakat Calculator & Charity</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Calculate exact Nisab-based Zakat on Gold, Silver, Cash, and Business Assets with transparent digital giving and personal monthly charity goal tracking.
+                    </p>
+                </div>
+                <a href="/zakat" class="inline-flex items-center gap-1.5 text-sm font-bold text-amber-700 hover:text-amber-800">
                     <span>Calculate Zakat</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
 
-            <!-- 3. Diin AI -->
-            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between">
+            <!-- 6. Profile & Growth Analytics -->
+            <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 hover:border-emerald-300 hover:shadow-xl transition-all flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-6">
-                        <i class="bi bi-stars"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-700 text-white flex items-center justify-center text-2xl mb-6 shadow-md shadow-emerald-700/30 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-trophy-fill"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Diin AI Islamic Assistant</h3>
+                    <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-md uppercase">Achievements</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-2 mb-2">Progress Stats & Badges</h3>
                     <p class="text-sm text-slate-600 leading-relaxed mb-6">
-                        Ask religious questions 24/7 with authentic citations from the Holy Qur'an and Sahih Hadith literature.
+                        Track long-term completion rates, unlock 7-day and 30-day consistency badges, review registered activities, and download verified donation receipts.
                     </p>
                 </div>
-                <a href="/diin-ai" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
-                    <span>Ask Diin AI</span> <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <!-- 4. Milad Booking -->
-            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between">
-                <div>
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-6">
-                        <i class="bi bi-bookmark-heart-fill"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Milad & Dua Booking</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
-                        Book Imams for family Shukrana, Khatam-e-Quran, and special home or mosque supplication gatherings.
-                    </p>
-                </div>
-                <a href="/milad" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
-                    <span>Book a Milad</span> <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <!-- 5. Events -->
-            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between">
-                <div>
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-6">
-                        <i class="bi bi-calendar3"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Islamic Calendar & Events</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
-                        Keep track of Hijri milestones, Ramadan, Eid prayers, Shab-e-Barat, and upcoming educational seminars.
-                    </p>
-                </div>
-                <a href="/events" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
-                    <span>View Calendar</span> <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <!-- 6. Activities -->
-            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200/80 hover:border-emerald-300 hover:shadow-lg transition-all flex flex-col justify-between">
-                <div>
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-6">
-                        <i class="bi bi-grid-fill"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Community Welfare Initiatives</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed mb-6">
-                        Support youth education, winter warmth clothing distributions, emergency relief, and green environmental drives.
-                    </p>
-                </div>
-                <a href="/activities" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
-                    <span>Explore Activities</span> <i class="bi bi-arrow-right"></i>
+                <a href="/user-profile" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:text-emerald-800">
+                    <span>View My Stats</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Ongoing Activities Showcase -->
+<!-- Featured Islamic Activities & Programs Section -->
 @if (Model.OngoingActivities.Any())
 {
-    <section class="py-20 bg-slate-50 border-t border-b border-slate-200/80">
+    <section class="py-20 bg-slate-50 border-t border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
                 <div>
-                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase">Community Impact</span>
-                    <h2 class="text-3xl font-extrabold text-slate-900 mt-2">Ongoing Mosque Programs</h2>
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase">Community Engagement</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 mt-2">Discover Islamic Programs</h2>
+                    <p class="text-slate-600 text-sm mt-1">Explore upcoming Mahfils, Seminars, and Workshops to participate with your community.</p>
                 </div>
                 <a href="/activities" class="mt-4 md:mt-0 text-sm font-bold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1">
-                    <span>View All Activities</span> <i class="bi bi-arrow-right"></i>
+                    <span>Browse All Programs</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach (var act in Model.OngoingActivities)
+                @foreach (var act in Model.OngoingActivities.Take(3))
                 {
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow flex flex-col">
-                        @if (!string.IsNullOrEmpty(act.ImageUrl))
-                        {
-                            <img src="@act.ImageUrl" alt="@act.Title" class="w-full h-48 object-cover" />
-                        }
-                        else
-                        {
-                            <div class="w-full h-48 bg-emerald-100 flex items-center justify-center text-4xl">
-                                🕌
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow flex flex-col justify-between">
+                        <div>
+                            @if (!string.IsNullOrEmpty(act.ImageUrl))
+                            {
+                                <img src="@act.ImageUrl" alt="@act.Title" class="w-full h-48 object-cover" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-48 bg-gradient-to-r from-emerald-600 to-teal-700 flex items-center justify-center text-4xl text-white">
+                                    🕌
+                                </div>
+                            }
+                            <div class="p-6">
+                                <span class="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-full uppercase">
+                                    @act.Category
+                                </span>
+                                <h3 class="font-bold text-slate-900 text-lg mt-3 mb-2">@act.Title</h3>
+                                <p class="text-sm text-slate-600 line-clamp-2 leading-relaxed">@act.Description</p>
+                                
+                                <div class="mt-4 space-y-1.5 text-xs text-slate-500">
+                                    @if (act.ProgramDate.HasValue)
+                                    {
+                                        <div class="flex items-center gap-2">
+                                            <i class="bi bi-calendar-event text-emerald-600"></i>
+                                            <span>@act.ProgramDate.Value.ToString("dddd, MMMM dd, yyyy") (@act.StartTime)</span>
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(act.Location))
+                                    {
+                                        <div class="flex items-center gap-2">
+                                            <i class="bi bi-geo-alt text-emerald-600"></i>
+                                            <span>@act.Location</span>
+                                        </div>
+                                    }
+                                </div>
                             </div>
-                        }
-                        <div class="p-6 flex-1 flex flex-col justify-between">
-                            <div>
-                                <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-md uppercase">@act.Category</span>
-                                <h3 class="font-bold text-slate-900 text-lg mt-2 mb-2">@act.Title</h3>
-                                <p class="text-sm text-slate-600 line-clamp-3 leading-relaxed">@act.Description</p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                <a href="/activities/@act.Id" class="text-xs font-bold text-emerald-700 hover:underline">Read Details &rarr;</a>
-                                <a href="/donate" class="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg">Support</a>
-                            </div>
+                        </div>
+                        
+                        <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
+                            <a href="/activities/@act.Id" class="text-xs font-bold text-slate-700 hover:text-emerald-700">Learn More &rarr;</a>
+                            <a href="/activities/@act.Id" class="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-xs">
+                                Register Now
+                            </a>
                         </div>
                     </div>
                 }
@@ -265,42 +316,42 @@
     </section>
 }
 
-<!-- Donation Funds Section (Matching original DonationFunds.tsx) -->
+<!-- Verified Charity Opportunities -->
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
-            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase">Charity & Welfare</span>
-            <h2 class="text-3xl font-extrabold text-slate-900">Support Dedicated Causes</h2>
-            <p class="text-slate-600 text-sm">Choose a welfare fund and contribute transparently towards noble community causes.</p>
+            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase">Charity & Philanthropy</span>
+            <h2 class="text-3xl font-extrabold text-slate-900">Verified Charity Campaigns</h2>
+            <p class="text-slate-600 text-sm">Channel your Sadaqah and Zakat toward verified humanitarian and Islamic educational causes.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @{
-                var fundsList = new[]
+                var causes = new[]
                 {
-                    new { Cat = "zakat", Title = "Zakat Fund", Desc = "Empowering destitute Muslims with calculated Zakat", Icon = "bi-cash-coin" },
-                    new { Cat = "iftar", Title = "Ramadan Iftar Drive", Desc = "Providing hot meals to fasting individuals during Ramadan", Icon = "bi-cup-hot" },
-                    new { Cat = "durjog", Title = "Disaster Relief (Durjog)", Desc = "Emergency food, medicine, and shelters for flood victims", Icon = "bi-life-preserver" },
-                    new { Cat = "sitarto", Title = "Winter Clothes (Sitarto)", Desc = "Warm blankets & winter attire for underprivileged families", Icon = "bi-snow" },
-                    new { Cat = "gachropon", Title = "Tree Plantation (SDG 9)", Desc = "Environmental green drive around the mosque community", Icon = "bi-tree-fill" },
-                    new { Cat = "orphan", Title = "Orphan Care & Education", Desc = "Monthly stipends and education for orphan children", Icon = "bi-heart-half" },
+                    new { Cat = "zakat", Title = "Zakat Fund", Desc = "Empowering destitute families and debt relief with calculated Zakat", Icon = "bi-cash-coin" },
+                    new { Cat = "orphan", Title = "Orphan Care & Education", Desc = "Monthly educational stipends and living costs for orphan children", Icon = "bi-heart-half" },
+                    new { Cat = "sitarto", Title = "Winter Clothes Drive", Desc = "Warm blankets & winter clothing for vulnerable rural families", Icon = "bi-snow" },
+                    new { Cat = "iftar", Title = "Ramadan Food Baskets", Desc = "Providing essential Sahur and Iftar grocery packs during Ramadan", Icon = "bi-cup-hot" },
+                    new { Cat = "durjog", Title = "Emergency Flood Relief", Desc = "Rapid food, medicine, and emergency shelters during disasters", Icon = "bi-life-preserver" },
+                    new { Cat = "general", Title = "Islamic Education & Hifz Fund", Desc = "Sponsoring Quran memorizers and student Islamic learning supplies", Icon = "bi-book" },
                 };
             }
 
-            @foreach (var f in fundsList)
+            @foreach (var c in causes)
             {
-                <div class="p-6 rounded-2xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-emerald-300 hover:shadow-md transition-all flex items-center justify-between">
+                <div class="p-6 rounded-3xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:border-emerald-300 hover:shadow-lg transition-all flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-white shadow-xs border border-slate-100 flex items-center justify-center text-xl text-emerald-700">
-                            <i class="bi @f.Icon"></i>
+                        <div class="w-12 h-12 rounded-2xl bg-white shadow-xs border border-slate-200 flex items-center justify-center text-xl text-emerald-700">
+                            <i class="bi @c.Icon"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 text-base">@f.Title</h4>
-                            <p class="text-xs text-slate-500 max-w-xs">@f.Desc</p>
+                            <h4 class="font-bold text-slate-900 text-base">@c.Title</h4>
+                            <p class="text-xs text-slate-500 max-w-xs leading-relaxed">@c.Desc</p>
                         </div>
                     </div>
-                    <a href="/donate?category=@f.Cat" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs text-nowrap">
-                        Donate
+                    <a href="/donate?category=@c.Cat" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs text-nowrap">
+                        Give
                     </a>
                 </div>
             }

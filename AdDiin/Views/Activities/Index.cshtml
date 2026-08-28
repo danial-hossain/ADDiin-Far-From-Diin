@@ -1,60 +1,154 @@
-﻿@model List<AdDiin.Models.Entities.Activity>
+@model IEnumerable<AdDiin.Models.Entities.Activity>
 @{
-    ViewData["Title"] = "Ongoing Activities & Programs";
+    ViewData["Title"] = "Activities & Programs | Discover & Participate";
+    var selectedCategory = ViewData["SelectedCategory"] as string;
+    var searchQuery = ViewData["SearchQuery"] as string;
+    var categories = new[] { "All", "Waz Mahfil", "Islamic Seminar", "Quran Competition", "Islamic Workshop", "Islamic Gathering", "Community Islamic Programs" };
 }
 
-<div class="bg-emerald-dark text-white py-5">
-    <div class="container text-center py-3">
-        <h1 class="display-5 fw-extrabold mb-2">🕌 Mosque Activities & Programs</h1>
-        <p class="text-white-75 max-w-700 mx-auto">
-            Discover our active educational courses, charity initiatives, youth empowerment drives, and environmental programs.
-        </p>
-    </div>
-</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Hero Header -->
+    <div class="bg-gradient-to-r from-slate-900 via-emerald-950 to-teal-900 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-3 max-w-2xl">
+            <span class="px-3.5 py-1 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold rounded-full uppercase tracking-wider">
+                Community Islamic Engagement
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Discover Islamic Activities & Programs</h1>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Explore Waz Mahfils, academic seminars, Quran competitions, and youth halaqahs. Register to secure your seat and receive automated reminders.
+            </p>
+        </div>
 
-<div class="container my-5">
-    <div class="row g-4">
-        @if (!Model.Any())
-        {
-            <div class="col-12 text-center py-5 text-muted">
-                <i class="bi bi-grid display-3 mb-2"></i>
-                <p>No activities listed currently.</p>
+        <div class="flex gap-3">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a href="/my-activities" class="px-5 py-3 bg-white hover:bg-slate-100 text-slate-900 text-xs font-extrabold rounded-2xl shadow-md transition flex items-center gap-2 text-nowrap">
+                    <i class="bi bi-person-check-fill text-emerald-600"></i> My Registered Programs
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Search and Category Filters -->
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+        <form method="get" action="/activities" class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <i class="bi bi-search absolute left-4 top-3.5 text-slate-400"></i>
+                <input type="text" name="search" value="@searchQuery" placeholder="Search by title, speaker, topic, or location..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" />
             </div>
-        }
-        else
+            <input type="hidden" name="category" value="@selectedCategory" />
+            <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-2xl shadow-xs transition">
+                Search Programs
+            </button>
+            @if (!string.IsNullOrEmpty(searchQuery) || !string.IsNullOrEmpty(selectedCategory))
+            {
+                <a href="/activities" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl transition text-center">
+                    Reset
+                </a>
+            }
+        </form>
+
+        <!-- Category Pills -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+            @foreach (var cat in categories)
+            {
+                var isCatActive = (cat == "All" && string.IsNullOrEmpty(selectedCategory)) || (cat == selectedCategory);
+                var linkUrl = cat == "All" ? "/activities" : $"/activities?category={Uri.EscapeDataString(cat)}";
+                <a href="@linkUrl" class="px-4 py-2 rounded-xl text-xs font-bold transition @(isCatActive ? "bg-emerald-700 text-white shadow-xs" : "bg-slate-100 text-slate-700 hover:bg-slate-200")">
+                    @cat
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Programs Listing Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @if (Model.Any())
         {
             @foreach (var act in Model)
             {
-                <div class="col-lg-4 col-md-6">
-                    <div class="card card-custom h-100 border-0 shadow-sm overflow-hidden rounded-4 d-flex flex-column">
-                        @if (!string.IsNullOrEmpty(act.ImageUrl))
-                        {
-                            <img src="@act.ImageUrl" class="card-img-top" alt="@act.Title" style="height: 220px; object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <div class="bg-emerald-light d-flex align-items-center justify-content-center" style="height: 220px;">
-                                <span class="fs-1">🕌</span>
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="relative h-48 overflow-hidden bg-slate-100">
+                            @if (!string.IsNullOrEmpty(act.ImageUrl))
+                            {
+                                <img src="@act.ImageUrl" alt="@act.Title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center text-4xl text-white">
+                                    🕌
+                                </div>
+                            }
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 bg-white/95 backdrop-blur-md text-emerald-800 text-[11px] font-extrabold rounded-full shadow-md uppercase">
+                                    @act.Category
+                                </span>
                             </div>
-                        }
-                        <div class="card-body p-4 d-flex flex-column">
-                            <span class="badge bg-emerald-light text-emerald align-self-start mb-2 text-uppercase">@act.Category</span>
-                            <h5 class="card-title fw-bold">@act.Title</h5>
-                            <p class="card-text text-muted small leading-relaxed flex-grow-1">
+                        </div>
+
+                        <div class="p-6 space-y-3">
+                            <h3 class="font-extrabold text-slate-900 text-lg leading-snug group-hover:text-emerald-700 transition">
+                                @act.Title
+                            </h3>
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                                 @act.Description
                             </p>
-                            <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
-                                <a asp-action="Details" asp-route-id="@act.Id" class="btn btn-outline-emerald btn-sm rounded-pill px-3">
-                                    Read Full Details <i class="bi bi-arrow-right"></i>
-                                </a>
-                                <a asp-controller="Donate" asp-action="Index" class="btn btn-warning text-dark btn-sm rounded-pill px-3 fw-bold">
-                                    Support
-                                </a>
+
+                            <div class="pt-2 space-y-2 text-xs text-slate-600">
+                                @if (act.ProgramDate.HasValue)
+                                {
+                                    <div class="flex items-center gap-2">
+                                        <i class="bi bi-calendar-event text-emerald-600"></i>
+                                        <span class="font-semibold text-slate-800">@act.ProgramDate.Value.ToString("dddd, MMMM dd, yyyy")</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(act.StartTime))
+                                {
+                                    <div class="flex items-center gap-2">
+                                        <i class="bi bi-clock text-emerald-600"></i>
+                                        <span>@act.StartTime @(!string.IsNullOrEmpty(act.EndTime) ? $"- {act.EndTime}" : "")</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(act.Location))
+                                {
+                                    <div class="flex items-center gap-2">
+                                        <i class="bi bi-geo-alt-fill text-emerald-600"></i>
+                                        <span class="truncate">@act.Location</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(act.Instructor))
+                                {
+                                    <div class="flex items-center gap-2">
+                                        <i class="bi bi-person-fill text-emerald-600"></i>
+                                        <span class="truncate">Speaker: @act.Instructor</span>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
+
+                    <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
+                        <a href="/activities/@act.Id" class="text-xs font-bold text-slate-600 hover:text-emerald-700">
+                            Details &rarr;
+                        </a>
+                        <a href="/activities/@act.Id" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition">
+                            Register Now
+                        </a>
+                    </div>
                 </div>
             }
+        }
+        else
+        {
+            <div class="col-span-full p-16 text-center bg-white rounded-3xl border border-slate-200 space-y-3">
+                <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mx-auto">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-base">No Programs Found</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto">Try searching for other keywords or select a different category filter.</p>
+            </div>
         }
     </div>
 </div>

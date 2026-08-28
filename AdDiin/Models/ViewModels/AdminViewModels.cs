@@ -1,4 +1,4 @@
-﻿using AdDiin.Models.Entities;
+using AdDiin.Models.Entities;
 
 namespace AdDiin.Models.ViewModels
 {
@@ -11,6 +11,8 @@ namespace AdDiin.Models.ViewModels
         public decimal TotalDonationsCompleted { get; set; }
         public int TotalDonationsCount { get; set; }
         public int PendingDonationsCount { get; set; }
+        public int PendingRegistrationsCount { get; set; }
+        public int TotalRegistrationsCount { get; set; }
         public int PendingMiladCount { get; set; }
         public int TotalMiladCount { get; set; }
         public int TotalEventsCount { get; set; }
@@ -19,8 +21,10 @@ namespace AdDiin.Models.ViewModels
         public int ActiveConversationsCount { get; set; }
 
         public List<Donation> RecentDonations { get; set; } = new();
+        public List<ProgramRegistration> RecentRegistrations { get; set; } = new();
         public List<MiladRequest> RecentMiladRequests { get; set; } = new();
         public List<IslamicEvent> UpcomingEvents { get; set; } = new();
+        public List<Activity> ActivePrograms { get; set; } = new();
         public Dictionary<string, decimal> DonationsByCategory { get; set; } = new();
     }
 
@@ -39,9 +43,23 @@ namespace AdDiin.Models.ViewModels
     public class AdminUsersViewModel
     {
         public List<ApplicationUser> Users { get; set; } = new();
+        public Dictionary<int, IList<string>> UserRoles { get; set; } = new();
         public string? SearchQuery { get; set; }
         public string? RoleFilter { get; set; }
         public string? StatusFilter { get; set; }
+        public int TotalCount { get; set; }
+        public int ActiveCount { get; set; }
+        public int InactiveCount { get; set; }
+        public int AdminCount { get; set; }
+    }
+
+    public class AdminRegistrationsViewModel
+    {
+        public List<ProgramRegistration> Registrations { get; set; } = new();
+        public string? StatusFilter { get; set; }
+        public string? SearchQuery { get; set; }
+        public int? ActivityFilter { get; set; }
+        public List<Activity> AvailableActivities { get; set; } = new();
     }
 
     public class AdminMiladsViewModel

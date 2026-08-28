@@ -1,4 +1,4 @@
-﻿using AdDiin.Models.Entities;
+using AdDiin.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +20,14 @@ namespace AdDiin.Data
         public DbSet<Message> Messages => Set<Message>();
         public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
         public DbSet<Activity> Activities => Set<Activity>();
+        public DbSet<ProgramRegistration> ProgramRegistrations => Set<ProgramRegistration>();
+        public DbSet<DhikrRecord> DhikrRecords => Set<DhikrRecord>();
+        public DbSet<QuranReadingLog> QuranReadingLogs => Set<QuranReadingLog>();
+        public DbSet<AdhkarLog> AdhkarLogs => Set<AdhkarLog>();
+        public DbSet<RuqyahLog> RuqyahLogs => Set<RuqyahLog>();
+        public DbSet<DailyDeenGoal> DailyDeenGoals => Set<DailyDeenGoal>();
+        public DbSet<UserNotification> UserNotifications => Set<UserNotification>();
+        public DbSet<UserDeenSettings> UserDeenSettings => Set<UserDeenSettings>();
         public DbSet<VerificationCode> VerificationCodes => Set<VerificationCode>();
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -51,6 +59,22 @@ namespace AdDiin.Data
                 .WithMany(u => u.Messages)
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure ProgramRegistration relationship
+            builder.Entity<ProgramRegistration>()
+                .HasOne(r => r.Activity)
+                .WithMany(a => a.Registrations)
+                .HasForeignKey(r => r.ActivityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ProgramRegistration>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<ProgramRegistration>()
+                .HasIndex(r => r.Status);
 
             // Configure MiladRequest relationship
             builder.Entity<MiladRequest>()

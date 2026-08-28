@@ -1,4 +1,4 @@
-﻿using AdDiin.Data;
+using AdDiin.Data;
 using AdDiin.Models.Entities;
 using AdDiin.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +15,10 @@ namespace AdDiin.Services
         Task<List<Donation>> GetUserDonationsAsync(int userId);
         Task<AdminDonationsViewModel> GetAdminDonationsAsync(string? category = null, string? status = null, string? search = null);
         Task<Dictionary<string, decimal>> GetCategoryBreakdownAsync();
+        Task<(decimal totalRaised, int donorsCount, Dictionary<string, decimal> breakdown)> GetPublicDonationStatsAsync();
+        Task<Donation> CreateManualDonationAsync(string name, string? email, string? phone, string category, decimal amount, string? paymentMethod, string status, string? notes);
+        Task<Donation?> UpdateDonationAsync(int id, string name, string? email, string? phone, string category, decimal amount, string? paymentMethod, string status, string? notes);
+        Task<bool> DeleteDonationAsync(int id);
     }
 
     public class DonationService : IDonationService
@@ -155,6 +159,74 @@ namespace AdDiin.Services
                 .GroupBy(d => d.Category)
                 .Select(g => new { Category = g.Key, Total = g.Sum(d => d.Amount) })
                 .ToDictionaryAsync(k => k.Category, v => v.Total);
+        }
+
+        public async Task<(decimal totalRaised, int donorsCount, Dictionary<string, decimal> breakdown)> GetPublicDonationStatsAsync()
+        {
+            var completedQuery = _context.Donations.Where(d => d.PaymentStatus == "completed");
+            var totalRaised = await completedQuery.SumAsync(d => (decimal?)d.Amount) ?? 0;
+            var donorsCount = await completedQuery.CountAsync();
+            var breakdown = await completedQuery
+                .GroupBy(d => d.Category)
+                .Select(g => new { Category = g.Key, Total = g.Sum(d => d.Amount) })
+                .ToDictionaryAsync(k => k.Category, v => v.Total);
+
+            return (totalRaised, donorsCount, breakdown);
+        }
+
+        public async Task<Donation> CreateManualDonationAsync(string name, string? email, string? phone, string category, decimal amount, string? paymentMethod, string status, string? notes)
+        {
+            var tranId = $"MAN_{DateTime.UtcNow.Ticks}_{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+
+            var donation = new Donation
+            {
+                Name = string.IsNullOrWhiteSpace(name) ? "Offline Contributor" : name,
+                Email = email,
+                Phone = phone,
+                Category = string.IsNullOrWhiteSpace(category) ? "general" : category.ToLower(),
+                Amount = Math.Max(1, amount),
+                Currency = "BDT",
+                TranId = tranId,
+                PaymentStatus = string.IsNullOrWhiteSpace(status) ? "completed" : status.ToLower(),
+                PaymentMethod = string.IsNullOrWhiteSpace(paymentMethod) ? "Cash / Office" : paymentMethod,
+                IsAnonymous = false,
+                Notes = notes,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.Donations.Add(donation);
+            await _context.SaveChangesAsync();
+            return donation;
+        }
+
+        public async Task<Donation?> UpdateDonationAsync(int id, string name, string? email, string? phone, string category, decimal amount, string? paymentMethod, string status, string? notes)
+        {
+            var donation = await _context.Donations.FindAsync(id);
+            if (donation == null) return null;
+
+            donation.Name = string.IsNullOrWhiteSpace(name) ? donation.Name : name;
+            donation.Email = email;
+            donation.Phone = phone;
+            if (!string.IsNullOrWhiteSpace(category)) donation.Category = category.ToLower();
+            if (amount > 0) donation.Amount = amount;
+            if (!string.IsNullOrWhiteSpace(paymentMethod)) donation.PaymentMethod = paymentMethod;
+            if (!string.IsNullOrWhiteSpace(status)) donation.PaymentStatus = status.ToLower();
+            donation.Notes = notes;
+            donation.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return donation;
+        }
+
+        public async Task<bool> DeleteDonationAsync(int id)
+        {
+            var donation = await _context.Donations.FindAsync(id);
+            if (donation == null) return false;
+
+            _context.Donations.Remove(donation);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
