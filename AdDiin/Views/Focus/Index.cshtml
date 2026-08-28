@@ -1,0 +1,536 @@
+﻿@{
+    ViewData["Title"] = "Far Focus & Digital Fasting | ADDiin";
+}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8" id="focusHubApp">
+    
+    <!-- Hero Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 sm:p-10 shadow-xl border border-indigo-900/50">
+        <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div class="space-y-2 max-w-2xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+                    <i class="bi bi-shield-check"></i> Far from Dunya Distractions
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Focus Shield & Digital Fasting</h1>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    Protect your mind, prayer focus, and spiritual presence. Block dopamine-draining social media platforms (Facebook, Instagram, X, Messenger, etc.) and redirect your time towards Quran, Dhikr, and productive habits.
+                </p>
+            </div>
+
+            <!-- Master Switch Quick Toggle -->
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center gap-4 w-full sm:w-auto justify-between">
+                <div>
+                    <p class="text-xs text-slate-300 font-bold uppercase tracking-wider">Shield Status</p>
+                    <p class="text-base font-extrabold" id="masterStatusText">Shield Inactive</p>
+                </div>
+                <button type="button" id="masterToggleBtn" onclick="toggleMasterShield()" class="px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white">
+                    <i class="bi bi-power text-sm"></i> <span id="masterToggleBtnText">Turn Shield ON</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid: Timer & Platform Controls -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left 7 cols: Focus Session Timer & Ambient Mode -->
+        <div class="lg:col-span-7 space-y-6">
+            
+            <!-- Focus Session Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xl shadow-xs">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">Spiritual Focus Session</h3>
+                            <p class="text-xs text-slate-500">Set a digital fast duration to stay locked into your worship or deep work</p>
+                        </div>
+                    </div>
+                    <span id="timerBadge" class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full">
+                        Standby
+                    </span>
+                </div>
+
+                <!-- Circular Timer Display -->
+                <div class="flex flex-col items-center justify-center py-6 space-y-4">
+                    <div class="relative w-52 h-52 sm:w-60 sm:h-60 rounded-full border-8 border-slate-100 flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-white shadow-inner" id="timerCircle">
+                        <span class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight font-mono" id="timeRemainingDisplay">25:00</span>
+                        <span class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider" id="timerPhaseDisplay">Focus Session</span>
+                    </div>
+
+                    <!-- Preset Duration Buttons -->
+                    <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+                        <button type="button" onclick="setPresetTime(15)" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition time-preset-btn">15 Mins</button>
+                        <button type="button" onclick="setPresetTime(25)" class="px-3.5 py-1.5 rounded-xl border border-indigo-600 bg-indigo-50 text-xs font-bold text-indigo-900 transition time-preset-btn">25 Mins (Pomodoro)</button>
+                        <button type="button" onclick="setPresetTime(45)" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition time-preset-btn">45 Mins</button>
+                        <button type="button" onclick="setPresetTime(60)" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition time-preset-btn">1 Hour</button>
+                        <button type="button" onclick="setPresetTime(120)" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition time-preset-btn">2 Hours (Deep Fast)</button>
+                    </div>
+
+                    <!-- Timer Controls -->
+                    <div class="flex items-center gap-3 pt-4">
+                        <button type="button" id="startTimerBtn" onclick="startFocusTimer()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm rounded-2xl shadow-md transition-all flex items-center gap-2">
+                            <i class="bi bi-play-fill text-lg"></i> Start Digital Fast
+                        </button>
+                        <button type="button" id="pauseTimerBtn" onclick="pauseFocusTimer()" class="hidden px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl shadow-sm transition-all flex items-center gap-2">
+                            <i class="bi bi-pause-fill text-lg"></i> Pause
+                        </button>
+                        <button type="button" onclick="resetFocusTimer()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-2xl transition-all">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Focus Reflection Quote -->
+                <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/60 flex items-start gap-3">
+                    <i class="bi bi-quote text-2xl text-amber-600"></i>
+                    <div>
+                        <p class="text-xs text-amber-950 font-medium italic">
+                            "And whoever fears Allah - He will make for him of his matter ease." — Surah At-Talaq (65:4)
+                        </p>
+                        <p class="text-[11px] text-amber-800/80 mt-1 font-semibold">
+                            Staying away from trivial distractions opens heart and clarity for remembrance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Focus Soundscapes & Ambiance -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                        <i class="bi bi-soundwave text-indigo-600"></i> Islamic Background Soundscapes
+                    </h3>
+                    <span class="text-xs text-slate-400 font-medium">Ambient Audio</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button type="button" onclick="toggleSound('rain')" class="p-3.5 rounded-2xl border border-slate-200/80 text-left hover:bg-slate-50 transition flex items-center justify-between sound-card" id="sound-rain">
+                        <div class="flex items-center gap-2.5">
+                            <i class="bi bi-cloud-rain-fill text-blue-500 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Calm Rain</p>
+                                <p class="text-[10px] text-slate-400">Gentle drizzle</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-play-circle text-slate-400 text-base" id="icon-rain"></i>
+                    </button>
+
+                    <button type="button" onclick="toggleSound('makkah')" class="p-3.5 rounded-2xl border border-slate-200/80 text-left hover:bg-slate-50 transition flex items-center justify-between sound-card" id="sound-makkah">
+                        <div class="flex items-center gap-2.5">
+                            <i class="bi bi-moon-stars-fill text-amber-500 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Makkah Night</p>
+                                <p class="text-[10px] text-slate-400">Spiritual calm</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-play-circle text-slate-400 text-base" id="icon-makkah"></i>
+                    </button>
+
+                    <button type="button" onclick="toggleSound('birds')" class="p-3.5 rounded-2xl border border-slate-200/80 text-left hover:bg-slate-50 transition flex items-center justify-between sound-card" id="sound-birds">
+                        <div class="flex items-center gap-2.5">
+                            <i class="bi bi-tree-fill text-emerald-500 text-lg"></i>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Nature & Birds</p>
+                                <p class="text-[10px] text-slate-400">Fresh morning</p>
+                            </div>
+                        </div>
+                        <i class="bi bi-play-circle text-slate-400 text-base" id="icon-birds"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right 5 cols: Blocked Platforms Selector & Extension Setup -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Platform Toggles List -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-extrabold text-slate-900 text-base">Blocked Platforms</h3>
+                    <button type="button" onclick="toggleAllPlatforms(true)" class="text-xs font-bold text-indigo-700 hover:text-indigo-800">Block All</button>
+                </div>
+
+                <div class="space-y-3" id="platformsList">
+                    <!-- Facebook & Messenger -->
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg shadow-xs">
+                                <i class="bi bi-facebook"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">Facebook & Messenger</h4>
+                                <p class="text-[11px] text-slate-500">facebook.com, messenger.com</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="block_facebook" class="sr-only peer platform-toggle" data-platform="facebook" checked onchange="savePlatformSettings()">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Instagram -->
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center text-lg shadow-xs">
+                                <i class="bi bi-instagram"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">Instagram</h4>
+                                <p class="text-[11px] text-slate-500">instagram.com</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="block_instagram" class="sr-only peer platform-toggle" data-platform="instagram" checked onchange="savePlatformSettings()">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- X / Twitter -->
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center text-lg shadow-xs">
+                                <i class="bi bi-twitter-x"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">X (Twitter)</h4>
+                                <p class="text-[11px] text-slate-500">x.com, twitter.com</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="block_x" class="sr-only peer platform-toggle" data-platform="x" checked onchange="savePlatformSettings()">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- YouTube -->
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center text-lg shadow-xs">
+                                <i class="bi bi-youtube"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">YouTube / Shorts</h4>
+                                <p class="text-[11px] text-slate-500">youtube.com</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="block_youtube" class="sr-only peer platform-toggle" data-platform="youtube" checked onchange="savePlatformSettings()">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- TikTok -->
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center text-lg shadow-xs">
+                                <i class="bi bi-tiktok"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">TikTok</h4>
+                                <p class="text-[11px] text-slate-500">tiktok.com</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="block_tiktok" class="sr-only peer platform-toggle" data-platform="tiktok" checked onchange="savePlatformSettings()">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Custom Website Form -->
+                <div class="pt-2">
+                    <label class="text-xs font-bold text-slate-700 block mb-1">Add Custom Domain to Block</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="customDomainInput" placeholder="e.g. reddit.com, netflix.com" class="w-full text-xs font-semibold px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl" />
+                        <button type="button" onclick="addCustomDomain()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
+                            Add
+                        </button>
+                    </div>
+                    <div id="customDomainsContainer" class="flex flex-wrap gap-1.5 mt-2"></div>
+                </div>
+            </div>
+
+            <!-- Browser Blocker Extension Setup -->
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-6 sm:p-7 border border-indigo-100 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl shadow-xs">
+                        <i class="bi bi-plugin"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-900 text-sm sm:text-base">Browser Auto-Blocker Setup</h4>
+                        <p class="text-xs text-slate-600">1-Minute Setup for Chrome, Edge & Brave</p>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    To automatically intercept & redirect blocked tabs in your browser to your spiritual screen:
+                </p>
+
+                <ol class="text-xs text-slate-700 space-y-2 list-decimal list-inside font-medium bg-white/70 p-4 rounded-2xl border border-indigo-100/60">
+                    <li>Download the <strong>ADDiin Far Extension</strong>.</li>
+                    <li>Open <code>chrome://extensions</code> in Chrome/Edge.</li>
+                    <li>Turn ON <strong>Developer mode</strong> (top right).</li>
+                    <li>Click <strong>Load unpacked</strong> and select the <code>wwwroot/extension</code> folder!</li>
+                </ol>
+
+                <div class="pt-1 flex gap-2">
+                    <a href="/extension/manifest.json" target="_blank" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs text-center transition flex items-center justify-center gap-2">
+                        <i class="bi bi-folder-check"></i> View Extension Bundle
+                    </a>
+                    <a href="/focus/shield?domain=facebook.com" class="py-2.5 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 text-center transition" title="Preview what blocked screen looks like">
+                        Preview Shield
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // State management in LocalStorage
+    let focusTimer = null;
+    let totalSeconds = 25 * 60;
+    let remainingSeconds = 25 * 60;
+    let isRunning = false;
+    let activeAudio = null;
+
+    const defaultDomains = {
+        facebook: ["facebook.com", "messenger.com"],
+        instagram: ["instagram.com"],
+        x: ["x.com", "twitter.com"],
+        youtube: ["youtube.com"],
+        tiktok: ["tiktok.com"]
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadSettings();
+        renderCustomDomains();
+        updateDisplay();
+    });
+
+    function loadSettings() {
+        const shieldActive = localStorage.getItem("addiin_shield_active") === "true";
+        updateShieldUI(shieldActive);
+
+        const savedPlatforms = JSON.parse(localStorage.getItem("addiin_blocked_platforms") || "{}");
+        document.querySelectorAll(".platform-toggle").forEach(cb => {
+            const platform = cb.dataset.platform;
+            if (savedPlatforms[platform] !== undefined) {
+                cb.checked = savedPlatforms[platform];
+            }
+        });
+    }
+
+    function updateShieldUI(isActive) {
+        const statusText = document.getElementById("masterStatusText");
+        const btn = document.getElementById("masterToggleBtn");
+        const btnText = document.getElementById("masterToggleBtnText");
+
+        if (isActive) {
+            statusText.textContent = "🛡️ Shield Active & Blocking";
+            statusText.className = "text-base font-extrabold text-emerald-400";
+            btn.className = "px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white";
+            btnText.textContent = "Turn Shield OFF";
+        } else {
+            statusText.textContent = "Shield Inactive (Unblocked)";
+            statusText.className = "text-base font-extrabold text-slate-300";
+            btn.className = "px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white";
+            btnText.textContent = "Turn Shield ON";
+        }
+    }
+
+    function toggleMasterShield() {
+        const current = localStorage.getItem("addiin_shield_active") === "true";
+        const next = !current;
+        localStorage.setItem("addiin_shield_active", next.toString());
+        updateShieldUI(next);
+        savePlatformSettings();
+    }
+
+    function savePlatformSettings() {
+        const settings = {};
+        document.querySelectorAll(".platform-toggle").forEach(cb => {
+            settings[cb.dataset.platform] = cb.checked;
+        });
+        localStorage.setItem("addiin_blocked_platforms", JSON.stringify(settings));
+
+        // Sync with browser extension if active
+        window.postMessage({
+            type: "ADDIIN_SHIELD_UPDATE",
+            active: localStorage.getItem("addiin_shield_active") === "true",
+            platforms: settings,
+            custom: JSON.parse(localStorage.getItem("addiin_custom_domains") || "[]")
+        }, "*");
+    }
+
+    function toggleAllPlatforms(enable) {
+        document.querySelectorAll(".platform-toggle").forEach(cb => {
+            cb.checked = enable;
+        });
+        savePlatformSettings();
+    }
+
+    function addCustomDomain() {
+        const input = document.getElementById("customDomainInput");
+        let val = input.value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+        if (!val) return;
+
+        const custom = JSON.parse(localStorage.getItem("addiin_custom_domains") || "[]");
+        if (!custom.includes(val)) {
+            custom.push(val);
+            localStorage.setItem("addiin_custom_domains", JSON.stringify(custom));
+            renderCustomDomains();
+            savePlatformSettings();
+        }
+        input.value = "";
+    }
+
+    function removeCustomDomain(domain) {
+        let custom = JSON.parse(localStorage.getItem("addiin_custom_domains") || "[]");
+        custom = custom.filter(d => d !== domain);
+        localStorage.setItem("addiin_custom_domains", JSON.stringify(custom));
+        renderCustomDomains();
+        savePlatformSettings();
+    }
+
+    function renderCustomDomains() {
+        const container = document.getElementById("customDomainsContainer");
+        const custom = JSON.parse(localStorage.getItem("addiin_custom_domains") || "[]");
+        container.innerHTML = custom.map(d => `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-900 text-xs font-semibold border border-indigo-200">
+                ${d}
+                <button type="button" onclick="removeCustomDomain('${d}')" class="text-indigo-400 hover:text-red-600 font-bold">&times;</button>
+            </span>
+        `).join("");
+    }
+
+    // Timer Implementation
+    function setPresetTime(minutes) {
+        if (isRunning) return;
+        totalSeconds = minutes * 60;
+        remainingSeconds = totalSeconds;
+        updateDisplay();
+    }
+
+    function startFocusTimer() {
+        if (isRunning) return;
+        isRunning = true;
+
+        // Auto-activate shield on timer start
+        localStorage.setItem("addiin_shield_active", "true");
+        updateShieldUI(true);
+        savePlatformSettings();
+
+        document.getElementById("startTimerBtn").classList.add("hidden");
+        document.getElementById("pauseTimerBtn").classList.remove("hidden");
+        document.getElementById("timerBadge").className = "text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full animate-pulse";
+        document.getElementById("timerBadge").textContent = "Active Fast";
+
+        focusTimer = setInterval(() => {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateDisplay();
+            } else {
+                clearInterval(focusTimer);
+                isRunning = false;
+                alert("🎉 MashaAllah! You completed your Digital Fast Focus Session!");
+                resetFocusTimer();
+            }
+        }, 1000);
+    }
+
+    function pauseFocusTimer() {
+        if (!isRunning) return;
+        clearInterval(focusTimer);
+        isRunning = false;
+        document.getElementById("startTimerBtn").classList.remove("hidden");
+        document.getElementById("pauseTimerBtn").classList.add("hidden");
+        document.getElementById("timerBadge").className = "text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-full";
+        document.getElementById("timerBadge").textContent = "Paused";
+    }
+
+    function resetFocusTimer() {
+        clearInterval(focusTimer);
+        isRunning = false;
+        remainingSeconds = totalSeconds;
+        document.getElementById("startTimerBtn").classList.remove("hidden");
+        document.getElementById("pauseTimerBtn").classList.add("hidden");
+        document.getElementById("timerBadge").className = "text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full";
+        document.getElementById("timerBadge").textContent = "Standby";
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+        document.getElementById("timeRemainingDisplay").textContent = 
+            `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    // Audio Generator (Web Audio API Synthesizer for Relaxing White Noise & Soundscapes)
+    let audioCtx = null;
+    let noiseNode = null;
+    let currentPlayingSound = null;
+
+    function toggleSound(soundName) {
+        if (currentPlayingSound === soundName) {
+            stopAudio();
+            return;
+        }
+
+        stopAudio();
+        currentPlayingSound = soundName;
+        document.getElementById(`sound-${soundName}`).classList.add("border-indigo-600", "bg-indigo-50/50");
+        document.getElementById(`icon-${soundName}`).className = "bi bi-pause-circle-fill text-indigo-600 text-base";
+
+        playSynthesizedAmbient(soundName);
+    }
+
+    function stopAudio() {
+        if (currentPlayingSound) {
+            const card = document.getElementById(`sound-${currentPlayingSound}`);
+            const icon = document.getElementById(`icon-${currentPlayingSound}`);
+            if (card) card.classList.remove("border-indigo-600", "bg-indigo-50/50");
+            if (icon) icon.className = "bi bi-play-circle text-slate-400 text-base";
+        }
+        if (audioCtx) {
+            audioCtx.close();
+            audioCtx = null;
+        }
+        currentPlayingSound = null;
+    }
+
+    function playSynthesizedAmbient(type) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1; // Pink/brown noise
+            }
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = type === 'rain' ? 'lowpass' : 'bandpass';
+            filter.frequency.value = type === 'rain' ? 800 : 400;
+
+            const gain = audioCtx.createGain();
+            gain.gain.value = 0.05;
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start(0);
+        } catch (e) {
+            console.log("Audio not supported", e);
+        }
+    }
+</script>
