@@ -105,61 +105,60 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <!-- User Profile Dropdown -->
-                        <div class="relative group">
+                        <div class="relative group py-1">
                             <button type="button" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl text-sm font-semibold text-slate-800 transition">
                                 <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                                     @(currentUser?.FullName?.FirstOrDefault() ?? 'U')
                                 </div>
                                 <span class="hidden md:inline font-medium">@(currentUser?.FullName?.Split(' ').FirstOrDefault() ?? "Profile")</span>
-                                <i class="bi bi-chevron-down text-xs text-slate-500"></i>
+                                <i class="bi bi-chevron-down text-xs text-slate-500 transition-transform group-hover:rotate-180"></i>
                             </button>
 
-                            <!-- Dropdown Box -->
-                            <div class="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 hidden group-hover:block transition-all z-50">
-                                <div class="px-4 py-2.5 border-b border-slate-100">
-                                    <p class="text-sm font-bold text-slate-900 truncate">@currentUser?.FullName</p>
-                                    <p class="text-xs text-slate-500 truncate">@currentUser?.Email</p>
+                            <!-- Dropdown Box with invisible bridge preventing hover drop -->
+                            <div class="absolute right-0 top-full pt-1.5 w-60 hidden group-hover:block transition-all z-50">
+                                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 py-2">
+                                    <div class="px-4 py-2.5 border-b border-slate-100">
+                                        <p class="text-sm font-bold text-slate-900 truncate">@currentUser?.FullName</p>
+                                        <p class="text-xs text-slate-500 truncate">@currentUser?.Email</p>
+                                        @if (isAdmin)
+                                        {
+                                            <span class="inline-block mt-1 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">Community Admin</span>
+                                        }
+                                    </div>
+
                                     @if (isAdmin)
                                     {
-                                        <span class="inline-block mt-1 px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">Community Admin</span>
+                                        <a href="/admin/panel" class="flex items-center gap-2.5 px-4 py-2 text-sm text-purple-700 font-semibold hover:bg-purple-50">
+                                            <i class="bi bi-speedometer2"></i> Admin Panel
+                                        </a>
+                                        <a href="/admin/registrations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-purple-700 font-medium hover:bg-purple-50">
+                                            <i class="bi bi-card-checklist"></i> Program Registrations
+                                        </a>
+                                        <div class="my-1 border-t border-slate-100"></div>
                                     }
-                                </div>
 
-                                @if (isAdmin)
-                                {
-                                    <a href="/admin/panel" class="flex items-center gap-2.5 px-4 py-2 text-sm text-purple-700 font-semibold hover:bg-purple-50">
-                                        <i class="bi bi-speedometer2"></i> Admin Panel
+                                    <a href="/user-profile" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                        <i class="bi bi-person-circle text-emerald-600"></i> Profile & Stats
                                     </a>
-                                    <a href="/admin/registrations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-purple-700 font-medium hover:bg-purple-50">
-                                        <i class="bi bi-card-checklist"></i> Program Registrations
+                                    <a href="/my-deen" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                        <i class="bi bi-compass text-emerald-600"></i> My Deen Hub
                                     </a>
+                                    <a href="/my-activities" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                        <i class="bi bi-calendar-check text-emerald-600"></i> My Activities
+                                    </a>
+                                    <a href="/my-donations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
+                                        <i class="bi bi-heart text-emerald-600"></i> My Charity
+                                    </a>
+
                                     <div class="my-1 border-t border-slate-100"></div>
-                                }
 
-                                <a href="/user-profile" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
-                                    <i class="bi bi-person-circle text-emerald-600"></i> Profile & Stats
-                                </a>
-                                <a href="/my-deen" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
-                                    <i class="bi bi-compass text-emerald-600"></i> My Deen Hub
-                                </a>
-                                <a href="/my-activities" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
-                                    <i class="bi bi-calendar-check text-emerald-600"></i> My Activities
-                                </a>
-                                <a href="/my-donations" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
-                                    <i class="bi bi-heart text-emerald-600"></i> My Charity
-                                </a>
-                                <a href="/notifications" class="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium">
-                                    <i class="bi bi-bell text-emerald-600"></i> Notifications
-                                </a>
-
-                                <div class="my-1 border-t border-slate-100"></div>
-
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
-                                    </button>
-                                </form>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium">
+                                            <i class="bi bi-box-arrow-right"></i> Logout
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     }
