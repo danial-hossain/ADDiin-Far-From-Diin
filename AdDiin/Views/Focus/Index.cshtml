@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Far Focus & Digital Fasting | ADDiin";
 }
 
@@ -260,28 +260,36 @@
                     </div>
                     <div>
                         <h4 class="font-extrabold text-slate-900 text-sm sm:text-base">Browser Auto-Blocker Setup</h4>
-                        <p class="text-xs text-slate-600">1-Minute Setup for Chrome, Edge & Brave</p>
+                        <p class="text-xs text-slate-600">Quick 1-Time Setup for Chrome, Edge & Brave</p>
                     </div>
                 </div>
 
                 <p class="text-xs text-slate-600 leading-relaxed">
-                    To automatically intercept & redirect blocked tabs in your browser to your spiritual screen:
+                    Browser security requires a 1-time extension load to intercept external social media tabs:
                 </p>
 
-                <ol class="text-xs text-slate-700 space-y-2 list-decimal list-inside font-medium bg-white/70 p-4 rounded-2xl border border-indigo-100/60">
-                    <li>Download the <strong>ADDiin Far Extension</strong>.</li>
-                    <li>Open <code>chrome://extensions</code> in Chrome/Edge.</li>
-                    <li>Turn ON <strong>Developer mode</strong> (top right).</li>
-                    <li>Click <strong>Load unpacked</strong> and select the <code>wwwroot/extension</code> folder!</li>
-                </ol>
+                <div class="bg-white/80 p-4 rounded-2xl border border-indigo-100 space-y-2.5">
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
+                        <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                        <span>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>)</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
+                        <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold">2</span>
+                        <span>Toggle <strong>Developer mode</strong> (top right)</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-800">
+                        <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold">3</span>
+                        <span>Click <strong>Load unpacked</strong> & select folder</span>
+                    </div>
+                </div>
 
-                <div class="pt-1 flex gap-2">
-                    <a href="/extension/manifest.json" target="_blank" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs text-center transition flex items-center justify-center gap-2">
-                        <i class="bi bi-folder-check"></i> View Extension Bundle
+                <div class="pt-1 flex flex-col sm:flex-row gap-2">
+                    <a href="/focus/download-installer" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs text-center transition flex items-center justify-center gap-2">
+                        <i class="bi bi-lightning-charge-fill"></i> 1-Click Auto Setup (.bat)
                     </a>
-                    <a href="/focus/shield?domain=facebook.com" class="py-2.5 px-4 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 text-center transition" title="Preview what blocked screen looks like">
-                        Preview Shield
-                    </a>
+                    <button type="button" onclick="copyExtensionPath()" class="py-2.5 px-4 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 text-center transition flex items-center justify-center gap-1.5" id="btnCopyPath">
+                        <i class="bi bi-clipboard"></i> Copy Path
+                    </button>
                 </div>
             </div>
 
@@ -532,5 +540,16 @@
         } catch (e) {
             console.log("Audio not supported", e);
         }
+    }
+
+    function copyExtensionPath() {
+        const path = "C:\\Addin SD 5\\Ad-Diin\\AdDiin\\wwwroot\\extension";
+        navigator.clipboard.writeText(path).then(() => {
+            const btn = document.getElementById("btnCopyPath");
+            btn.innerHTML = '<i class="bi bi-check2 text-emerald-600"></i> Copied!';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="bi bi-clipboard"></i> Copy Path';
+            }, 2000);
+        });
     }
 </script>
