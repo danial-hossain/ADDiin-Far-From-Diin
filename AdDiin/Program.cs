@@ -49,7 +49,12 @@ builder.Services.AddScoped<IIslamicEventService, IslamicEventService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
 builder.Services.AddScoped<IContactService, ContactService>();
-builder.Services.AddScoped<IDiinAIService, DiinAIService>();
+builder.Services.AddHttpClient<IDiinAIService, DiinAIService>((serviceProvider, client) =>
+{
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var timeoutSeconds = config.GetValue<int>("AISettings:TimeoutSeconds", 120);
+    client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+});
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMyDeenService, MyDeenService>();
@@ -113,6 +118,7 @@ app.MapControllerRoute(name: "myMilads", pattern: "my-milad-requests", defaults:
 
 app.MapControllerRoute(name: "messaging", pattern: "messaging", defaults: new { controller = "Messages", action = "Index" });
 app.MapControllerRoute(name: "diinai", pattern: "diin-ai", defaults: new { controller = "DiinAI", action = "Index" });
+app.MapControllerRoute(name: "productAnalyzer", pattern: "product-analyzer", defaults: new { controller = "ProductAnalyzer", action = "Index" });
 
 app.MapControllerRoute(name: "userLogin", pattern: "user-login", defaults: new { controller = "Account", action = "Login" });
 app.MapControllerRoute(name: "userRegistration", pattern: "user-registration", defaults: new { controller = "Account", action = "Register" });

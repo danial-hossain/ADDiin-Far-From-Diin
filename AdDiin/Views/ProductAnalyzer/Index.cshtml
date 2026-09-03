@@ -1,0 +1,835 @@
+@{
+    ViewData["Title"] = "AI Halal/Haram Product Analyzer | ADDiin";
+}
+
+@section Styles {
+    <style>
+        .ai-analyzer-bg {
+            background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.02) 50%, transparent 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .glass-dark-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(6, 78, 59, 0.92) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .drop-zone {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(241, 245, 249, 0.5),
+                rgba(241, 245, 249, 0.5) 10px,
+                rgba(255, 255, 255, 0.5) 10px,
+                rgba(255, 255, 255, 0.5) 20px
+            );
+        }
+
+        .drop-zone.dragover {
+            border-color: #10b981 !important;
+            background-color: #ecfdf5 !important;
+            transform: scale(1.01);
+        }
+
+        /* Scanning Animation Line */
+        .scanner-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scanner-laser {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
+            box-shadow: 0 0 15px 3px rgba(16, 185, 129, 0.8);
+            animation: scanLine 2.2s infinite ease-in-out;
+            z-index: 20;
+        }
+
+        @@keyframes scanLine {
+            0% { top: 0%; opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+    </style>
+}
+
+<div class="ai-analyzer-bg min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+
+        <!-- 1. HERO / HEADER SECTION -->
+        <div class="relative overflow-hidden rounded-3xl glass-dark-card text-white p-8 sm:p-12 shadow-2xl">
+            <!-- Geometric Pattern Texture -->
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                <div class="space-y-4 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold uppercase tracking-wider shadow-inner">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>Powered by AI + OCR + Ingredient Intelligence</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                        AI-Powered <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300 bg-clip-text text-transparent">Halal/Haram</span> Product Analyzer
+                    </h1>
+
+                    <p class="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
+                        Upload a product ingredient label and let AI analyze ingredients, E-numbers, and potential halal compliance.
+                    </p>
+                </div>
+
+                <!-- Live AI Stats Widget -->
+                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 w-full sm:w-auto min-w-[260px] space-y-3 shadow-xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase font-bold text-emerald-300 tracking-wider">Engine Status</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-bold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Online
+                        </span>
+                    </div>
+                    <div class="h-px bg-white/10"></div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <div class="text-xl font-black text-white">4,800+</div>
+                            <div class="text-[11px] text-slate-300">E-Codes Indexed</div>
+                        </div>
+                        <div>
+                            <div class="text-xl font-black text-emerald-400">Vision OCR</div>
+                            <div class="text-[11px] text-slate-300">Multi-Angle Parsing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Presets For Instant Demo -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
+                <i class="bi bi-stars text-amber-500 text-base"></i>
+                <span>Try Demo Ingredients Label:</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="loadSamplePreset('halal')" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition flex items-center gap-1">
+                    <i class="bi bi-check-circle-fill text-emerald-600"></i> Pure Halal Snacks
+                </button>
+                <button type="button" onclick="loadSamplePreset('verify')" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center gap-1">
+                    <i class="bi bi-exclamation-triangle-fill text-amber-600"></i> Marshmallow (Gelatin)
+                </button>
+                <button type="button" onclick="loadSamplePreset('haram')" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition flex items-center gap-1">
+                    <i class="bi bi-x-circle-fill text-rose-600"></i> Non-Halal Gummy (Pork/E120)
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. IMAGE UPLOAD & 3. PREVIEW SECTION -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left 7 cols: Interactive Upload Zone -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Main Drag & Drop Glass Card -->
+                <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shadow-xs">
+                                <i class="bi bi-camera-fill"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-900 text-lg">Upload Product Image</h3>
+                                <p class="text-xs text-slate-500">Upload a clear image of the ingredients or nutrition label</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full">
+                            JPG, PNG, WEBP
+                        </span>
+                    </div>
+
+                    <!-- Drop Zone Area (Visible when no image is selected) -->
+                    <div id="dropZoneContainer" class="drop-zone border-2 border-dashed border-slate-300 rounded-3xl p-8 sm:p-12 text-center cursor-pointer hover:border-emerald-500 group transition-all">
+                        <input type="file" id="productImageInput" accept="image/png, image/jpeg, image/webp" class="hidden" />
+                        
+                        <div class="w-20 h-20 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
+                        </div>
+
+                        <h4 class="text-base font-bold text-slate-800 mb-1">
+                            Drag and drop your ingredient label here
+                        </h4>
+                        <p class="text-xs text-slate-500 max-w-sm mx-auto mb-5">
+                            Or browse files from your computer or capture directly from your phone camera.
+                        </p>
+
+                        <button type="button" onclick="document.getElementById('productImageInput').click()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition inline-flex items-center gap-2">
+                            <i class="bi bi-image"></i> Choose Image
+                        </button>
+                    </div>
+
+                    <!-- 3. IMAGE PREVIEW CARD (Visible after image is selected) -->
+                    <div id="imagePreviewContainer" class="hidden space-y-5">
+                        <div class="scanner-container relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 flex items-center justify-center min-h-[300px] max-h-[420px]">
+                            <!-- Laser Scanning Line (Activated during analysis) -->
+                            <div id="scannerLaser" class="scanner-laser hidden"></div>
+
+                            <!-- Preview Image -->
+                            <img id="previewImg" src="" alt="Product Label Preview" class="object-contain max-h-[400px] w-full" />
+
+                            <!-- Overlay Badge -->
+                            <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
+                                <i class="bi bi-check-circle text-emerald-400"></i> Image Loaded
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                            <button type="button" onclick="resetImageSelection()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs transition flex items-center gap-1.5">
+                                <i class="bi bi-arrow-counterclockwise"></i> Replace Image
+                            </button>
+
+                            <button type="button" id="btnAnalyzeAI" onclick="startAIAnalysis()" class="px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2">
+                                <i class="bi bi-cpu-fill text-lg"></i> Analyze with AI
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. OCR EXTRACTED TEXT SECTION (Collapsible) -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                    <button type="button" onclick="toggleOcrAccordion()" class="w-full flex items-center justify-between text-left focus:outline-none group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-base">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition">View Extracted Label Text (OCR)</h4>
+                                <p class="text-[11px] text-slate-500">Raw text parsed from product label image</p>
+                            </div>
+                        </div>
+                        <i id="ocrChevron" class="bi bi-chevron-down text-slate-400 group-hover:text-slate-600 transition-transform duration-200"></i>
+                    </button>
+
+                    <div id="ocrContentArea" class="hidden mt-4 pt-4 border-t border-slate-100 space-y-3">
+                        <div class="bg-slate-50 rounded-2xl p-4 font-mono text-xs text-slate-700 leading-relaxed border border-slate-200/80 whitespace-pre-wrap max-h-48 overflow-y-auto" id="ocrRawTextDisplay">
+INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Artificial Flavors, Modified Starch.
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-slate-400">
+                            <span>OCR Confidence: <strong class="text-emerald-600" id="ocrConfidenceText">98.4%</strong></span>
+                            <span>Engine: ADDiin Vision OCR v2.4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right 5 cols: 4. AI Processing Pipeline / Realtime Feedback -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Pipeline / Progress Card -->
+                <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200/80 space-y-6">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <h3 class="font-extrabold text-slate-900 text-sm uppercase tracking-wider">AI Analysis Pipeline</h3>
+                        </div>
+                        <span id="pipelineStatusBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                            Ready
+                        </span>
+                    </div>
+
+                    <!-- 5 Animated Processing Steps -->
+                    <div class="space-y-4" id="pipelineStepsList">
+                        <!-- Step 1 -->
+                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step1">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                                <i class="bi bi-eye"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-xs font-bold text-slate-800">1. Reading product label</p>
+                                <p class="text-[11px] text-slate-500">Detecting label boundary & typography</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step2">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                                <i class="bi bi-fonts"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-xs font-bold text-slate-800">2. Extracting ingredients using OCR</p>
+                                <p class="text-[11px] text-slate-500">Optical character multi-angle tokenization</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step3">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                                <i class="bi bi-hash"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-xs font-bold text-slate-800">3. Detecting E-numbers & additives</p>
+                                <p class="text-[11px] text-slate-500">Cross-referencing global additive standards</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step4">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                                <i class="bi bi-database-check"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-xs font-bold text-slate-800">4. Analyzing ingredient database</p>
+                                <p class="text-[11px] text-slate-500">Querying verified Halal/Haram intelligence index</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step5">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-xs font-bold text-slate-800">5. Generating classification</p>
+                                <p class="text-[11px] text-slate-500">Synthesizing comprehensive decision support</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Exhibition Info Badge -->
+                <div class="rounded-3xl p-5 bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-indigo-800/40 shadow-sm space-y-2.5">
+                    <div class="flex items-center gap-2 text-amber-300 text-xs font-bold">
+                        <i class="bi bi-mortarboard-fill"></i>
+                        <span>University CSE Project Demonstration</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Combines Computer Vision Optical Character Recognition (OCR), token classification, and Islamic jurisprudential ingredient knowledge matrices.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. ANALYSIS RESULT SECTION (Visible after processing) -->
+        <div id="resultsMainContainer" class="space-y-8 pt-4">
+            
+            <!-- Result Title Divider -->
+            <div class="flex items-center gap-3">
+                <div class="w-2.5 h-8 bg-emerald-600 rounded-full"></div>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Analysis & Classification Report</h2>
+            </div>
+
+            <!-- Master Classification Card (Dynamic Status: Halal / Verify / Haram) -->
+            <div id="masterStatusCard" class="rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-amber-50/90 border-amber-200 text-amber-950">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="flex items-center gap-5">
+                        <div id="statusIconBox" class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-amber-500 text-white">
+                            <i class="bi bi-question-diamond-fill"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-200 text-amber-900" id="statusPill">
+                                STATUS: REQUIRES VERIFICATION
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-black tracking-tight" id="statusHeading">
+                                REQUIRES VERIFICATION
+                            </h3>
+                            <p class="text-sm font-medium opacity-90" id="statusSubtext">
+                                Some ingredients require further verification regarding animal or synthetic origin.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Gauge -->
+                    <div class="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-slate-200 text-center min-w-[170px] shadow-xs">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Confidence Score</div>
+                        <div class="text-3xl font-black text-slate-900" id="confidenceScoreDisplay">95.4%</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">High Token Accuracy</div>
+                    </div>
+                </div>
+
+                <!-- Mandatory Jurisprudence Disclaimer -->
+                <div class="mt-6 pt-5 border-t border-current/15 flex items-start gap-3 text-xs leading-relaxed opacity-85">
+                    <i class="bi bi-info-circle-fill text-base shrink-0 mt-0.5"></i>
+                    <p>
+                        <strong>Disclaimer:</strong> This result is generated based on available ingredient data and should be used as decision support. Consult qualified Islamic scholars or official halal certification authorities for final verification.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 6. DETECTED INGREDIENTS SECTION & 8. AI EXPLANATION CARD -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Left 8 cols: Detailed Ingredient Analysis Table -->
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-extrabold text-slate-900 text-lg">Detected Ingredients</h3>
+                                <p class="text-xs text-slate-500">Breakdown of extracted substances and compliance ratings</p>
+                            </div>
+                            <span class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-full" id="ingredientCountBadge">
+                                6 Substances
+                            </span>
+                        </div>
+
+                        <!-- Ingredients Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-100 text-[11px] uppercase tracking-wider font-extrabold text-slate-400">
+                                        <th class="pb-3 px-2">Ingredient</th>
+                                        <th class="pb-3 px-2">Status</th>
+                                        <th class="pb-3 px-2">Reason & Origin</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100" id="ingredientTableBody">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right 4 cols: 8. AI Explanation Card & Quick Summary -->
+                <div class="lg:col-span-4 space-y-6">
+                    
+                    <!-- AI Explanation Card -->
+                    <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-7 shadow-lg border border-emerald-500/30 space-y-4">
+                        <div class="flex items-center gap-2.5 text-emerald-400 font-extrabold text-xs uppercase tracking-wider">
+                            <i class="bi bi-lightbulb-fill"></i>
+                            <span>AI Intelligence Insight</span>
+                        </div>
+
+                        <h4 class="text-lg font-black text-white">Why this result?</h4>
+
+                        <p class="text-xs text-slate-300 leading-relaxed" id="aiExplanationText">
+                            The product requires verification because certain ingredients (such as Gelatin and E120) may have different origins depending on the manufacturer (animal-derived bovine vs. porcine vs. plant-based alternatives).
+                        </p>
+
+                        <div class="pt-3 border-t border-white/10 space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400">Halal Ingredients:</span>
+                                <strong class="text-emerald-400" id="statHalalCount">4</strong>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400">Verify Required:</span>
+                                <strong class="text-amber-400" id="statVerifyCount">2</strong>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400">Haram / Non-Halal:</span>
+                                <strong class="text-rose-400" id="statHaramCount">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E-Number Reference Card -->
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-3">
+                        <div class="flex items-center gap-2 text-slate-900 font-bold text-sm">
+                            <i class="bi bi-info-square-fill text-emerald-600"></i>
+                            <span>What are E-Numbers?</span>
+                        </div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            E-numbers are codes for substances used as food additives in the European Union and globally. Some are 100% plant/mineral, while others can be sourced from animals.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. RECENT PRODUCT ANALYSES / HISTORY SECTION -->
+        <div class="space-y-6 pt-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Recent Product Analyses</h3>
+                    <p class="text-xs text-slate-500">Previously analyzed items and community checks</p>
+                </div>
+                <button type="button" onclick="clearHistoryDemo()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                    Clear History
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="historyCardsContainer">
+                
+                <!-- History Card 1 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                    <div class="w-full h-32 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center text-4xl border border-emerald-100">
+                        🍪
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Halal</span>
+                            <span class="text-[10px] text-slate-400">Today, 02:40 PM</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm truncate">Oat & Honey Digestive Biscuits</h4>
+                        <p class="text-[11px] text-slate-500">Plant-based fats & certified flour</p>
+                    </div>
+                </div>
+
+                <!-- History Card 2 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                    <div class="w-full h-32 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 flex items-center justify-center text-4xl border border-amber-100">
+                        🍬
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">Verify</span>
+                            <span class="text-[10px] text-slate-400">Yesterday</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm truncate">Fruit Chewy Gummy Bears</h4>
+                        <p class="text-[11px] text-slate-500">Contains unverified bovine gelatin</p>
+                    </div>
+                </div>
+
+                <!-- History Card 3 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                    <div class="w-full h-32 rounded-xl bg-gradient-to-br from-rose-100 to-pink-50 flex items-center justify-center text-4xl border border-rose-100">
+                        🍷
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">Non-Halal</span>
+                            <span class="text-[10px] text-slate-400">Sep 02, 2026</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm truncate">Wine Vinegar Salad Sauce</h4>
+                        <p class="text-[11px] text-slate-500">Contains fermented alcohol base</p>
+                    </div>
+                </div>
+
+                <!-- History Card 4 -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                    <div class="w-full h-32 rounded-xl bg-gradient-to-br from-emerald-100 to-cyan-50 flex items-center justify-center text-4xl border border-emerald-100">
+                        🍫
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Halal</span>
+                            <span class="text-[10px] text-slate-400">Aug 29, 2026</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm truncate">Dark Cocoa Almond Bar</h4>
+                        <p class="text-[11px] text-slate-500">Soy lecithin (E322) & Pure Cocoa</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Preset Sample Datasets for Demo / Exhibition
+        const samplePresets = {
+            halal: {
+                title: "Pure Halal Snacks & Organic Bar",
+                status: "halal",
+                statusHeading: "HALAL COMPLIANT",
+                statusSubtext: "Based on available ingredient information, all detected substances are plant, mineral, or permissible.",
+                confidence: "99.2%",
+                rawOcr: "INGREDIENTS: Whole Grain Oats, Organic Honey, Almond Butter, Citric Acid (E330), Sunflower Lecithin (E322), Sea Salt, Natural Vanilla Flavor.",
+                explanation: "All extracted ingredients and additives (including E330 citric acid and E322 sunflower lecithin) are 100% plant and mineral-derived without any animal fats or alcohol additives.",
+                ingredients: [
+                    { name: "Whole Grain Oats", status: "Halal", reason: "100% Plant-based natural grain" },
+                    { name: "Organic Honey", status: "Halal", reason: "Pure natural permissible honey" },
+                    { name: "Almond Butter", status: "Halal", reason: "Plant-derived nut butter" },
+                    { name: "Citric Acid (E330)", status: "Halal", reason: "Commonly accepted plant/fermentation food additive" },
+                    { name: "Sunflower Lecithin (E322)", status: "Halal", reason: "Plant-derived emulsifier (Halal)" },
+                    { name: "Sea Salt", status: "Halal", reason: "Pure natural mineral" }
+                ],
+                stats: { halal: 6, verify: 0, haram: 0 }
+            },
+            verify: {
+                title: "Marshmallow Confectionery Label",
+                status: "verify",
+                statusHeading: "REQUIRES VERIFICATION",
+                statusSubtext: "Some ingredients require further verification regarding animal source or certification.",
+                confidence: "95.4%",
+                rawOcr: "INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Artificial Flavors, Modified Starch.",
+                explanation: "The product contains Gelatin and Carmine (E120). Gelatin requires verification because it may be derived from non-zabiha bovine or porcine sources. Carmine (E120) is derived from insects and holds difference of opinion among scholars.",
+                ingredients: [
+                    { name: "Sugar", status: "Halal", reason: "Plant-based ingredient from sugarcane/beet" },
+                    { name: "Corn Syrup", status: "Halal", reason: "Plant-derived carbohydrate syrup" },
+                    { name: "Gelatin", status: "Requires Verification", reason: "Source may be non-zabiha animal or porcine; verify Halal certificate" },
+                    { name: "Citric Acid (E330)", status: "Halal", reason: "Commonly accepted food preservative" },
+                    { name: "Carmine / Cochineal (E120)", status: "Requires Verification", reason: "Insect-derived red dye; debated among Islamic jurisprudential bodies" },
+                    { name: "Modified Starch", status: "Halal", reason: "Plant-based corn/potato starch" }
+                ],
+                stats: { halal: 4, verify: 2, haram: 0 }
+            },
+            haram: {
+                title: "Non-Halal Gummy & Meat Extract Snacks",
+                status: "haram",
+                statusHeading: "POTENTIAL HARAM / NON-HALAL DETECTED",
+                statusSubtext: "Critical non-halal ingredients (Porcine Gelatin / Lard / Alcohol) detected on the label.",
+                confidence: "98.7%",
+                rawOcr: "INGREDIENTS: Glucose Syrup, Pork Gelatin (Porcine), Lard (E441), Ethyl Alcohol Extract, Sugar, Artificial Strawberry Flavor, Color (E120).",
+                explanation: "Critical non-permissible ingredients detected: Porcine Gelatin (pork source) and Lard fat. These are prohibited in Islamic dietary guidelines.",
+                ingredients: [
+                    { name: "Glucose Syrup", status: "Halal", reason: "Plant-based sweetener" },
+                    { name: "Pork Gelatin (Porcine)", status: "Haram", reason: "Derived from swine/pig; strictly prohibited in Islam" },
+                    { name: "Lard (E441)", status: "Haram", reason: "Rendered pork fat; non-permissible" },
+                    { name: "Ethyl Alcohol Extract", status: "Haram", reason: "Contains direct alcohol content" },
+                    { name: "Sugar", status: "Halal", reason: "Permissible plant-based sweetener" }
+                ],
+                stats: { halal: 2, verify: 0, haram: 3 }
+            }
+        };
+
+        let currentActiveDataset = samplePresets.verify;
+
+        // Elements
+        const dropZone = document.getElementById('dropZoneContainer');
+        const fileInput = document.getElementById('productImageInput');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImg = document.getElementById('previewImg');
+        const scannerLaser = document.getElementById('scannerLaser');
+        const btnAnalyze = document.getElementById('btnAnalyzeAI');
+
+        // Drag and drop handlers
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('dragover');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (!file.type.match('image.*')) {
+                alert('Please upload an image file (JPG, PNG, WEBP).');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                dropZone.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetImageSelection() {
+            fileInput.value = '';
+            previewImg.src = '';
+            dropZone.classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+            scannerLaser.classList.add('hidden');
+            btnAnalyze.disabled = false;
+        }
+
+        // Demo sample loader
+        function loadSamplePreset(presetKey) {
+            currentActiveDataset = samplePresets[presetKey];
+            
+            let sampleBg = '#fef3c7';
+            let emoji = '🍬';
+            if (presetKey === 'halal') { sampleBg = '#d1fae5'; emoji = '🍪'; }
+            if (presetKey === 'haram') { sampleBg = '#ffe4e6'; emoji = '🥩'; }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 360;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = sampleBg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 24px Plus Jakarta Sans, sans-serif';
+            ctx.fillText(currentActiveDataset.title, 40, 60);
+            ctx.font = '14px monospace';
+            ctx.fillStyle = '#475569';
+            
+            const lines = currentActiveDataset.rawOcr.match(/.{1,55}(\s|$)/g) || [currentActiveDataset.rawOcr];
+            lines.forEach((l, idx) => {
+                ctx.fillText(l.trim(), 40, 110 + (idx * 25));
+            });
+
+            ctx.font = '70px serif';
+            ctx.fillText(emoji, 480, 80);
+
+            previewImg.src = canvas.toDataURL('image/png');
+            dropZone.classList.add('hidden');
+            previewContainer.classList.remove('hidden');
+
+            previewContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Pipeline animation & AI execution
+        async function startAIAnalysis() {
+            btnAnalyze.disabled = true;
+            scannerLaser.classList.remove('hidden');
+            document.getElementById('pipelineStatusBadge').className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 animate-pulse';
+            document.getElementById('pipelineStatusBadge').textContent = 'Processing OCR & AI...';
+
+            const steps = [
+                { id: 'step1', delay: 600 },
+                { id: 'step2', delay: 700 },
+                { id: 'step3', delay: 600 },
+                { id: 'step4', delay: 700 },
+                { id: 'step5', delay: 600 }
+            ];
+
+            // Reset step indicators
+            for (let i = 1; i <= 5; i++) {
+                const el = document.getElementById(`step${i}`);
+                el.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all';
+                el.querySelector('.step-indicator').className = 'w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
+            }
+
+            // Animate through pipeline steps sequentially
+            for (let i = 0; i < steps.length; i++) {
+                const stepEl = document.getElementById(steps[i].id);
+                const indicator = stepEl.querySelector('.step-indicator');
+                
+                stepEl.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-emerald-300 bg-emerald-50/80 transition-all shadow-xs';
+                indicator.className = 'w-8 h-8 rounded-xl border border-emerald-500 bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
+                
+                await new Promise(r => setTimeout(r, steps[i].delay));
+            }
+
+            scannerLaser.classList.add('hidden');
+            document.getElementById('pipelineStatusBadge').className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white';
+            document.getElementById('pipelineStatusBadge').textContent = 'Analysis Complete';
+
+            // Optional Backend ping placeholder
+            try {
+                const formData = new FormData();
+                formData.append('rawText', currentActiveDataset.rawOcr);
+                fetch('/api/product-analyzer/analyze', { method: 'POST', body: formData }).catch(() => {});
+            } catch(e) {}
+
+            renderAnalysisReport(currentActiveDataset);
+            btnAnalyze.disabled = false;
+
+            document.getElementById('resultsMainContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderAnalysisReport(data) {
+            const card = document.getElementById('masterStatusCard');
+            const iconBox = document.getElementById('statusIconBox');
+            const pill = document.getElementById('statusPill');
+            const heading = document.getElementById('statusHeading');
+            const subtext = document.getElementById('statusSubtext');
+            const confDisplay = document.getElementById('confidenceScoreDisplay');
+
+            confDisplay.textContent = data.confidence;
+            heading.textContent = data.statusHeading;
+            subtext.textContent = data.statusSubtext;
+
+            if (data.status === 'halal') {
+                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-emerald-50/90 border-emerald-200 text-emerald-950';
+                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-emerald-600 text-white';
+                iconBox.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-200 text-emerald-900';
+                pill.textContent = 'STATUS: HALAL COMPLIANT';
+            } else if (data.status === 'verify') {
+                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-amber-50/90 border-amber-200 text-amber-950';
+                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-amber-500 text-white';
+                iconBox.innerHTML = '<i class="bi bi-question-diamond-fill"></i>';
+                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-200 text-amber-900';
+                pill.textContent = 'STATUS: REQUIRES VERIFICATION';
+            } else {
+                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-rose-50/90 border-rose-200 text-rose-950';
+                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-rose-600 text-white';
+                iconBox.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
+                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-rose-200 text-rose-900';
+                pill.textContent = 'STATUS: POTENTIAL HARAM / NON-HALAL';
+            }
+
+            // OCR text
+            document.getElementById('ocrRawTextDisplay').textContent = data.rawOcr;
+            document.getElementById('ocrConfidenceText').textContent = data.confidence;
+
+            // AI explanation
+            document.getElementById('aiExplanationText').textContent = data.explanation;
+            document.getElementById('statHalalCount').textContent = data.stats.halal;
+            document.getElementById('statVerifyCount').textContent = data.stats.verify;
+            document.getElementById('statHaramCount').textContent = data.stats.haram;
+            document.getElementById('ingredientCountBadge').textContent = `${data.ingredients.length} Substances`;
+
+            // Table rows
+            const tbody = document.getElementById('ingredientTableBody');
+            tbody.innerHTML = '';
+
+            data.ingredients.forEach(item => {
+                let badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                let icon = 'bi-check-circle-fill text-emerald-600';
+                
+                if (item.status === 'Requires Verification') {
+                    badgeClass = 'bg-amber-100 text-amber-900 border-amber-200';
+                    icon = 'bi-exclamation-triangle-fill text-amber-600';
+                } else if (item.status === 'Haram') {
+                    badgeClass = 'bg-rose-100 text-rose-800 border-rose-200';
+                    icon = 'bi-x-circle-fill text-rose-600';
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-3.5 px-2 font-bold text-slate-900 flex items-center gap-2">
+                        <i class="bi ${icon}"></i>
+                        <span>${item.name}</span>
+                    </td>
+                    <td class="py-3.5 px-2">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${badgeClass}">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-2 text-xs text-slate-600">
+                        ${item.reason}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleOcrAccordion() {
+            const content = document.getElementById('ocrContentArea');
+            const chevron = document.getElementById('ocrChevron');
+            content.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function clearHistoryDemo() {
+            document.getElementById('historyCardsContainer').innerHTML = `
+                <div class="col-span-full py-8 text-center text-slate-400 text-xs bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                    No recent analyses found. Upload an image to start a new analysis.
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAnalysisReport(samplePresets.verify);
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Diin AI - Islamic Learning Assistant";
 }
 
@@ -65,35 +65,45 @@
         const btnSend = document.getElementById('btnSendAI');
         let chatHistory = [];
 
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         function appendMessage(sender, text, sources = null) {
             const row = document.createElement('div');
             row.className = sender === 'user' ? 'd-flex justify-content-end mb-3' : 'd-flex align-items-start gap-2 mb-3';
 
             let content = '';
             if (sender === 'user') {
-                content = 
-                    <div class="chat-bubble-user p-3 rounded-4" style="max-width: 80%;">
-                        <p class="mb-0 small"></p>
+                content = `
+                    <div class="chat-bubble-user p-3 rounded-4" style="max-width: 80%; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff;">
+                        <p class="mb-0 small" style="white-space: pre-wrap;">${escapeHtml(text)}</p>
                     </div>
-                ;
+                `;
             } else {
                 let sourcesHtml = '';
                 if (sources && sources.length > 0) {
                     sourcesHtml = '<div class="mt-2 pt-2 border-top small bg-light p-2 rounded-3 text-muted">';
                     sourcesHtml += '<strong class="text-emerald d-block mb-1">📚 রেফারেন্স ও সূত্র:</strong>';
                     sources.forEach(s => {
-                        sourcesHtml += <div><strong>:</strong> </div>;
+                        sourcesHtml += `<div><strong>${escapeHtml(s.source)}:</strong> ${escapeHtml(s.reference)}</div>`;
                     });
                     sourcesHtml += '</div>';
                 }
 
-                content = 
+                content = `
                     <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
                     <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
-                        <p class="mb-0 text-dark small leading-relaxed" style="white-space: pre-line;"></p>
-                        
+                        <p class="mb-0 text-dark small leading-relaxed" style="white-space: pre-line;">${escapeHtml(text)}</p>
+                        ${sourcesHtml}
                     </div>
-                ;
+                `;
             }
 
             row.innerHTML = content;
@@ -114,37 +124,46 @@
             const loadingRow = document.createElement('div');
             loadingRow.id = 'loadingIndicator';
             loadingRow.className = 'd-flex align-items-start gap-2 mb-3';
-            loadingRow.innerHTML = 
+            loadingRow.innerHTML = `
                 <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
                 <div class="bg-white border p-3 rounded-4 text-muted small">
                     <span class="spinner-border spinner-border-sm text-emerald me-2"></span> যাচাই করে উত্তর প্রস্তুত করা হচ্ছে...
                 </div>
-            ;
+            `;
             chatStream.appendChild(loadingRow);
             chatStream.scrollTop = chatStream.scrollHeight;
 
             try {
-                const res = await fetch('/DiinAI/Chat', {
+                const res = await fetch('/api/ai/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, history: chatHistory })
+                    body: JSON.stringify({ query: text })
                 });
 
                 const data = await res.json();
                 document.getElementById('loadingIndicator')?.remove();
 
-                if (data.success) {
-                    appendMessage('bot', data.response, data.sources);
+                if (res.ok && data.answer) {
+                    appendMessage('bot', data.answer, data.sources);
                     chatHistory.push({ role: 'user', content: text });
-                    chatHistory.push({ role: 'assistant', content: data.response });
+                    chatHistory.push({ role: 'assistant', content: data.answer });
                 } else {
-                    appendMessage('bot', data.message || 'দুঃখিত, কোনো উত্তর পাওয়া যায়নি।');
+                    appendMessage('bot', data.error || data.message || 'দুঃখিত, কোনো উত্তর পাওয়া যায়নি।');
                 }
             } catch (err) {
                 document.getElementById('loadingIndicator')?.remove();
-                appendMessage('bot', 'সার্ভারে সংযোগ করতে সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।');
+                appendMessage('bot', 'দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না');
             } finally {
                 btnSend.disabled = false;
+                inputMsg.focus();
+            }
+        });
+
+        // Allow pressing Enter (without Shift) to submit
+        inputMsg.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
             }
         });
 
@@ -157,7 +176,7 @@
 
         document.getElementById('btnClearChat')?.addEventListener('click', function() {
             chatHistory = [];
-            chatStream.innerHTML = 
+            chatStream.innerHTML = `
                 <div class="d-flex align-items-start gap-2 mb-3">
                     <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
                     <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
@@ -166,7 +185,7 @@
                         </p>
                     </div>
                 </div>
-            ;
+            `;
         });
     </script>
 }

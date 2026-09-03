@@ -147,4 +147,15 @@ namespace AdDiin.Models.ViewModels
         public string Source { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
     }
+
+    public class AIApiAskRequest
+    {
+        public string Query { get; set; } = string.Empty;
+    }
+
+    public class AIApiAskResponse
+    {
+        public string Answer { get; set; } = string.Empty;
+        public List<DiinAISource> Sources { get; set; } = new();
+    }
 }

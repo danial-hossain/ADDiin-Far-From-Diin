@@ -1,5 +1,6 @@
-﻿using AdDiin.Models.ViewModels;
-using System.Text.RegularExpressions;
+using AdDiin.Models.ViewModels;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace AdDiin.Services
 {
@@ -11,6 +12,10 @@ namespace AdDiin.Services
 
     public class DiinAIService : IDiinAIService
     {
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<DiinAIService> _logger;
+
         private static readonly string[] OffTopicKeywords =
         {
             "movie", "film", "নাটক", "সিনেমা", "গান", "music", "cricket", "football", "খেলা", "game",
@@ -20,74 +25,25 @@ namespace AdDiin.Services
             "facebook", "python", "javascript", "react", "programming", "coding", "visa", "passport"
         };
 
-        private static readonly List<(string[] Keywords, string Answer, List<DiinAISource> Sources)> IslamicKnowledgeBase = new()
+        public DiinAIService(HttpClient httpClient, IConfiguration configuration, ILogger<DiinAIService> logger)
         {
-            (
-                new[] { "সালাত", "নামাজ", "prayer", "salah", "salat", "নামাজের গুরুত্ব", "ফরজ" },
-                "ইসলামের পাঁচটি মূল স্তম্ভের মধ্যে সালাত (নামাজ) দ্বিতীয় ও অত্যন্ত গুরুত্বপূর্ণ স্তম্ভ। পবিত্র কুরআনে আল্লাহ তাআলা বহুবার সালাত কায়েম করার নির্দেশ দিয়েছেন। রাসুলুল্লাহ (সা.) ইরশাদ করেছেন: 'কেয়ামতের দিন বান্দার কাছ থেকে সর্বপ্রথম সালাতের হিসাব নেওয়া হবে। যদি সালাত সঠিক হয়, তবে তার বাকি সমস্ত আমলও সঠিক হবে।' দৈনিক পাঁচ ওয়াক্ত নামাজ (ফজর, যোহর, আসর, মাগরিব, ইশা) প্রত্যেক প্রাপ্তবয়স্ক মুসলিমের ওপর ফরজ।",
-                new List<DiinAISource>
-                {
-                    new() { Source = "আল-কুরআন", Reference = "সূরা আল-বাকারা, আয়াত ৪৩: 'এবং তোমরা সালাত কায়েম কর ও যাকাত প্রদান কর...'" },
-                    new() { Source = "সহীহ তিরমিযী", Reference = "হাদিস নম্বর ৪১৩" }
-                }
-            ),
-            (
-                new[] { "যাকাত", "zakat", "নিসাব", "nisab", "যাকাত কীভাবে", "যাকাতের নিয়ম", "৮৭.৪৮", "৬১২.৩৬" },
-                "যাকাত ইসলামের অন্যতম ফরজ বিধান। যে ব্যক্তির কাছে নিত্যপ্রয়োজনীয় খরচের অতিরিক্ত নিসাব পরিমাণ সম্পদ (স্বর্ণের নিসাব: সাড়ে সাত তোলা বা ৮৭.৪৮ গ্রাম; রূপার নিসাব: সাড়ে বায়ান্ন তোলা বা ৬১২.৩৬ গ্রাম) পুরো এক চন্দ্রবছর সঞ্চিত থাকে, তার ওপর শতকরা ২.৫% হারে যাকাত আদায় করা ফরজ। যাকাত আদায়ের মাধ্যমে সম্পদ পবিত্র ও বরকতময় হয় এবং সমাজে অভাবীদের অধিকার নিশ্চিত হয়।",
-                new List<DiinAISource>
-                {
-                    new() { Source = "আল-কুরআন", Reference = "সূরা আত-তাওবাহ, আয়াত ৬০: 'নিশ্চয় সদকা (যাকাত) হলো কেবল দরিদ্র, নিঃস্বদের জন্য...'" },
-                    new() { Source = "সহীহ বুখারী", Reference = "হাদিস নম্বর ১৩৯৫" }
-                }
-            ),
-            (
-                new[] { "রোজা", "রোযার নিয়ত", "রোজার নিয়ত", "fasting", "sawm", "ramadan", "রমজান" },
-                "রমজান মাসের রোজা প্রতিটি সুস্থ ও প্রাপ্তবয়স্ক মুসলিমের জন্য ফরজ। রোজার নিয়ত অন্তরের সংকল্প দ্বারাই হয়ে যায়। মুখে বলা মুস্তাহাব। মুখে নিয়তের জন্য বলা যায়: 'নাওয়াইতু আন আসুমা গাদান মিন শাহরি রামাদানাল মুবারাকি ফারদাল্লাকা ইয়া আল্লাহু ফাতাকাব্বাল মিন্নি...' (অর্থ: হে আল্লাহ! আমি আগামীকালের পবিত্র রমজানের ফরজ রোজা রাখার নিয়ত করলাম, অতএব আপনি আমার পক্ষ থেকে তা কবুল করুন)। সুবহে সাদিক থেকে সূর্যাস্ত পর্যন্ত পানাহার ও রোজা ভঙ্গকারী সকল কাজ থেকে বিরত থাকাই সিয়াম।",
-                new List<DiinAISource>
-                {
-                    new() { Source = "আল-কুরআন", Reference = "সূরা আল-বাকারা, আয়াত ১৮৩: 'হে ঈমানদারগণ! তোমাদের ওপর রোজা ফরজ করা হয়েছে যেমন ফরজ করা হয়েছিল তোমাদের পূর্ববর্তীদের ওপর...'" },
-                    new() { Source = "সহীহ বুখারী", Reference = "হাদিস নম্বর ১৯০১" }
-                }
-            ),
-            (
-                new[] { "তাহাজ্জুদ", "tahajjud", "তাহাজ্জুদের নিয়ম", "রাতের নামাজ" },
-                "তাহাজ্জুদ নামাজ অত্যন্ত মর্যাদাপূর্ণ নফল ইবাদত। এশার নামাজের পর ঘুমিয়ে রাতের শেষ তৃতীয়াংশে জেগে তাহাজ্জুদ আদায় করা সর্বোত্তম। এটি সাধারণত ২ রাকাত করে সর্বনিম্ন ২ রাকাত থেকে শুরু করে ৪, ৮ বা ১২ রাকাত পর্যন্ত পড়া যায়। প্রতি দুই রাকাতে সালাম ফিরিয়ে সূরা ফাতিহার পর কুরআন থেকে যেকোনো সূরা মিলিয়ে নামাজ আদায় করা হয়। তাহাজ্জুদের পর দোয়া কবুল হওয়ার সম্ভাবনা অত্যন্ত বেশি থাকে।",
-                new List<DiinAISource>
-                {
-                    new() { Source = "আল-কুরআন", Reference = "সূরা বনি ইসরাঈল, আয়াত ৭৯: 'এবং রাতের কিছু অংশে তাহাজ্জুদ পড়ুন, এটি আপনার জন্য এক অতিরিক্ত ইবাদত...'" },
-                    new() { Source = "সহীহ মুসলিম", Reference = "হাদিস নম্বর ১১৬৩" }
-                }
-            ),
-            (
-                new[] { "হজ", "hajj", "উমরাহ", "umrah", "কাবা", "মক্কা" },
-                "হজ ইসলামের পঞ্চম মৌলিক স্তম্ভ। শারীরিক ও আর্থিকভাবে সক্ষম প্রত্যেক মুসলিমের জন্য জীবনে একবার বাইতুল্লাহ শরীফের হজ পালন করা ফরজ। জিলহজ মাসের ৮ থেকে ১২ তারিখের মধ্যে ইহরাম বাঁধা, আরাফাতের ময়দানে অবস্থান, মুযদালিফায় রাত্রিযাপন, মিনায় কঙ্কর নিক্ষেপ, কুরবানী এবং কাবা শরীফ তাওয়াফের মাধ্যমে হজ সম্পন্ন হয়।",
-                new List<DiinAISource>
-                {
-                    new() { Source = "আল-কুরআন", Reference = "সূরা আলে-ইমরান, আয়াত ৯৭: 'মানুষের মধ্যে যার সেখানে পৌঁছার সামর্থ্য আছে, তার ওপর আল্লাহর উদ্দেশ্যে ঐ ঘরের হজ করা ফরজ...'" },
-                    new() { Source = "সহীহ বুখারী", Reference = "হাদিস নম্বর ১৫২১" }
-                }
-            ),
-            (
-                new[] { "দুরুদ", "দরূদ", "দরুদ", "দরূদে ইব্রাহিম", "durood", "darood" },
-                "রাসুলুল্লাহ (সা.)-এর ওপর দরূদ পাঠ করা অত্যন্ত ফজিলতপূর্ণ আমল। আল্লাহ তাআলা কুরআনে নির্দেশ দিয়েছেন: 'নিশ্চয় আল্লাহ ও তাঁর ফেরেশতাগণ নবীর ওপর দরূদ প্রেরণ করেন, হে মুমিনগণ তোমরাও তাঁর ওপর দরূদ ও সালাম পাঠাও।' সর্বশ্রেষ্ঠ দরূদ হলো দরূদে ইব্রাহিম, যা আমরা নামাজের শেষ বৈঠকে পাঠ করি: 'আল্লাহুম্মা সাল্লি আলা মুহাম্মাদিউঁ ওয়া আলা আলি মুহাম্মাদ...'",
-                new List<DiinAISource>
-                {
-                    new() { Source = "আল-কুরআন", Reference = "সূরা আল-আহযাব, আয়াত ৫৬" },
-                    new() { Source = "সহীহ বুখারী", Reference = "হাদিস নম্বর ৩৩৭০" }
-                }
-            )
-        };
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _logger = logger;
+        }
 
         public bool IsOffTopic(string query)
         {
+            if (string.IsNullOrWhiteSpace(query))
+                return false;
+
             var lower = query.ToLower();
             return OffTopicKeywords.Any(k => lower.Contains(k.ToLower()));
         }
 
         public async Task<(string Answer, List<DiinAISource> Sources)> AskIslamicQuestionAsync(string question, List<DiinAIChatMessage>? history = null)
         {
-            await Task.Yield();
-
+            // 1. Guard against off-topic queries
             if (IsOffTopic(question))
             {
                 return (
@@ -103,29 +59,75 @@ namespace AdDiin.Services
                 );
             }
 
-            var qLower = question.ToLower();
+            // 2. Resolve AI Backend URL (checks AI_BACKEND_URL env var, then AISettings:BackendUrl in appsettings)
+            var backendUrl = _configuration["AI_BACKEND_URL"] 
+                             ?? _configuration["AISettings:BackendUrl"];
 
-            // Match knowledge base
-            foreach (var (keywords, answer, sources) in IslamicKnowledgeBase)
+            if (string.IsNullOrWhiteSpace(backendUrl))
             {
-                if (keywords.Any(k => qLower.Contains(k.ToLower())))
-                {
-                    return (answer, sources);
-                }
+                _logger.LogWarning("AI Backend URL is not configured. Set AI_BACKEND_URL environment variable or AISettings:BackendUrl in appsettings.json.");
+                return (
+                    "দুঃখিত, AI সার্ভার কনফিগারেশন এখনো সম্পন্ন হয়নি। অনুগ্রহ করে পরবর্তীতে আবার চেষ্টা করুন।",
+                    new List<DiinAISource>()
+                );
             }
 
-            // General Islamic Guidance Fallback with verified citations
-            var generalAnswer = $"আলহামদুলিল্লাহ, আপনার প্রশ্নটি অত্যন্ত গুরুত্বপূর্ণ: \"{question}\"\n\n" +
-                "ইসলামে প্রতিটি বিষয়ে কুরআন ও সুন্নাহর সুস্পষ্ট দিকনির্দেশনা রয়েছে। আল্লাহ তাআলা ইরশাদ করেছেন: 'তোমরা সৎকর্ম ও আল্লাহভীতির কাজে একে অপরকে সাহায্য কর...' (সূরা আল-মায়েদা: ২)।\n\n" +
-                "যে কোনো দ্বীনি জিজ্ঞাসা ও বিস্তারিত ফতোয়ার ক্ষেত্রে স্থানীয় বিজ্ঞ মুফতি ও আলেমগণের সরাসরি পরামর্শ গ্রহণ করা উত্তম। আরও সুনির্দিষ্ট তথ্য জানতে সালাত, সাওম, যাকাত, হজ, তাফসির বা কোনো হাদিসের বিষয়ে প্রশ্ন করতে পারেন।";
-
-            var generalSources = new List<DiinAISource>
+            // 3. Call Colab FastAPI Backend
+            try
             {
-                new() { Source = "পবিত্র কুরআনুল কারীম", Reference = "সূরা আল-মায়েদা, আয়াত ২" },
-                new() { Source = "সহীহ বুখারী ও মুসলিম", Reference = "কিতাবুল ঈমান" }
-            };
+                var endpoint = $"{backendUrl.TrimEnd('/')}/ask";
+                var payload = new { query = question };
 
-            return (generalAnswer, generalSources);
+                _logger.LogInformation("Sending question to AI backend. URL: {BackendUrl}", endpoint);
+
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                using var response = await _httpClient.PostAsJsonAsync(endpoint, payload);
+
+                _logger.LogInformation("AI backend response status: {StatusCode}", response.StatusCode);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<AIApiAskResponse>(jsonOptions);
+                    if (result != null && !string.IsNullOrWhiteSpace(result.Answer))
+                    {
+                        return (result.Answer, result.Sources ?? new List<DiinAISource>());
+                    }
+                    _logger.LogWarning("AI backend returned empty or unparseable answer.");
+                }
+                else
+                {
+                    _logger.LogError("AI Backend returned non-success status code: {StatusCode}", response.StatusCode);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Timeout occurred while connecting to Colab AI Backend at {BackendUrl}", backendUrl);
+                return (
+                    "দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না",
+                    new List<DiinAISource>()
+                );
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Failed to connect to Colab AI Backend at {BackendUrl}", backendUrl);
+                return (
+                    "দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না",
+                    new List<DiinAISource>()
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error in DiinAIService while calling AI Backend at {BackendUrl}", backendUrl);
+            }
+
+            return (
+                "দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না",
+                new List<DiinAISource>()
+            );
         }
     }
 }
