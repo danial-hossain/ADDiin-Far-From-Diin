@@ -55,6 +55,19 @@ namespace AdDiin.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("api/ai/health")]
+        public async Task<IActionResult> Health()
+        {
+            var (isHealthy, details) = await _aiService.CheckHealthAsync();
+            return Ok(new
+            {
+                connected = isHealthy,
+                details = details,
+                timestamp = DateTime.UtcNow.ToString("o")
+            });
+        }
+
         public class ChatRequest
         {
             public string Message { get; set; } = string.Empty;
