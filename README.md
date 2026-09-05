@@ -1,4 +1,4 @@
-﻿# 🕌 Ad-Diin: Smart Mosque Management Platform
+﻿# 🕌 Ad-Diin: Islamic Development Platform
 
 > **Course:** AUST CSE 3200 — Software Development-V  
 > **Target IDE:** Visual Studio 2022  
