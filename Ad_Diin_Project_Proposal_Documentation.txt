@@ -1,0 +1,271 @@
+================================================================================
+                    AD-DIIN: AN AI-INTEGRATED ISLAMIC DIGITAL PLATFORM
+                          PROJECT PROPOSAL & TECHNICAL REPORT
+================================================================================
+
+1. PROJECT TITLE
+--------------------------------------------------------------------------------
+Ad-Diin: An AI-Integrated Islamic Digital Platform with Transparent Welfare 
+Donations, Digital Habit Focus, and RAG-Powered Knowledge Assistance
+
+
+2. PROBLEM STATEMENT & UN SDG ALIGNMENT
+--------------------------------------------------------------------------------
+2.1 Problem Statement
+In today's digital era, Muslims often need to use multiple separate applications 
+and websites for different aspects of their daily religious life. Prayer times, 
+Hijri calendars, Zakat calculation, charitable donations, Islamic programs, 
+personal religious habits, and Islamic knowledge are generally available through 
+disconnected platforms. This fragmentation makes it difficult for users to 
+access these essential services from a single, reliable source.
+
+Another major challenge is the lack of transparency in digital charitable giving. 
+Donors do not always have a clear, verifiable mechanism to track their digital 
+transactions or observe how much funds have been collected for a particular 
+charitable cause. This lack of visible accountability reduces donor trust and 
+discourages digital community welfare participation.
+
+Digital distraction is another growing challenge. Excessive use of social media 
+and addictive websites consumes valuable time and significantly reduces users' 
+focus on religious, educational, and productive activities. Existing productivity 
+tools focus exclusively on generic workplace time management rather than helping 
+users maintain consistent, spiritually enriching Islamic routines.
+
+Furthermore, Muslims seeking authentic Islamic knowledge online frequently 
+encounter unverified information, fabricated Hadith, or AI-generated responses 
+lacking reliable citations. General-purpose Large Language Models (LLMs) often 
+hallucinate plausible-sounding but religiously inaccurate information. Providing 
+strictly source-grounded Islamic guidance with verifiable Quranic and Sahih 
+Hadith references is therefore a critical necessity.
+
+To address these problems, Ad-Diin proposes a unified, AI-integrated Islamic 
+digital platform that combines daily Islamic utilities, transparent charitable 
+giving, digital focus/well-being management, personalized "My Deen" habit 
+tracking, and a Retrieval-Augmented Generation (RAG) AI assistant grounded in 
+verified Quranic verses and authentic Hadith sources.
+
+2.2 UN Sustainable Development Goal (SDG) Alignment
+The proposed platform directly aligns with:
+
+- Primary Match: UN SDG 9 (Industry, Innovation, and Infrastructure)
+  * Target 9.c: Universal & Affordable Access to Information & ICT — Ad-Diin utilizes 
+    modern web architecture, cloud-based AI inference, and digital payment systems 
+    to make verified Islamic knowledge and services universally accessible.
+  * Target 9.1: Resilient & Transparent Digital Infrastructure — Providing a secure, 
+    auditable platform with verifiable transaction tokens (TranId) and public live 
+    statistics for religious and humanitarian giving.
+
+- Secondary Match: UN SDG 10 (Reduced Inequalities)
+  * Target 10.2: Promoting socio-economic inclusion through accurate Zakat calculation 
+    and transparent digital distribution to vulnerable, orphan, and low-income 
+    communities.
+
+- Secondary Match: UN SDG 3 (Good Health and Well-being)
+  * Target 3.4: Promoting mental well-being and digital health by mitigating 
+    compulsive social media consumption through customizable focus sessions and 
+    wholesome habit building.
+
+
+3. PROJECT DESCRIPTION & SOLUTION APPROACH
+--------------------------------------------------------------------------------
+3.1 Project Description
+Ad-Diin is an all-in-one AI-integrated Islamic web ecosystem developed using 
+ASP.NET Core (.NET 9) MVC. It centralizes essential religious utilities, 
+humanitarian giving, digital well-being, and verified Islamic knowledge into a 
+high-performance, secure web platform.
+
+The platform provides real-time prayer schedules with next-Waqt countdown clocks, 
+Sehri and Iftar timings, and an interactive Hijri calendar. It includes an automated 
+Zakat Calculator with dynamic Gold and Silver Nisab reference benchmarks and a 
+transparent donation portal integrated with SSLCommerz. For digital health, 
+Ad-Diin introduces custom focus sessions that help users block distracting websites 
+and dedicate time to educational or spiritual pursuits. The "My Deen" module 
+gamifies spiritual consistency with a digital Dhikr counter, daily habit tracking, 
+points, goals, and achievement badges. 
+
+At the technological core of the platform is Diin AI, a conversational Islamic 
+assistant that uses Retrieval-Augmented Generation (RAG) to generate responses 
+strictly based on verified Quranic verses and authentic Hadith collections.
+
+3.2 Solution Approach & System Architecture
+The system follows a multi-tier, decoupled software architecture:
+
+1. Presentation Layer (ASP.NET Core MVC Razor Views):
+   - Fully responsive, user-friendly UI built with Bootstrap 5.3, custom styling, 
+     and asynchronous AJAX interactions.
+2. Application & Business Logic Layer (C# .NET 9 Service Interfaces):
+   - Implements Dependency Injection (DI) with dedicated services: IPrayerTimeService, 
+     IDonationService, IMyDeenService, IFocusService, and IDiinAIService.
+3. Data Access Layer (Entity Framework Core & Microsoft SQL Server):
+   - Code-First database design with migrations, parameterized LINQ queries, 
+     and ASP.NET Core Identity for PBKDF2 password hashing and role authorization.
+4. Payment Gateway Subsystem (SSLCommerz):
+   - Secure payment initiation, IPN validation, automated transaction logging, 
+     and verifiable TranId receipt generation.
+5. External RAG AI Backend (Google Colab / Dedicated GPU Server):
+   - Decoupled FastAPI server running Qwen3-8B (4-bit quantized via bitsandbytes) 
+     and ChromaDB vector database.
+   - Embeddings: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2.
+   - Strict Context-Only RAG prompt enforcing verbatim citations (Surah name, 
+     Ayah number, Hadith reference) and fallback messages for out-of-context queries.
+
+
+4. KEY FUNCTIONALITIES / FEATURES
+--------------------------------------------------------------------------------
+4.1 Daily Islamic Utilities
+- Real-time prayer timings (Fajr, Dhuhr, Asr, Maghrib, Isha, Jummah).
+- Dynamic live countdown clock to the upcoming prayer (Waqt).
+- Automated Sehri and Iftar schedules with Ramadan alerts.
+- Live Gregorian-to-Hijri calendar conversion and Islamic milestone reminders.
+
+4.2 Dynamic Zakat Calculator
+- Automated calculation of Zakat liabilities across diverse wealth categories 
+  (Cash, Gold, Silver, Investments, Business Goods, minus short-term debts).
+- Real-time reference thresholds for Gold Nisab (87.48g) and Silver Nisab (612.36g).
+- Transparent 2.5% calculation output with breakdown explanations.
+
+4.3 Transparent Digital Donation Portal
+- Multi-category philanthropic support (Zakat, Orphan Care, Winter Clothing, 
+  Iftar Drives, Disaster Relief, and General Sadaqah).
+- Seamless online payments via SSLCommerz (Mobile Banking, Cards, Net Banking).
+- Unique verifiable Transaction Token (TranId) with instant digital receipts.
+- Live public fund metrics and category-wise visual breakdowns to foster donor trust.
+
+4.4 Islamic Programs & Activities Management
+- Discovery portal for Islamic webinars, Quran/Hadith study circles, and youth events.
+- Online booking and registration for educational activities, Milad, and Dua requests.
+- Administrative review, capacity management, and participant status tracking.
+
+4.5 Digital Focus & Time Management (Digital Well-being)
+- Custom focus mode allowing users to block selected distracting/social media domains.
+- Structured focus sessions with timers to dedicate undisturbed time to Quran study, 
+  work, or reflection.
+- Analytics and history on focused sessions to promote healthy digital routines.
+
+4.6 My Deen — Personalized Islamic Habit Tracking
+- Interactive digital Dhikr counter with milestone vibration/audio feedback.
+- Daily Islamic habit checklist (5 daily prayers, morning/evening Adhkar, Quran recitation).
+- Gamified spiritual habit tracking: Goal setting, consistency points, and achievement badges.
+
+4.7 Diin AI — Verified RAG-Powered Islamic Assistant
+- Bilingual natural language query resolution in Bengali and English.
+- Retrieval-Augmented Generation (RAG) constraining responses strictly to verified texts.
+- Guaranteed references citing exact Surah name, Ayah number, and Hadith numbers.
+- Automated off-topic filtering to preserve religious focus and avoid hallucinations.
+
+
+5. SYSTEM DIAGRAMS & USE CASES
+--------------------------------------------------------------------------------
+5.1 System Architecture & Flow Diagram:
+
+  +-------------------------------------------------------------------+
+  |                           USER BROWSER                            |
+  |   (Prayer Clocks | Zakat Calc | Focus Mode | My Deen | AI Chat)   |
+  +---------------------------------+---------------------------------+
+                                    | HTTPS / JSON
+                                    v
+  +-------------------------------------------------------------------+
+  |                    ASP.NET CORE (.NET 9) MVC                      |
+  |  +------------------------+  +---------------------------------+  |
+  |  |  MVC Action Controllers|  | Application Business Services   |  |
+  |  | (DiinAI, Donate, Deen) |  | (DI Services, Identity, Auth)   |  |
+  |  +------------------------+  +---------------------------------+  |
+  +-----------------+-------------------------------+-----------------+
+                    |                               |
+        SQL Queries | EF Core                       | HTTP POST /ask
+                    v                               v
+  +-----------------------------+   +---------------------------------+
+  |      MS SQL SERVER DB       |   |  COLAB / CLOUD AI RAG BACKEND   |
+  |  - Users & Roles            |   |  - FastAPI Server               |
+  |  - Donations & TranId       |   |  - ChromaDB Vector Collection   |
+  |  - Habits, Dhikr, Focus     |   |  - Multilingual Embeddings      |
+  |  - Activities & Milad       |   |  - Qwen3-8B LLM (4-bit GPU)     |
+  +-----------------------------+   +---------------------------------+
+
+5.2 Use Case Interactions:
+- General User:
+  * View real-time prayer schedule & countdown.
+  * Calculate personal Zakat & execute online donation via SSLCommerz.
+  * Launch Digital Focus sessions to block distracting websites.
+  * Track daily habits, Dhikr counts, and badges in My Deen.
+  * Submit religious questions to Diin AI and receive citation-backed answers.
+- Platform Administrator:
+  * Configure prayer calendars, announcements, and welfare activities.
+  * Audit donations, verify TranId logs, and view live funding metrics.
+  * Manage user inquiries, program registrations, and Milad bookings.
+
+5.3 Entity Relationship (ER) Data Model:
+  - ApplicationUser (Id, FullName, Email, PhoneNumber, Role, CreatedAt)
+      |-- 1:N --> Donation (Id, UserId, Category, Amount, TranId, PaymentMethod, Status, PaymentDate)
+      |-- 1:N --> MiladRequest (Id, UserId, Name, Phone, Description, PreferredDate, Status)
+      |-- 1:N --> ActivityRegistration (Id, UserId, ActivityId, RegisteredAt)
+      |-- 1:N --> UserHabitLog (Id, UserId, HabitType, PointsEarned, CompletedAt)
+  - Activity (Id, Title, Description, EventDate, Location, MaxCapacity)
+  - PrayerTime (Id, Date, Fajr, Dhuhr, Asr, Maghrib, Isha, Jummah)
+
+
+6. BACKGROUND STUDY / GAP ANALYSIS
+--------------------------------------------------------------------------------
+6.1 Comparison with Existing Systems:
+
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Feature / Dimension        | Generic Islamic Apps  | Conventional Productivity| Ad-Diin                 |
+|                            | (e.g. Muslim Pro)     | & Donation Websites     | (Proposed Platform)     |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Architecture & Scope       | Fragmented client-only| Single-purpose siloed   | All-in-one unified      |
+|                            | utilities (ad-heavy)  | websites                | Islamic web ecosystem   |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Financial Transparency &   | External donation     | Static forms; lack of   | Integrated SSLCommerz,  |
+| Transaction Audits         | links without audit   | live visual breakdowns  | verifiable TranId & live|
+|                            |                       |                         | category transparency   |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Digital Well-being &       | Not available         | General corporate focus | Purpose-built distraction|
+| Focus Control              |                       | tools lacking Deen sync | blocker & habit booster |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Personalized Deen Tracking | Basic counters only   | Not available           | Dhikr counter, goals,   |
+|                            |                       |                         | scoring & badge rewards |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| AI Knowledge Engine        | Generic chatbots      | Static search blogs     | RAG-driven Diin AI      |
+|                            | prone to hallucination| with unverified sources | (Qwen3-8B + ChromaDB)   |
+|                            | and false fatwas      |                         | with exact citations    |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Source Traceability        | Unreliable / Absent   | Manual reading required | Exact Surah/Ayah &      |
+|                            |                       |                         | Hadith citations given  |
++----------------------------+-----------------------+-------------------------+-------------------------+
+| Language Support           | Mostly English/Arabic | Fragmented              | Native Bengali & English|
+|                            |                       |                         | query understanding     |
++----------------------------+-----------------------+-------------------------+-------------------------+
+
+6.2 Research and Development Gaps Identified
+1. High Ecosystem Fragmentation:
+   Users are forced to install 4-5 different apps for daily prayers, Zakat calculation, 
+   charity, spiritual habit logging, and productivity. Ad-Diin consolidates them into 
+   a single cohesive web platform.
+
+2. Neglect of Islamic Digital Well-being:
+   Existing productivity tools (e.g., generic Pomodoro or site blockers) are not 
+   oriented around Islamic mindfulness. Ad-Diin pioneers digital focus tools tied 
+   to spiritual and educational balance.
+
+3. Lack of Gamified Spiritual Motivation:
+   Most Islamic apps provide static counters. Ad-Diin integrates positive reinforcement 
+   (points, milestones, badges) to encourage consistent daily worship.
+
+4. Unreliable Religious Answers in Modern AI:
+   Standard generative AI models hallucinate Hadith text and religious rulings. 
+   Ad-Diin solves this through strict vector retrieval (RAG) over verified Islamic corpora.
+
+6.3 Technical & Practical Contribution
+The primary contribution of Ad-Diin is the seamless fusion of:
+Daily Islamic Utilities + Verifiable Philanthropy + Digital Focus + Deen Gamification + RAG-Powered AI
+into an enterprise-grade ASP.NET Core (.NET 9) web application.
+
+The standout technical innovation is Diin AI: a decoupled RAG pipeline running 
+Qwen3-8B on GPU infrastructure, converting user queries into multilingual semantic 
+vectors, retrieving matching Quranic and Hadith records from ChromaDB, and formatting 
+strict, citation-backed answers in real time.
+
+================================================================================
+                             END OF TECHNICAL REPORT
+================================================================================
+

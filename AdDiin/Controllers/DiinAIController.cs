@@ -1,4 +1,4 @@
-﻿using AdDiin.Models.ViewModels;
+using AdDiin.Models.ViewModels;
 using AdDiin.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +33,37 @@ namespace AdDiin.Controllers
                 success = true,
                 response = answer,
                 sources = sources.Select(s => new { source = s.Source, reference = s.Reference }),
+                timestamp = DateTime.UtcNow.ToString("o")
+            });
+        }
+
+        [HttpPost]
+        [Route("api/ai/ask")]
+        public async Task<IActionResult> Ask([FromBody] AIApiAskRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request?.Query))
+            {
+                return BadRequest(new { error = "Query cannot be empty" });
+            }
+
+            var (answer, sources) = await _aiService.AskIslamicQuestionAsync(request.Query);
+
+            return Ok(new AIApiAskResponse
+            {
+                Answer = answer,
+                Sources = sources
+            });
+        }
+
+        [HttpGet]
+        [Route("api/ai/health")]
+        public async Task<IActionResult> Health()
+        {
+            var (isHealthy, details) = await _aiService.CheckHealthAsync();
+            return Ok(new
+            {
+                connected = isHealthy,
+                details = details,
                 timestamp = DateTime.UtcNow.ToString("o")
             });
         }

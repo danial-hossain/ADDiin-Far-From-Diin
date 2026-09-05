@@ -147,4 +147,194 @@ namespace AdDiin.Models.ViewModels
         public string Source { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
     }
+
+    public class AIApiAskRequest
+    {
+        public string Query { get; set; } = string.Empty;
+    }
+
+    public class AIApiAskResponse
+    {
+        public string Answer { get; set; } = string.Empty;
+        public List<DiinAISource> Sources { get; set; } = new();
+    }
+
+    public class ProductTextAnalysisRequest
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("text")]
+        public string Text { get; set; } = string.Empty;
+    }
+
+    public class HalalDetectorResult
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("success")]
+        public bool Success { get; set; } = true;
+
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty; // HARAM_DETECTED, MUSHBOOH_DETECTED, NO_HARAM_MATCH, INSUFFICIENT_OCR, error
+
+        [System.Text.Json.Serialization.JsonPropertyName("ocr")]
+        public AdDiinAiOcr? Ocr { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("decision")]
+        public AdDiinAiDecision? Decision { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("explanation")]
+        public string? Explanation { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("api")]
+        public AdDiinAiApiInfo? Api { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("errorMessage")]
+        public string? ErrorMessage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("error")]
+        public string? Error { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("message")]
+        public string? Message { get; set; }
+
+        // Backward compatibility / convenience properties
+        [System.Text.Json.Serialization.JsonPropertyName("prediction")]
+        public string? Prediction => Status;
+
+        [System.Text.Json.Serialization.JsonPropertyName("confidence")]
+        public double Confidence => Ocr?.Confidence ?? 0.0;
+
+        [System.Text.Json.Serialization.JsonPropertyName("rawOcr")]
+        public string? RawOcr => Ocr?.Text;
+
+        [System.Text.Json.Serialization.JsonPropertyName("reason")]
+        public string? Reason => Decision?.Reason ?? Explanation;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ingredientsDetected")]
+        public List<DetectedIngredient>? IngredientsDetected
+        {
+            get
+            {
+                var list = new List<DetectedIngredient>();
+                if (Decision?.HaramEvidence != null)
+                {
+                    foreach (var h in Decision.HaramEvidence)
+                    {
+                        list.Add(new DetectedIngredient
+                        {
+                            Name = h.Ingredient,
+                            Status = "Haram",
+                            Reason = !string.IsNullOrWhiteSpace(h.Reference) ? $"{h.Description} ({h.Reference})" : h.Description,
+                            MatchType = h.MatchType,
+                            OcrIngredient = h.OcrIngredient,
+                            Reference = h.Reference
+                        });
+                    }
+                }
+                if (Decision?.MushboohEvidence != null)
+                {
+                    foreach (var m in Decision.MushboohEvidence)
+                    {
+                        list.Add(new DetectedIngredient
+                        {
+                            Name = m.Ingredient,
+                            Status = "Requires Verification",
+                            Reason = !string.IsNullOrWhiteSpace(m.Reference) ? $"{m.Description} ({m.Reference})" : m.Description,
+                            MatchType = m.MatchType,
+                            OcrIngredient = m.OcrIngredient,
+                            Reference = m.Reference
+                        });
+                    }
+                }
+                return list.Count > 0 ? list : null;
+            }
+        }
+    }
+
+    public class AdDiinAiOcr
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("text")]
+        public string Text { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("confidence")]
+        public double Confidence { get; set; }
+    }
+
+    public class AdDiinAiDecision
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("reason")]
+        public string Reason { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("haram_evidence")]
+        public List<AdDiinAiEvidence> HaramEvidence { get; set; } = new();
+
+        [System.Text.Json.Serialization.JsonPropertyName("mushbooh_evidence")]
+        public List<AdDiinAiEvidence> MushboohEvidence { get; set; } = new();
+
+        [System.Text.Json.Serialization.JsonPropertyName("semantic_candidates")]
+        public List<AdDiinAiEvidence> SemanticCandidates { get; set; } = new();
+
+        [System.Text.Json.Serialization.JsonPropertyName("halal_certification")]
+        public bool HalalCertification { get; set; } = false;
+    }
+
+    public class AdDiinAiEvidence
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string? Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ingredient")]
+        public string Ingredient { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("category")]
+        public string Category { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("reference")]
+        public string Reference { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("match_type")]
+        public string MatchType { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("ocr_ingredient")]
+        public string? OcrIngredient { get; set; }
+    }
+
+    public class AdDiinAiApiInfo
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("endpoint")]
+        public string? Endpoint { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("model")]
+        public string? Model { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ocr_engine")]
+        public string? OcrEngine { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("retrieval")]
+        public string? Retrieval { get; set; }
+    }
+
+    public class DetectedIngredient
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty; // Halal, Haram, Requires Verification
+
+        [System.Text.Json.Serialization.JsonPropertyName("reason")]
+        public string Reason { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("matchType")]
+        public string? MatchType { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ocrIngredient")]
+        public string? OcrIngredient { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("reference")]
+        public string? Reference { get; set; }
+    }
 }
