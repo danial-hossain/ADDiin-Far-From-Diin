@@ -104,8 +104,8 @@
                     <div class="h-px bg-white/10"></div>
                     <div class="grid grid-cols-2 gap-4 text-center">
                         <div>
-                            <div class="text-xl font-black text-white">4,800+</div>
-                            <div class="text-[11px] text-slate-300">E-Codes Indexed</div>
+                            <div class="text-xl font-black text-white">Halal / Haram</div>
+                            <div class="text-[11px] text-slate-300">Knowledge Base Rules</div>
                         </div>
                         <div>
                             <div class="text-xl font-black text-emerald-400">Vision OCR</div>
@@ -135,14 +135,33 @@
             </div>
         </div>
 
-        <!-- 2. IMAGE UPLOAD & 3. PREVIEW SECTION -->
+        <!-- 2. INPUT MODE SWITCHER & CARDS -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3 sm:p-4 rounded-3xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-2.5 text-xs font-extrabold text-slate-800 uppercase tracking-wider">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>Select Analysis Mode:</span>
+            </div>
+            <!-- Mode Switcher Tabs -->
+            <div class="flex items-center p-1.5 bg-slate-100 rounded-2xl w-full sm:w-auto border border-slate-200/80">
+                <button type="button" id="tabModeImage" onclick="switchAnalysisMode('image')" class="flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-slate-900 shadow-sm border border-slate-200/60">
+                    <span class="text-base">📷</span>
+                    <span>Upload Product Image</span>
+                </button>
+                <button type="button" id="tabModeText" onclick="switchAnalysisMode('text')" class="flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
+                    <span class="text-base">📝</span>
+                    <span>Enter Ingredients</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. IMAGE UPLOAD / TEXT INPUT & 3. PREVIEW SECTION -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Left 7 cols: Interactive Upload Zone -->
+            <!-- Left 7 cols: Interactive Upload Zone or Manual Text Area -->
             <div class="lg:col-span-7 space-y-6">
                 
-                <!-- Main Drag & Drop Glass Card -->
-                <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+                <!-- Mode A: Main Drag & Drop Glass Card -->
+                <div id="imageModeCard" class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shadow-xs">
@@ -159,8 +178,8 @@
                     </div>
 
                     <!-- Drop Zone Area (Visible when no image is selected) -->
-                    <div id="dropZoneContainer" class="drop-zone border-2 border-dashed border-slate-300 rounded-3xl p-8 sm:p-12 text-center cursor-pointer hover:border-emerald-500 group transition-all">
-                        <input type="file" id="productImageInput" accept="image/png, image/jpeg, image/webp" class="hidden" />
+                    <div id="dropZoneContainer" onclick="window.triggerFileInput(event)" class="drop-zone border-2 border-dashed border-slate-300 rounded-3xl p-8 sm:p-12 text-center cursor-pointer hover:border-emerald-500 group transition-all">
+                        <input type="file" id="productImageInput" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden" onclick="event.stopPropagation()" />
                         
                         <div class="w-20 h-20 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
                             <i class="bi bi-cloud-arrow-up-fill"></i>
@@ -170,10 +189,10 @@
                             Drag and drop your ingredient label here
                         </h4>
                         <p class="text-xs text-slate-500 max-w-sm mx-auto mb-5">
-                            Or browse files from your computer or capture directly from your phone camera.
+                            Or click anywhere here to browse files from your computer / phone camera.
                         </p>
 
-                        <button type="button" onclick="document.getElementById('productImageInput').click()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition inline-flex items-center gap-2">
+                        <button type="button" onclick="window.triggerFileInput(event)" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition inline-flex items-center gap-2">
                             <i class="bi bi-image"></i> Choose Image
                         </button>
                     </div>
@@ -199,13 +218,53 @@
                             </button>
 
                             <button type="button" id="btnAnalyzeAI" onclick="startAIAnalysis()" class="px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2">
-                                <i class="bi bi-cpu-fill text-lg"></i> Analyze with AI
+                                <i class="bi bi-cpu-fill text-lg"></i> Analyze Image
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 7. OCR EXTRACTED TEXT SECTION (Collapsible) -->
+                <!-- Mode B: Manual Text Input Glass Card -->
+                <div id="textModeCard" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xl shadow-xs">
+                                📝
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-slate-900 text-lg">Enter Ingredients</h3>
+                                <p class="text-xs text-slate-500">Paste or type the ingredients list from product packaging</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full">
+                            Manual Input
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label for="manualIngredientsInput" class="block text-xs font-bold text-slate-700">
+                            Ingredient List
+                        </label>
+                        <textarea id="manualIngredientsInput" rows="7" class="w-full rounded-2xl border border-slate-200 bg-slate-50/50 p-4 text-sm font-mono text-slate-800 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition leading-relaxed" placeholder="Enter the ingredients from the product label..."></textarea>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-500">
+                            <span><strong>Example:</strong> Potatoes, Vegetable Oil, E471, Sugar, Salt</span>
+                            <span id="charCountDisplay" class="font-mono text-slate-400">0 characters</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <button type="button" onclick="clearManualText()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs transition flex items-center gap-1.5">
+                            <i class="bi bi-trash3"></i> Clear Text
+                        </button>
+
+                        <button type="button" id="btnAnalyzeText" onclick="startAIAnalysis()" class="px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2">
+                            <i class="bi bi-cpu-fill text-lg"></i> Analyze Ingredients
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 7. OCR / TEXT INPUT VIEW SECTION (Collapsible) -->
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
                     <button type="button" onclick="toggleOcrAccordion()" class="w-full flex items-center justify-between text-left focus:outline-none group">
                         <div class="flex items-center gap-3">
@@ -213,8 +272,8 @@
                                 <i class="bi bi-file-earmark-text-fill"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition">View Extracted Label Text (OCR)</h4>
-                                <p class="text-[11px] text-slate-500">Raw text parsed from product label image</p>
+                                <h4 class="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition" id="ocrSectionHeading">View Parsed Ingredient Text</h4>
+                                <p class="text-[11px] text-slate-500" id="ocrSectionSubtext">Extracted or inputted ingredients text sent for knowledge base matching</p>
                             </div>
                         </div>
                         <i id="ocrChevron" class="bi bi-chevron-down text-slate-400 group-hover:text-slate-600 transition-transform duration-200"></i>
@@ -222,11 +281,11 @@
 
                     <div id="ocrContentArea" class="hidden mt-4 pt-4 border-t border-slate-100 space-y-3">
                         <div class="bg-slate-50 rounded-2xl p-4 font-mono text-xs text-slate-700 leading-relaxed border border-slate-200/80 whitespace-pre-wrap max-h-48 overflow-y-auto" id="ocrRawTextDisplay">
-INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Artificial Flavors, Modified Starch.
+Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                         </div>
                         <div class="flex items-center justify-between text-[11px] text-slate-400">
-                            <span>OCR Confidence: <strong class="text-emerald-600" id="ocrConfidenceText">98.4%</strong></span>
-                            <span>Engine: ADDiin Vision OCR v2.4</span>
+                            <span>Confidence: <strong class="text-emerald-600" id="ocrConfidenceText">98.5%</strong></span>
+                            <span id="ocrEngineLabel">Engine: EasyOCR + ChromaDB</span>
                         </div>
                     </div>
                 </div>
@@ -266,7 +325,7 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                                 <i class="bi bi-fonts"></i>
                             </div>
                             <div class="space-y-0.5">
-                                <p class="text-xs font-bold text-slate-800">2. Extracting ingredients using OCR</p>
+                                <p class="text-xs font-bold text-slate-800">2. Extracting text using EasyOCR</p>
                                 <p class="text-[11px] text-slate-500">Optical character multi-angle tokenization</p>
                             </div>
                         </div>
@@ -274,33 +333,33 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                         <!-- Step 3 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step3">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
-                                <i class="bi bi-hash"></i>
+                                <i class="bi bi-database-check"></i>
                             </div>
                             <div class="space-y-0.5">
-                                <p class="text-xs font-bold text-slate-800">3. Detecting E-numbers & additives</p>
-                                <p class="text-[11px] text-slate-500">Cross-referencing global additive standards</p>
+                                <p class="text-xs font-bold text-slate-800">3. Querying Knowledge Base (ChromaDB)</p>
+                                <p class="text-[11px] text-slate-500">Scanning Haram & Mushbooh indexed rules</p>
                             </div>
                         </div>
 
                         <!-- Step 4 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step4">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
-                                <i class="bi bi-database-check"></i>
+                                <i class="bi bi-cpu"></i>
                             </div>
                             <div class="space-y-0.5">
-                                <p class="text-xs font-bold text-slate-800">4. Analyzing ingredient database</p>
-                                <p class="text-[11px] text-slate-500">Querying verified Halal/Haram intelligence index</p>
+                                <p class="text-xs font-bold text-slate-800">4. Deterministic Decision Engine</p>
+                                <p class="text-[11px] text-slate-500">Evaluating deterministic compliance rules</p>
                             </div>
                         </div>
 
                         <!-- Step 5 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step5">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
-                                <i class="bi bi-shield-check"></i>
+                                <i class="bi bi-chat-left-quote-fill"></i>
                             </div>
                             <div class="space-y-0.5">
-                                <p class="text-xs font-bold text-slate-800">5. Generating classification</p>
-                                <p class="text-[11px] text-slate-500">Synthesizing comprehensive decision support</p>
+                                <p class="text-xs font-bold text-slate-800">5. Grounded Explanation (Qwen3-8B)</p>
+                                <p class="text-[11px] text-slate-500">Synthesizing evidence-grounded report</p>
                             </div>
                         </div>
                     </div>
@@ -310,10 +369,10 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                 <div class="rounded-3xl p-5 bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-indigo-800/40 shadow-sm space-y-2.5">
                     <div class="flex items-center gap-2 text-amber-300 text-xs font-bold">
                         <i class="bi bi-mortarboard-fill"></i>
-                        <span>University CSE Project Demonstration</span>
+                        <span>AI Halal Knowledge Base & Decision Pipeline</span>
                     </div>
                     <p class="text-xs text-slate-300 leading-relaxed">
-                        Combines Computer Vision Optical Character Recognition (OCR), token classification, and Islamic jurisprudential ingredient knowledge matrices.
+                        EasyOCR &bull; ChromaDB Retrieval &bull; Deterministic Decision Engine &bull; Qwen3-8B Grounded Explanation
                     </p>
                 </div>
             </div>
@@ -328,7 +387,7 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                 <h2 class="text-2xl font-black text-slate-900 tracking-tight">Analysis & Classification Report</h2>
             </div>
 
-            <!-- Master Classification Card (Dynamic Status: Halal / Verify / Haram) -->
+            <!-- Master Classification Card -->
             <div id="masterStatusCard" class="rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-amber-50/90 border-amber-200 text-amber-950">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div class="flex items-center gap-5">
@@ -350,17 +409,17 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
 
                     <!-- Confidence Gauge -->
                     <div class="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-slate-200 text-center min-w-[170px] shadow-xs">
-                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Confidence Score</div>
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500">OCR Confidence</div>
                         <div class="text-3xl font-black text-slate-900" id="confidenceScoreDisplay">95.4%</div>
-                        <div class="text-[10px] text-slate-500 mt-0.5">High Token Accuracy</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5" id="confidenceLabel">Token Accuracy</div>
                     </div>
                 </div>
 
                 <!-- Mandatory Jurisprudence Disclaimer -->
                 <div class="mt-6 pt-5 border-t border-current/15 flex items-start gap-3 text-xs leading-relaxed opacity-85">
                     <i class="bi bi-info-circle-fill text-base shrink-0 mt-0.5"></i>
-                    <p>
-                        <strong>Disclaimer:</strong> This result is generated based on available ingredient data and should be used as decision support. Consult qualified Islamic scholars or official halal certification authorities for final verification.
+                    <p id="jurisprudenceDisclaimer">
+                        <strong>Disclaimer:</strong> This result is generated based on available ingredient knowledge and should be used as decision support. Consult qualified Islamic scholars or official halal certification authorities for final verification.
                     </p>
                 </div>
             </div>
@@ -373,11 +432,11 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                     <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="font-extrabold text-slate-900 text-lg">Detected Ingredients</h3>
-                                <p class="text-xs text-slate-500">Breakdown of extracted substances and compliance ratings</p>
+                                <h3 class="font-extrabold text-slate-900 text-lg">Detected Evidence & Ingredients</h3>
+                                <p class="text-xs text-slate-500">Breakdown of extracted substances, matches, and reference evidence</p>
                             </div>
                             <span class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-full" id="ingredientCountBadge">
-                                6 Substances
+                                0 Detected
                             </span>
                         </div>
 
@@ -386,9 +445,9 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                             <table class="w-full text-left text-sm">
                                 <thead>
                                     <tr class="border-b border-slate-100 text-[11px] uppercase tracking-wider font-extrabold text-slate-400">
-                                        <th class="pb-3 px-2">Ingredient</th>
-                                        <th class="pb-3 px-2">Status</th>
-                                        <th class="pb-3 px-2">Reason & Origin</th>
+                                        <th class="pb-3 px-2">Ingredient / Match</th>
+                                        <th class="pb-3 px-2">Classification</th>
+                                        <th class="pb-3 px-2">Description & Reference</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100" id="ingredientTableBody">
@@ -406,27 +465,27 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                     <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-7 shadow-lg border border-emerald-500/30 space-y-4">
                         <div class="flex items-center gap-2.5 text-emerald-400 font-extrabold text-xs uppercase tracking-wider">
                             <i class="bi bi-lightbulb-fill"></i>
-                            <span>AI Intelligence Insight</span>
+                            <span>AI Grounded Explanation</span>
                         </div>
 
-                        <h4 class="text-lg font-black text-white">Why this result?</h4>
+                        <h4 class="text-lg font-black text-white">Decision Rationale</h4>
 
                         <p class="text-xs text-slate-300 leading-relaxed" id="aiExplanationText">
-                            The product requires verification because certain ingredients (such as Gelatin and E120) may have different origins depending on the manufacturer (animal-derived bovine vs. porcine vs. plant-based alternatives).
+                            Analysis generated by the deterministic decision engine and explained by Qwen3-8B.
                         </p>
 
                         <div class="pt-3 border-t border-white/10 space-y-2">
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400">Halal Ingredients:</span>
-                                <strong class="text-emerald-400" id="statHalalCount">4</strong>
-                            </div>
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400">Verify Required:</span>
-                                <strong class="text-amber-400" id="statVerifyCount">2</strong>
-                            </div>
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-400">Haram / Non-Halal:</span>
+                                <span class="text-slate-400">Haram Evidence:</span>
                                 <strong class="text-rose-400" id="statHaramCount">0</strong>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400">Mushbooh Evidence:</span>
+                                <strong class="text-amber-400" id="statVerifyCount">0</strong>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-400">Halal Certified:</span>
+                                <strong class="text-slate-300" id="statHalalCertified">No (KB Match Check)</strong>
                             </div>
                         </div>
                     </div>
@@ -435,10 +494,10 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
                     <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-3">
                         <div class="flex items-center gap-2 text-slate-900 font-bold text-sm">
                             <i class="bi bi-info-square-fill text-emerald-600"></i>
-                            <span>What are E-Numbers?</span>
+                            <span>Knowledge Base Rules</span>
                         </div>
                         <p class="text-xs text-slate-500 leading-relaxed">
-                            E-numbers are codes for substances used as food additives in the European Union and globally. Some are 100% plant/mineral, while others can be sourced from animals.
+                            The AI Knowledge Base contains cataloged Haram and Mushbooh (doubtful) ingredients. A result of "No Haram Match" indicates no forbidden substances were detected, but does not constitute an official Halal certification.
                         </p>
                     </div>
                 </div>
@@ -530,208 +589,541 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
         // Preset Sample Datasets for Demo / Exhibition
         const samplePresets = {
             halal: {
-                title: "Pure Halal Snacks & Organic Bar",
-                status: "halal",
-                statusHeading: "HALAL COMPLIANT",
-                statusSubtext: "Based on available ingredient information, all detected substances are plant, mineral, or permissible.",
-                confidence: "99.2%",
-                rawOcr: "INGREDIENTS: Whole Grain Oats, Organic Honey, Almond Butter, Citric Acid (E330), Sunflower Lecithin (E322), Sea Salt, Natural Vanilla Flavor.",
-                explanation: "All extracted ingredients and additives (including E330 citric acid and E322 sunflower lecithin) are 100% plant and mineral-derived without any animal fats or alcohol additives.",
-                ingredients: [
-                    { name: "Whole Grain Oats", status: "Halal", reason: "100% Plant-based natural grain" },
-                    { name: "Organic Honey", status: "Halal", reason: "Pure natural permissible honey" },
-                    { name: "Almond Butter", status: "Halal", reason: "Plant-derived nut butter" },
-                    { name: "Citric Acid (E330)", status: "Halal", reason: "Commonly accepted plant/fermentation food additive" },
-                    { name: "Sunflower Lecithin (E322)", status: "Halal", reason: "Plant-derived emulsifier (Halal)" },
-                    { name: "Sea Salt", status: "Halal", reason: "Pure natural mineral" }
-                ],
-                stats: { halal: 6, verify: 0, haram: 0 }
+                title: "Potato Crisps Label (Vegetable Oils & Salt)",
+                status: "NO_HARAM_MATCH",
+                statusHeading: "NO HARAM / MUSHBOOH MATCH FOUND",
+                statusSubtext: "No matching Haram or Mushbooh ingredient was found in the available knowledge base. This does NOT mean the product is certified Halal.",
+                confidence: "98.5%",
+                rawOcr: "Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.",
+                explanation: "No matching Haram or Mushbooh ingredient was found in the available knowledge base. Note that this knowledge base checks for known Haram/Mushbooh additives and does not grant official Halal certification.",
+                ingredients: [],
+                stats: { haram: 0, verify: 0, certified: "No (KB Match Check)" }
             },
             verify: {
-                title: "Marshmallow Confectionery Label",
-                status: "verify",
-                statusHeading: "REQUIRES VERIFICATION",
-                statusSubtext: "Some ingredients require further verification regarding animal source or certification.",
+                title: "Marshmallow Label (E471 / Emulsifiers)",
+                status: "MUSHBOOH_DETECTED",
+                statusHeading: "MUSHBOOH / REQUIRES VERIFICATION",
+                statusSubtext: "An ingredient classified as Mushbooh was found in the available knowledge base.",
                 confidence: "95.4%",
-                rawOcr: "INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Artificial Flavors, Modified Starch.",
-                explanation: "The product contains Gelatin and Carmine (E120). Gelatin requires verification because it may be derived from non-zabiha bovine or porcine sources. Carmine (E120) is derived from insects and holds difference of opinion among scholars.",
+                rawOcr: "Ingredients: sugar, glucose syrup, water, E471 mono- and diglycerides, citric acid, natural flavors.",
+                explanation: "E471 (Mono- and Diglycerides) is classified as Mushbooh in the available knowledge base because it may be derived from vegetable oils or animal fats. The source should be verified before making a halal determination.",
                 ingredients: [
-                    { name: "Sugar", status: "Halal", reason: "Plant-based ingredient from sugarcane/beet" },
-                    { name: "Corn Syrup", status: "Halal", reason: "Plant-derived carbohydrate syrup" },
-                    { name: "Gelatin", status: "Requires Verification", reason: "Source may be non-zabiha animal or porcine; verify Halal certificate" },
-                    { name: "Citric Acid (E330)", status: "Halal", reason: "Commonly accepted food preservative" },
-                    { name: "Carmine / Cochineal (E120)", status: "Requires Verification", reason: "Insect-derived red dye; debated among Islamic jurisprudential bodies" },
-                    { name: "Modified Starch", status: "Halal", reason: "Plant-based corn/potato starch" }
+                    { 
+                        name: "E471 – Mono- and Diglycerides", 
+                        status: "Mushbooh (Requires Verification)", 
+                        reason: "E471 may be produced from vegetable oils or animal fats. The source should be verified with the manufacturer.",
+                        matchType: "EXACT",
+                        ocrIngredient: "e471",
+                        reference: "E-code halal/haram reference material"
+                    }
                 ],
-                stats: { halal: 4, verify: 2, haram: 0 }
+                stats: { haram: 0, verify: 1, certified: "No (Requires Verification)" }
             },
             haram: {
-                title: "Non-Halal Gummy & Meat Extract Snacks",
-                status: "haram",
-                statusHeading: "POTENTIAL HARAM / NON-HALAL DETECTED",
-                statusSubtext: "Critical non-halal ingredients (Porcine Gelatin / Lard / Alcohol) detected on the label.",
+                title: "Savory Snack Label (Pork Powder)",
+                status: "HARAM_DETECTED",
+                statusHeading: "HARAM DETECTED",
+                statusSubtext: "An explicitly classified Haram ingredient was found in the available knowledge base.",
                 confidence: "98.7%",
-                rawOcr: "INGREDIENTS: Glucose Syrup, Pork Gelatin (Porcine), Lard (E441), Ethyl Alcohol Extract, Sugar, Artificial Strawberry Flavor, Color (E120).",
-                explanation: "Critical non-permissible ingredients detected: Porcine Gelatin (pork source) and Lard fat. These are prohibited in Islamic dietary guidelines.",
+                rawOcr: "Ingredients: wheat flour, palm oil, pork powder, salt, flavor enhancer.",
+                explanation: "The product contains pork powder, which is explicitly classified as Haram. Ingredients derived from pigs or swine are strictly prohibited in Islamic dietary law (Quran 2:173; Quran 5:3; Quran 6:145; Quran 16:115).",
                 ingredients: [
-                    { name: "Glucose Syrup", status: "Halal", reason: "Plant-based sweetener" },
-                    { name: "Pork Gelatin (Porcine)", status: "Haram", reason: "Derived from swine/pig; strictly prohibited in Islam" },
-                    { name: "Lard (E441)", status: "Haram", reason: "Rendered pork fat; non-permissible" },
-                    { name: "Ethyl Alcohol Extract", status: "Haram", reason: "Contains direct alcohol content" },
-                    { name: "Sugar", status: "Halal", reason: "Permissible plant-based sweetener" }
+                    { 
+                        name: "Pork / Swine", 
+                        status: "Haram", 
+                        reason: "Ingredients explicitly derived from pig or swine, including pork meat and pork powder, are classified as Haram.",
+                        matchType: "EXACT",
+                        ocrIngredient: "pork powder",
+                        reference: "Quran 2:173; Quran 5:3; Quran 6:145; Quran 16:115"
+                    }
                 ],
-                stats: { halal: 2, verify: 0, haram: 3 }
+                stats: { haram: 1, verify: 0, certified: "No (Haram Detected)" }
             }
         };
 
         let currentActiveDataset = samplePresets.verify;
+        let activeInputMode = 'image';
 
-        // Elements
-        const dropZone = document.getElementById('dropZoneContainer');
-        const fileInput = document.getElementById('productImageInput');
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const previewImg = document.getElementById('previewImg');
-        const scannerLaser = document.getElementById('scannerLaser');
-        const btnAnalyze = document.getElementById('btnAnalyzeAI');
+        // Safe Element Getters
+        function getEl(id) { return document.getElementById(id); }
 
-        // Drag and drop handlers
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
+        // Mode Switcher - Exposed globally
+        window.switchAnalysisMode = function(mode) {
+            activeInputMode = mode;
+            const tabImg = getEl('tabModeImage');
+            const tabTxt = getEl('tabModeText');
+            const imgCard = getEl('imageModeCard');
+            const txtCard = getEl('textModeCard');
+            const ocrHead = getEl('ocrSectionHeading');
+            const ocrSub = getEl('ocrSectionSubtext');
+            const manIn = getEl('manualIngredientsInput');
+
+            if (mode === 'image') {
+                if (tabImg) {
+                    tabImg.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-slate-900 shadow-sm border border-slate-200/60';
+                }
+                if (tabTxt) {
+                    tabTxt.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
+                }
+                if (imgCard) imgCard.classList.remove('hidden');
+                if (txtCard) txtCard.classList.add('hidden');
+                if (ocrHead) ocrHead.textContent = 'View Extracted Label Text (OCR)';
+                if (ocrSub) ocrSub.textContent = 'Raw text parsed from product label image via EasyOCR';
+            } else {
+                if (tabTxt) {
+                    tabTxt.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-slate-900 shadow-sm border border-slate-200/60';
+                }
+                if (tabImg) {
+                    tabImg.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
+                }
+                if (txtCard) txtCard.classList.remove('hidden');
+                if (imgCard) imgCard.classList.add('hidden');
+                if (ocrHead) ocrHead.textContent = 'View Inputted Ingredients Text';
+                if (ocrSub) ocrSub.textContent = 'Ingredients text submitted for ChromaDB and Decision Engine verification';
+                setTimeout(() => {
+                    if (manIn) manIn.focus();
+                }, 100);
+            }
+        };
+
+        window.triggerFileInput = function(e) {
+            if (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                dropZone.classList.add('dragover');
-            });
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.remove('dragover');
-            });
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            const files = e.dataTransfer.files;
-            if (files && files.length > 0) {
-                handleFileSelect(files[0]);
             }
-        });
+            const input = getEl('productImageInput');
+            if (input) input.click();
+        };
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files.length > 0) {
-                handleFileSelect(e.target.files[0]);
+        window.clearManualText = function() {
+            const manIn = getEl('manualIngredientsInput');
+            const charDisp = getEl('charCountDisplay');
+            if (manIn) {
+                manIn.value = '';
+                if (charDisp) charDisp.textContent = '0 characters';
             }
-        });
+        };
+
+        function setupEventListeners() {
+            const dropZone = getEl('dropZoneContainer');
+            const fileInput = getEl('productImageInput');
+            const manualInput = getEl('manualIngredientsInput');
+            const charCountDisplay = getEl('charCountDisplay');
+
+            if (manualInput && charCountDisplay) {
+                manualInput.addEventListener('input', () => {
+                    const len = manualInput.value.length;
+                    charCountDisplay.textContent = `${len} character${len === 1 ? '' : 's'}`;
+                });
+            }
+
+            if (dropZone) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.add('dragover');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.remove('dragover');
+                    });
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    if (files && files.length > 0) {
+                        handleFileSelect(files[0]);
+                    }
+                });
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                        handleFileSelect(e.target.files[0]);
+                    }
+                });
+            }
+        }
+
+        let selectedFile = null;
 
         function handleFileSelect(file) {
-            if (!file.type.match('image.*')) {
-                alert('Please upload an image file (JPG, PNG, WEBP).');
+            if (!file || !file.type.match('image.*')) {
+                alert('Please upload a valid image file (JPG, PNG, WEBP).');
                 return;
             }
 
+            selectedFile = file;
             const reader = new FileReader();
             reader.onload = function(e) {
-                previewImg.src = e.target.result;
-                dropZone.classList.add('hidden');
-                previewContainer.classList.remove('hidden');
+                const previewImg = getEl('previewImg');
+                const dropZone = getEl('dropZoneContainer');
+                const previewContainer = getEl('imagePreviewContainer');
+                if (previewImg) previewImg.src = e.target.result;
+                if (dropZone) dropZone.classList.add('hidden');
+                if (previewContainer) previewContainer.classList.remove('hidden');
             };
             reader.readAsDataURL(file);
         }
 
         function resetImageSelection() {
-            fileInput.value = '';
-            previewImg.src = '';
-            dropZone.classList.remove('hidden');
-            previewContainer.classList.add('hidden');
-            scannerLaser.classList.add('hidden');
-            btnAnalyze.disabled = false;
+            selectedFile = null;
+            const fileInput = getEl('productImageInput');
+            const previewImg = getEl('previewImg');
+            const dropZone = getEl('dropZoneContainer');
+            const previewContainer = getEl('imagePreviewContainer');
+            const scannerLaser = getEl('scannerLaser');
+            const btnAnalyzeAI = getEl('btnAnalyzeAI');
+
+            if (fileInput) fileInput.value = '';
+            if (previewImg) previewImg.src = '';
+            if (dropZone) dropZone.classList.remove('hidden');
+            if (previewContainer) previewContainer.classList.add('hidden');
+            if (scannerLaser) scannerLaser.classList.add('hidden');
+            if (btnAnalyzeAI) btnAnalyzeAI.disabled = false;
+        }
+
+        // Helper to convert text to high-contrast label image for OCR & AI analysis
+        function createTextLabelBlob(text) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1000;
+                canvas.height = 500;
+                const ctx = canvas.getContext('2d');
+
+                // White background
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Black text
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 24px Arial, Helvetica, sans-serif';
+                ctx.fillText('INGREDIENTS:', 40, 50);
+
+                ctx.font = 'bold 20px Arial, Helvetica, sans-serif';
+
+                // Word wrap
+                const words = text.split(/\s+/);
+                let line = '';
+                let y = 110;
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + (line ? ' ' : '') + words[n];
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > 900 && n > 0) {
+                        ctx.fillText(line, 40, y);
+                        line = words[n];
+                        y += 36;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                if (line) {
+                    ctx.fillText(line, 40, y);
+                }
+
+                canvas.toBlob((blob) => {
+                    resolve(blob ? new File([blob], 'ingredients_label.png', { type: 'image/png' }) : null);
+                }, 'image/png');
+            });
         }
 
         // Demo sample loader
         function loadSamplePreset(presetKey) {
             currentActiveDataset = samplePresets[presetKey];
+            const manualInput = getEl('manualIngredientsInput');
+            const charCountDisplay = getEl('charCountDisplay');
+            const previewImg = getEl('previewImg');
+            const dropZone = getEl('dropZoneContainer');
+            const previewContainer = getEl('imagePreviewContainer');
+            const textCard = getEl('textModeCard');
             
+            // 1. Populate Manual Text Area
+            if (manualInput) {
+                manualInput.value = currentActiveDataset.rawOcr;
+                const len = manualInput.value.length;
+                if (charCountDisplay) charCountDisplay.textContent = `${len} characters`;
+            }
+
+            // 2. Populate Image Canvas
             let sampleBg = '#fef3c7';
-            let emoji = '🍬';
-            if (presetKey === 'halal') { sampleBg = '#d1fae5'; emoji = '🍪'; }
+            let emoji = '⚠️';
+            if (presetKey === 'halal') { sampleBg = '#f0f9ff'; emoji = '🔍'; }
             if (presetKey === 'haram') { sampleBg = '#ffe4e6'; emoji = '🥩'; }
 
             const canvas = document.createElement('canvas');
-            canvas.width = 600;
-            canvas.height = 360;
+            canvas.width = 1000;
+            canvas.height = 500;
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = sampleBg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 24px Plus Jakarta Sans, sans-serif';
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 24px Arial, sans-serif';
             ctx.fillText(currentActiveDataset.title, 40, 60);
-            ctx.font = '14px monospace';
-            ctx.fillStyle = '#475569';
+            ctx.font = 'bold 20px Arial, sans-serif';
+            ctx.fillStyle = '#1e293b';
             
-            const lines = currentActiveDataset.rawOcr.match(/.{1,55}(\s|$)/g) || [currentActiveDataset.rawOcr];
-            lines.forEach((l, idx) => {
-                ctx.fillText(l.trim(), 40, 110 + (idx * 25));
-            });
+            const words = currentActiveDataset.rawOcr.split(/\s+/);
+            let line = '';
+            let y = 120;
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + (line ? ' ' : '') + words[n];
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > 880 && n > 0) {
+                    ctx.fillText(line, 40, y);
+                    line = words[n];
+                    y += 36;
+                } else {
+                    line = testLine;
+                }
+            }
+            if (line) {
+                ctx.fillText(line, 40, y);
+            }
 
-            ctx.font = '70px serif';
-            ctx.fillText(emoji, 480, 80);
+            ctx.font = '64px serif';
+            ctx.fillText(emoji, 880, 80);
 
-            previewImg.src = canvas.toDataURL('image/png');
-            dropZone.classList.add('hidden');
-            previewContainer.classList.remove('hidden');
+            if (previewImg) previewImg.src = canvas.toDataURL('image/png');
+            
+            // Convert preset canvas to actual blob for backend transmission
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    selectedFile = new File([blob], `${presetKey}_preset.png`, { type: 'image/png' });
+                }
+            }, 'image/png');
 
-            previewContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (dropZone) dropZone.classList.add('hidden');
+            if (previewContainer) previewContainer.classList.remove('hidden');
+
+            if (activeInputMode === 'image') {
+                if (previewContainer) previewContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                if (textCard) textCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
         // Pipeline animation & AI execution
         async function startAIAnalysis() {
-            btnAnalyze.disabled = true;
-            scannerLaser.classList.remove('hidden');
-            document.getElementById('pipelineStatusBadge').className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 animate-pulse';
-            document.getElementById('pipelineStatusBadge').textContent = 'Processing OCR & AI...';
+            const manualInput = getEl('manualIngredientsInput');
+            const btnAnalyzeAI = getEl('btnAnalyzeAI');
+            const btnAnalyzeText = getEl('btnAnalyzeText');
+            const scannerLaser = getEl('scannerLaser');
+            const pipelineStatusBadge = getEl('pipelineStatusBadge');
+
+            if (activeInputMode === 'image' && !selectedFile) {
+                alert('Please select or upload a product ingredients image first.');
+                return;
+            }
+
+            let textVal = '';
+            if (activeInputMode === 'text') {
+                textVal = manualInput ? manualInput.value.trim() : '';
+                if (!textVal) {
+                    alert('Please enter ingredients text to analyze.');
+                    return;
+                }
+                if (textVal.length < 3) {
+                    alert('Please enter a meaningful ingredient list.');
+                    return;
+                }
+            }
+
+            if (btnAnalyzeAI) btnAnalyzeAI.disabled = true;
+            if (btnAnalyzeText) btnAnalyzeText.disabled = true;
+
+            if (activeInputMode === 'image' && scannerLaser) {
+                scannerLaser.classList.remove('hidden');
+            }
+
+            if (pipelineStatusBadge) {
+                pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 animate-pulse';
+                pipelineStatusBadge.textContent = activeInputMode === 'image' ? 'Analyzing Image...' : 'Analyzing Ingredients Text...';
+            }
 
             const steps = [
-                { id: 'step1', delay: 600 },
-                { id: 'step2', delay: 700 },
-                { id: 'step3', delay: 600 },
-                { id: 'step4', delay: 700 },
-                { id: 'step5', delay: 600 }
+                { id: 'step1', delay: 400 },
+                { id: 'step2', delay: 400 },
+                { id: 'step3', delay: 400 },
+                { id: 'step4', delay: 400 },
+                { id: 'step5', delay: 400 }
             ];
 
             // Reset step indicators
             for (let i = 1; i <= 5; i++) {
-                const el = document.getElementById(`step${i}`);
-                el.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all';
-                el.querySelector('.step-indicator').className = 'w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
+                const el = getEl(`step${i}`);
+                if (el) {
+                    el.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all';
+                    const ind = el.querySelector('.step-indicator');
+                    if (ind) ind.className = 'w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
+                }
             }
 
             // Animate through pipeline steps sequentially
-            for (let i = 0; i < steps.length; i++) {
-                const stepEl = document.getElementById(steps[i].id);
-                const indicator = stepEl.querySelector('.step-indicator');
-                
-                stepEl.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-emerald-300 bg-emerald-50/80 transition-all shadow-xs';
-                indicator.className = 'w-8 h-8 rounded-xl border border-emerald-500 bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
-                
-                await new Promise(r => setTimeout(r, steps[i].delay));
+            const stepPromise = (async () => {
+                for (let i = 0; i < steps.length; i++) {
+                    const stepEl = getEl(steps[i].id);
+                    if (stepEl) {
+                        const indicator = stepEl.querySelector('.step-indicator');
+                        stepEl.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-emerald-300 bg-emerald-50/80 transition-all shadow-xs';
+                        if (indicator) indicator.className = 'w-8 h-8 rounded-xl border border-emerald-500 bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
+                    }
+                    await new Promise(r => setTimeout(r, steps[i].delay));
+                }
+            })();
+
+            try {
+                let res;
+                if (activeInputMode === 'image') {
+                    const formData = new FormData();
+                    if (selectedFile) {
+                        formData.append('image', selectedFile);
+                    }
+                    res = await fetch('/api/product-analyzer/analyze', {
+                        method: 'POST',
+                        body: formData
+                    });
+                } else {
+                    res = await fetch('/api/product-analyzer/analyze-text', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ text: textVal })
+                    });
+                }
+
+                let json = null;
+                try {
+                    json = await res.json();
+                } catch (e) {
+                    console.warn("Could not parse backend json:", e);
+                }
+
+                await stepPromise;
+
+                if (res.ok && json && json.success) {
+                    if (pipelineStatusBadge) {
+                        pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white';
+                        pipelineStatusBadge.textContent = 'Analysis Complete';
+                    }
+                    
+                    const mappedData = mapBackendResultToUi(json);
+                    renderAnalysisReport(mappedData);
+                } else {
+                    const errorMsg = (json && (json.error || json.errorMessage || json.message)) || `Server returned status ${res.status}`;
+                    if (pipelineStatusBadge) {
+                        pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-600 text-white';
+                        pipelineStatusBadge.textContent = 'Analysis Error';
+                    }
+                    alert(`Analysis Failed: ${errorMsg}`);
+                }
+            } catch (err) {
+                console.error("Analysis network error:", err);
+                await stepPromise;
+                if (pipelineStatusBadge) {
+                    pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-600 text-white';
+                    pipelineStatusBadge.textContent = 'Connection Error';
+                }
+                alert("Connection to Halal/Haram AI server failed. Please check network connection and try again.");
+            } finally {
+                if (scannerLaser) scannerLaser.classList.add('hidden');
+                if (btnAnalyzeAI) btnAnalyzeAI.disabled = false;
+                if (btnAnalyzeText) btnAnalyzeText.disabled = false;
+                const resContainer = document.getElementById('resultsMainContainer');
+                if (resContainer) {
+                    resContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        }
+
+        function mapBackendResultToUi(apiData) {
+            const rawStatus = (apiData.status || (apiData.decision && apiData.decision.status) || '').toUpperCase();
+            
+            let status = 'NO_HARAM_MATCH';
+            let heading = 'NO HARAM / MUSHBOOH MATCH FOUND';
+            let subtext = 'No matching Haram or Mushbooh ingredient was found in the available knowledge base. This does NOT mean the product is certified Halal.';
+            
+            if (rawStatus === 'HARAM_DETECTED') {
+                status = 'HARAM_DETECTED';
+                heading = 'HARAM DETECTED';
+                subtext = (apiData.decision && apiData.decision.reason) || apiData.explanation || 'An explicitly classified Haram ingredient was found in the available knowledge base.';
+            } else if (rawStatus === 'MUSHBOOH_DETECTED') {
+                status = 'MUSHBOOH_DETECTED';
+                heading = 'MUSHBOOH / REQUIRES VERIFICATION';
+                subtext = (apiData.decision && apiData.decision.reason) || apiData.explanation || 'An ingredient classified as Mushbooh was found in the available knowledge base and requires verification.';
+            } else if (rawStatus === 'INSUFFICIENT_OCR') {
+                status = 'INSUFFICIENT_OCR';
+                heading = 'INSUFFICIENT INFORMATION';
+                subtext = 'The product label or text could not be processed sufficiently. Please check the ingredients input.';
+            } else {
+                status = 'NO_HARAM_MATCH';
+                heading = 'NO HARAM / MUSHBOOH MATCH FOUND';
+                subtext = (apiData.decision && apiData.decision.reason) || apiData.explanation || 'No matching Haram or Mushbooh ingredient was found in the available knowledge base. This does NOT mean the product is certified Halal.';
             }
 
-            scannerLaser.classList.add('hidden');
-            document.getElementById('pipelineStatusBadge').className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white';
-            document.getElementById('pipelineStatusBadge').textContent = 'Analysis Complete';
+            let confVal = 0.0;
+            if (apiData.ocr && apiData.ocr.confidence !== undefined) {
+                confVal = apiData.ocr.confidence;
+            } else if (apiData.confidence !== undefined) {
+                confVal = apiData.confidence;
+            }
 
-            // Optional Backend ping placeholder
-            try {
-                const formData = new FormData();
-                formData.append('rawText', currentActiveDataset.rawOcr);
-                fetch('/api/product-analyzer/analyze', { method: 'POST', body: formData }).catch(() => {});
-            } catch(e) {}
+            const confScore = confVal > 0 
+                ? (confVal > 1 ? `${confVal.toFixed(1)}%` : `${(confVal * 100).toFixed(1)}%`)
+                : (activeInputMode === 'text' ? '100% (Direct Text)' : 'N/A');
 
-            renderAnalysisReport(currentActiveDataset);
-            btnAnalyze.disabled = false;
+            // Extract evidence lists
+            const haramEvidence = (apiData.decision && apiData.decision.haram_evidence) || [];
+            const mushboohEvidence = (apiData.decision && apiData.decision.mushbooh_evidence) || [];
+            
+            const ingredients = [];
+            
+            haramEvidence.forEach(h => {
+                ingredients.push({
+                    name: h.ingredient || 'Haram Substance',
+                    status: 'Haram',
+                    reason: h.description || 'Forbidden in Islamic dietary law',
+                    matchType: h.match_type || 'EXACT',
+                    ocrIngredient: h.ocr_ingredient || '',
+                    reference: h.reference || ''
+                });
+            });
 
-            document.getElementById('resultsMainContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            mushboohEvidence.forEach(m => {
+                ingredients.push({
+                    name: m.ingredient || 'Mushbooh Substance',
+                    status: 'Mushbooh (Requires Verification)',
+                    reason: m.description || 'Requires verification of animal vs plant origin',
+                    matchType: m.match_type || 'EXACT',
+                    ocrIngredient: m.ocr_ingredient || '',
+                    reference: m.reference || ''
+                });
+            });
+
+            const manualInputEl = getEl('manualIngredientsInput');
+            const ocrText = (apiData.ocr && apiData.ocr.text) || apiData.rawOcr || (manualInputEl ? manualInputEl.value : 'No text available.');
+            const explanation = apiData.explanation || (apiData.decision && apiData.decision.reason) || subtext;
+
+            return {
+                status: status,
+                statusHeading: heading,
+                statusSubtext: subtext,
+                confidence: confScore,
+                rawOcr: ocrText,
+                explanation: explanation,
+                ingredients: ingredients,
+                stats: {
+                    haram: haramEvidence.length,
+                    verify: mushboohEvidence.length,
+                    certified: "No (KB Match Check)"
+                }
+            };
         }
 
         function renderAnalysisReport(data) {
@@ -741,29 +1133,41 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
             const heading = document.getElementById('statusHeading');
             const subtext = document.getElementById('statusSubtext');
             const confDisplay = document.getElementById('confidenceScoreDisplay');
+            const confLabel = document.getElementById('confidenceLabel');
 
             confDisplay.textContent = data.confidence;
             heading.textContent = data.statusHeading;
             subtext.textContent = data.statusSubtext;
 
-            if (data.status === 'halal') {
-                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-emerald-50/90 border-emerald-200 text-emerald-950';
-                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-emerald-600 text-white';
-                iconBox.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
-                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-200 text-emerald-900';
-                pill.textContent = 'STATUS: HALAL COMPLIANT';
-            } else if (data.status === 'verify') {
-                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-amber-50/90 border-amber-200 text-amber-950';
-                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-amber-500 text-white';
-                iconBox.innerHTML = '<i class="bi bi-question-diamond-fill"></i>';
-                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-200 text-amber-900';
-                pill.textContent = 'STATUS: REQUIRES VERIFICATION';
-            } else {
+            if (data.status === 'HARAM_DETECTED') {
                 card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-rose-50/90 border-rose-200 text-rose-950';
                 iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-rose-600 text-white';
                 iconBox.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
                 pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-rose-200 text-rose-900';
-                pill.textContent = 'STATUS: POTENTIAL HARAM / NON-HALAL';
+                pill.textContent = 'STATUS: HARAM DETECTED';
+                confLabel.textContent = activeInputMode === 'text' ? 'Input Accuracy' : 'OCR Token Confidence';
+            } else if (data.status === 'MUSHBOOH_DETECTED') {
+                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-amber-50/90 border-amber-200 text-amber-950';
+                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-amber-500 text-white';
+                iconBox.innerHTML = '<i class="bi bi-question-diamond-fill"></i>';
+                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-200 text-amber-900';
+                pill.textContent = 'STATUS: MUSHBOOH / REQUIRES VERIFICATION';
+                confLabel.textContent = activeInputMode === 'text' ? 'Input Accuracy' : 'OCR Token Confidence';
+            } else if (data.status === 'INSUFFICIENT_OCR') {
+                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-slate-100 border-slate-300 text-slate-900';
+                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-slate-600 text-white';
+                iconBox.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i>';
+                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-slate-200 text-slate-800';
+                pill.textContent = 'STATUS: INSUFFICIENT INFORMATION';
+                confLabel.textContent = 'Low OCR Readability';
+            } else {
+                // NO_HARAM_MATCH
+                card.className = 'rounded-3xl p-8 border shadow-lg transition-all duration-500 bg-sky-50/90 border-sky-200 text-sky-950';
+                iconBox.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md bg-sky-600 text-white';
+                iconBox.innerHTML = '<i class="bi bi-shield-check"></i>';
+                pill.className = 'inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-sky-200 text-sky-900';
+                pill.textContent = 'STATUS: NO HARAM / MUSHBOOH MATCH FOUND';
+                confLabel.textContent = activeInputMode === 'text' ? 'Input Accuracy' : 'OCR Token Confidence';
             }
 
             // OCR text
@@ -772,45 +1176,71 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
 
             // AI explanation
             document.getElementById('aiExplanationText').textContent = data.explanation;
-            document.getElementById('statHalalCount').textContent = data.stats.halal;
-            document.getElementById('statVerifyCount').textContent = data.stats.verify;
             document.getElementById('statHaramCount').textContent = data.stats.haram;
-            document.getElementById('ingredientCountBadge').textContent = `${data.ingredients.length} Substances`;
+            document.getElementById('statVerifyCount').textContent = data.stats.verify;
+            document.getElementById('statHalalCertified').textContent = data.stats.certified;
+            document.getElementById('ingredientCountBadge').textContent = `${data.ingredients.length} Evidence Detected`;
 
             // Table rows
             const tbody = document.getElementById('ingredientTableBody');
             tbody.innerHTML = '';
 
-            data.ingredients.forEach(item => {
-                let badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                let icon = 'bi-check-circle-fill text-emerald-600';
-                
-                if (item.status === 'Requires Verification') {
-                    badgeClass = 'bg-amber-100 text-amber-900 border-amber-200';
-                    icon = 'bi-exclamation-triangle-fill text-amber-600';
-                } else if (item.status === 'Haram') {
-                    badgeClass = 'bg-rose-100 text-rose-800 border-rose-200';
-                    icon = 'bi-x-circle-fill text-rose-600';
+            if (data.ingredients.length === 0) {
+                const emptyTr = document.createElement('tr');
+                if (data.status === 'INSUFFICIENT_OCR') {
+                    emptyTr.innerHTML = `
+                        <td colspan="3" class="py-6 text-center text-slate-500 text-xs">
+                            <i class="bi bi-exclamation-circle text-amber-500 text-lg block mb-1"></i>
+                            The label text was not sufficiently readable to evaluate ingredients. Please upload a clearer image.
+                        </td>
+                    `;
+                } else {
+                    emptyTr.innerHTML = `
+                        <td colspan="3" class="py-6 text-center text-slate-500 text-xs">
+                            <i class="bi bi-check2-circle text-sky-500 text-lg block mb-1"></i>
+                            No explicit Haram or Mushbooh additives were identified from the extracted label text.
+                        </td>
+                    `;
                 }
+                tbody.appendChild(emptyTr);
+            } else {
+                data.ingredients.forEach(item => {
+                    let badgeClass = 'bg-amber-100 text-amber-900 border-amber-200';
+                    let icon = 'bi-question-diamond-fill text-amber-600';
+                    
+                    if (item.status.toLowerCase().includes('haram')) {
+                        badgeClass = 'bg-rose-100 text-rose-800 border-rose-200';
+                        icon = 'bi-x-circle-fill text-rose-600';
+                    }
 
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50/80 transition-colors';
-                tr.innerHTML = `
-                    <td class="py-3.5 px-2 font-bold text-slate-900 flex items-center gap-2">
-                        <i class="bi ${icon}"></i>
-                        <span>${item.name}</span>
-                    </td>
-                    <td class="py-3.5 px-2">
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${badgeClass}">
-                            ${item.status}
-                        </span>
-                    </td>
-                    <td class="py-3.5 px-2 text-xs text-slate-600">
-                        ${item.reason}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+                    const matchTypeBadge = item.matchType ? `<span class="text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded ml-1">${item.matchType}</span>` : '';
+                    const ocrMatchedText = item.ocrIngredient ? `<div class="text-[11px] text-slate-400 mt-0.5 font-mono">Matched Ingredient: "${item.ocrIngredient}"</div>` : '';
+                    const refText = item.reference ? `<div class="text-[11px] text-emerald-700 mt-1 font-semibold flex items-center gap-1"><i class="bi bi-book"></i> Ref: ${item.reference}</div>` : '';
+
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50/80 transition-colors';
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-2 font-bold text-slate-900">
+                            <div class="flex items-center gap-2">
+                                <i class="bi ${icon}"></i>
+                                <span>${item.name}</span>
+                                ${matchTypeBadge}
+                            </div>
+                            ${ocrMatchedText}
+                        </td>
+                        <td class="py-3.5 px-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${badgeClass}">
+                                ${item.status}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-2 text-xs text-slate-600">
+                            <div>${item.reason}</div>
+                            ${refText}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
         }
 
         function toggleOcrAccordion() {
@@ -823,13 +1253,27 @@ INGREDIENTS: Sugar, Corn Syrup, Gelatin, Citric Acid (E330), Carmine (E120), Art
         function clearHistoryDemo() {
             document.getElementById('historyCardsContainer').innerHTML = `
                 <div class="col-span-full py-8 text-center text-slate-400 text-xs bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                    No recent analyses found. Upload an image to start a new analysis.
+                    No recent analyses found. Upload an image or enter ingredients to start a new analysis.
                 </div>
             `;
         }
 
+        // Explicit global window bindings for inline HTML onclick handlers
+        window.loadSamplePreset = loadSamplePreset;
+        window.startAIAnalysis = startAIAnalysis;
+        window.resetImageSelection = resetImageSelection;
+        window.handleFileSelect = handleFileSelect;
+        window.toggleOcrAccordion = toggleOcrAccordion;
+        window.clearHistoryDemo = clearHistoryDemo;
+
         document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
             renderAnalysisReport(samplePresets.verify);
         });
+
+        // Also call setup immediately in case script executes after DOMContentLoaded
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setupEventListeners();
+        }
     </script>
 }
