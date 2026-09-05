@@ -55,6 +55,12 @@ builder.Services.AddHttpClient<IDiinAIService, DiinAIService>((serviceProvider, 
     var timeoutSeconds = config.GetValue<int>("AISettings:TimeoutSeconds", 120);
     client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 });
+builder.Services.AddHttpClient<IHalalDetectorService, HalalDetectorService>((serviceProvider, client) =>
+{
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var timeoutSeconds = config.GetValue<int>("AISettings:TimeoutSeconds", 120);
+    client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+});
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMyDeenService, MyDeenService>();
