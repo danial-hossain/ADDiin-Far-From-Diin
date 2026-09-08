@@ -144,19 +144,24 @@ namespace AdDiin.Models.ViewModels
 
     public class DiinAISource
     {
+        public string Id { get; set; } = string.Empty;
         public string Source { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
     }
 
     public class AIApiAskRequest
     {
         public string Query { get; set; } = string.Empty;
+        public int? ConversationId { get; set; }
     }
 
     public class AIApiAskResponse
     {
         public string Answer { get; set; } = string.Empty;
         public List<DiinAISource> Sources { get; set; } = new();
+        public int? ConversationId { get; set; }
+        public bool ContactFallback { get; set; }
     }
 
     public class ProductTextAnalysisRequest

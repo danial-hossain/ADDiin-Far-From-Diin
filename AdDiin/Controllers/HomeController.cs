@@ -12,20 +12,17 @@ namespace AdDiin.Controllers
         private readonly IIslamicEventService _eventService;
         private readonly IActivityService _activityService;
         private readonly IAboutService _aboutService;
-        private readonly IContactService _contactService;
 
         public HomeController(
             IPrayerTimeService prayerService,
             IIslamicEventService eventService,
             IActivityService activityService,
-            IAboutService aboutService,
-            IContactService contactService)
+            IAboutService aboutService)
         {
             _prayerService = prayerService;
             _eventService = eventService;
             _activityService = activityService;
             _aboutService = aboutService;
-            _contactService = contactService;
         }
 
         public async Task<IActionResult> Index()
@@ -53,26 +50,6 @@ namespace AdDiin.Controllers
         {
             var content = await _aboutService.GetContentAsync();
             return View(content);
-        }
-
-        [HttpGet]
-        public IActionResult Contact()
-        {
-            return View(new ContactViewModel());
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Contact(ContactViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            await _contactService.SubmitMessageAsync(model);
-            TempData["SuccessMessage"] = "JazakAllah Khair! Your message has been sent successfully. The ADDiin team will respond to you shortly.";
-            return RedirectToAction(nameof(Contact));
         }
 
         public IActionResult SDG9()

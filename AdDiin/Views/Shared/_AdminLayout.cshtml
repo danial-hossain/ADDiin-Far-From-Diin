@@ -3,19 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ADDiin Community Admin</title>
+    <title>@ViewData["Title"] - Ad-Diin Admin</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="bg-slate-100 text-slate-900 font-sans antialiased min-h-screen flex flex-col">
     <!-- Admin Topbar -->
-    <header class="bg-slate-900 text-white sticky top-0 z-50 border-b border-slate-800">
+    <header class="admin-topbar text-white sticky top-0 z-50 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <a href="/admin/panel" class="flex items-center gap-2 text-decoration-none text-white font-extrabold text-lg">
-                    <span class="p-1.5 bg-purple-600 rounded-lg text-base">🛡️</span> ADDiin Community Admin
+                <a href="/admin/panel" class="flex items-center gap-3 text-decoration-none text-white font-extrabold text-lg">
+                <span class="brand-logo-icon text-base">🕌</span>
+                <span><span class="d-block">Ad-Diin Admin</span><small class="text-emerald-200 text-xs font-medium">Community operations</small></span>
                 </a>
             </div>
             
@@ -23,13 +26,13 @@
                 <a href="/" class="text-slate-300 hover:text-white px-3 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     View Public Platform &rarr;
                 </a>
-                <a href="/admin/panel" class="px-3 py-1.5 bg-purple-600 text-white rounded-lg">Admin Dashboard</a>
+                <a href="/admin/panel" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg">Admin Dashboard</a>
             </div>
         </div>
     </header>
 
     <!-- Admin Nav -->
-    <div class="bg-white border-b border-slate-200">
+    <div class="admin-nav surface-cream border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2 text-xs font-bold text-slate-700">
             <a href="/admin/panel" class="px-3 py-2 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition">Dashboard</a>
             <a href="/admin/registrations" class="px-3 py-2 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition">Program Registrations</a>
@@ -38,6 +41,10 @@
             <a href="/Admin/PrayerTimes" class="px-3 py-2 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition">Prayer Times</a>
             <a href="/Admin/Donations" class="px-3 py-2 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition">Verified Donations</a>
             <a href="/Admin/Users" class="px-3 py-2 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition">User Management</a>
+            <a href="/Admin/Messages" id="adminContactNavLink" class="px-3 py-2 rounded-xl hover:bg-purple-50 hover:text-purple-700 transition relative">
+                Contact Inbox
+                <span id="adminContactUnreadBadge" class="hidden absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-red-500 text-white rounded-full text-[10px] font-extrabold items-center justify-center animate-pulse"></span>
+            </a>
         </div>
     </div>
 
@@ -48,5 +55,31 @@
     </main>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script>
+        const adminContactBadge = document.getElementById('adminContactUnreadBadge');
+        if (window.signalR && adminContactBadge) {
+            const updateAdminContactBadge = count => {
+                adminContactBadge.textContent = count > 9 ? '9+' : count;
+                adminContactBadge.classList.toggle('hidden', count < 1);
+                adminContactBadge.classList.toggle('flex', count > 0);
+            };
+            fetch('/api/contact/conversations')
+                .then(res => res.ok ? res.json() : [])
+                .then(items => updateAdminContactBadge((items || []).reduce((total, item) => total + (item.unreadCount || 0), 0)))
+                .catch(() => {});
+            const adminContactConnection = new signalR.HubConnectionBuilder()
+                .withUrl('/hubs/support-chat')
+                .withAutomaticReconnect()
+                .build();
+            let adminContactUnread = 0;
+            adminContactConnection.on('ReceiveSupportMessage', message => {
+                if (!message || message.senderType !== 'user') return;
+                adminContactUnread++;
+                updateAdminContactBadge(adminContactUnread);
+            });
+            adminContactConnection.start().catch(() => {});
+        }
+    </script>
 </body>
 </html>
