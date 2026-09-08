@@ -1,138 +1,161 @@
-﻿# 🕌 Ad-Diin: Islamic Development Platform
+# Ad-Diin
 
-> **Course:** AUST CSE 3200 — Software Development-V  
-> **Target IDE:** Visual Studio 2022  
-> **Framework:** ASP.NET Core MVC (.NET 9.0 / .NET 8.0)  
-> **Language:** C#  
-> **Database:** Microsoft SQL Server with Entity Framework Core (Code First + Migrations)  
-> **Authentication:** ASP.NET Core Identity  
-> **SDG Alignment:** UN SDG 9 (Industry, Innovation & Infrastructure)
+## Islamic Development Platform
 
----
+Ad-Diin is a community-focused Islamic development platform that brings worship,
+learning, community programs, communication, and transparent support services
+into one web application. It is designed to help individuals, families,
+mosques, and administrators access useful Islamic tools while improving the
+management of community activities.
 
-## 👥 Team Members
+The platform is built as an ASP.NET Core MVC application with a responsive
+Razor UI, role-based administration, Entity Framework Core, and SQL Server.
 
-| Roll Number | Name | Email | Role |
-|---|---|---|---|
-| **20230104058** | Danial Hossain Dani | danialhossaindani@gmail.com | Team Lead |
-| **20230104070** | Toufikul Alam Yame | toufikul.alam30@gmail.com | Backend Developer |
-| — | Md Salahuddin Yousuf | sagor200301714643817@gmail.com | Frontend Developer |
+## Platform capabilities
 
----
+### Worship and Islamic learning
 
-## 📌 Project Overview & Purpose
+- Prayer-time schedules with countdown and Jamaat information.
+- Islamic calendar and community event discovery.
+- My Deen user area for personal Islamic resources.
+- Diin AI, an Islamic learning assistant for questions and guided exploration.
+- Halal and Haram product analysis from product text.
+- Zakat calculation support.
 
-**Ad-Diin** is a centralized smart mosque management and community engagement platform built to digitize, streamline, and bring transparency to mosque operations. The system eliminates manual registers and opaque cash collections by providing:
-- Real-time automated prayer and Jamaat schedules with countdown indicators.
-- Interactive Zakat calculation and transparent online donation processing.
-- Online booking system for family Milad, Mahfil, and special Dua requests.
-- Community announcement boards, welfare programs, and Islamic calendar events.
-- **Diin AI**: An intelligent Islamic learning assistant delivering verified guidance backed by Qur'an and Sahih Hadith citations.
-- Full-featured administrative dashboard for user roles, prayer times, events, activities, inquiries, and financial audits.
+### Community and mosque services
 
----
+- Islamic activities, programs, and event registration.
+- Milad, Mahfil, and Dua request workflows.
+- User profiles, email verification, notifications, and secure authentication.
+- Direct messaging and real-time support chat.
+- Contact and community communication flows.
 
-## 🎯 UN SDG 9 Alignment (Industry, Innovation & Infrastructure)
+### Donations and transparency
 
-Ad-Diin directly addresses **Sustainable Development Goal 9 (SDG 9: Industry, Innovation, and Infrastructure)**:
-1. **Target 9.c (Universal Access to Information & ICT):** Digitizing mosque administration and enabling universal access to religious and civic information.
-2. **Target 9.1 (Resilient & Transparent Infrastructure):** Transforming traditional community governance with auditable financial transactions, verifiable donation tracking tokens (TranId), and transparent fund allocations.
-3. **Smart Educational Innovation:** Democratizing authentic Islamic learning through Diin AI.
+- Online donation workflow with success, failure, cancellation, and receipt
+  pages.
+- Personal donation history.
+- Support for payment processing and transaction tracking.
+- Administrative visibility into donations and community activities.
 
----
+### Administration
 
-## 🛠 Technology Stack
+- Dashboard for managing users, roles, registrations, activities, events,
+  prayer times, Milad requests, donations, and messages.
+- Database-backed content and operational management.
+- Seeded development data and automatic database initialization.
+- Role-protected administrative routes.
 
-- **IDE:** Visual Studio 2022
-- **Language:** C#
-- **Web Framework:** ASP.NET Core MVC
-- **Database Engine:** Microsoft SQL Server (LocalDB / Express / Enterprise)
-- **ORM:** Entity Framework Core
-- **Database Approach:** Code-First with EF Core Migrations
-- **Authentication & Security:** ASP.NET Core Identity (PBKDF2 Password Hashing, Anti-Forgery Tokens, Role-Based Authorization)
-- **Frontend Presentation:** Razor Views (.cshtml), HTML5, CSS3, JavaScript, Bootstrap 5.3, Bootstrap Icons
-- **Architecture:** Multi-Tier MVC with Dependency Injection & Service Layer
+## Technology stack
 
----
+| Area | Technology |
+| --- | --- |
+| Framework | ASP.NET Core MVC on .NET 9 |
+| Language | C# |
+| UI | Razor Views, HTML5, CSS3, JavaScript, Bootstrap 5.3 |
+| Data | Microsoft SQL Server |
+| ORM | Entity Framework Core 9 with Code First migrations |
+| Authentication | ASP.NET Core Identity |
+| Real-time features | SignalR |
+| Media | Cloudinary |
+| Payments | SSLCommerz integration |
+| Architecture | MVC, dependency injection, service layer |
 
-## 🧩 Architectural System Design
+## Project structure
 
-`
+```text
 AdDiin/
-├── Controllers/              # MVC Action Controllers
-│   ├── HomeController.cs     # Public Home, About, Contact, SDG9, Privacy
-│   ├── AccountController.cs  # Authentication, Identity, Registration, Profile
-│   ├── PrayerTimesController.cs
-│   ├── EventsController.cs
-│   ├── ActivitiesController.cs
-│   ├── ZakatController.cs
-│   ├── DonateController.cs
-│   ├── MiladController.cs
-│   ├── MessagesController.cs
-│   ├── DiinAIController.cs
-│   └── AdminController.cs    # Executive Management Portal
-├── Data/
-│   ├── ApplicationDbContext.cs # EF Core DbContext with Fluent API mappings
-│   ├── DbInitializer.cs       # Automatic DB migration & Seed data
-│   └── Migrations/            # EF Core Code-First Migrations
+├── Controllers/       MVC controllers for public, user, and admin features
+├── Data/              DbContext, database initialization, and migrations
+├── Hubs/              SignalR hubs for real-time communication
 ├── Models/
-│   ├── Entities/             # Domain Entities (User, PrayerTime, Event, Milad, Donation, etc.)
-│   └── ViewModels/           # Strongly-Typed ViewModels
-├── Services/                 # Business Logic & Service Interfaces
-│   ├── IPrayerTimeService.cs
-│   ├── IDonationService.cs
-│   ├── IMiladService.cs
-│   ├── IIslamicEventService.cs
-│   ├── IActivityService.cs
-│   ├── IMessagingService.cs
-│   ├── IContactService.cs
-│   ├── IDiinAIService.cs     # Islamic Knowledge AI Engine
-│   ├── IEmailVerificationService.cs
-│   └── IAboutService.cs
-├── Views/                    # Razor View Templates
-└── wwwroot/                  # Static Assets (CSS, JS, Images)
-`
+│   ├── Entities/      Database entities and domain models
+│   └── ViewModels/    Strongly typed UI models
+├── Services/          Business logic and external service integrations
+├── Views/             Razor page templates
+└── wwwroot/           CSS, JavaScript, images, and static assets
+```
 
----
+## Running locally
 
-## 🔑 Default Credentials (Auto-Seeded)
+### Prerequisites
 
-The system automatically initializes and seeds default roles and accounts on first launch:
+- .NET 9 SDK
+- SQL Server, SQL Server Express, or LocalDB
+- Visual Studio 2022 or another .NET-compatible IDE
+- Optional: Cloudinary, SSLCommerz, SMTP, and AI service credentials for
+  features that depend on external providers
 
-| Role | Email | Password | Access Level |
-|---|---|---|---|
-| **Administrator** | dmin@addiin.com | Admin@123 | Full Admin Management Portal (/Admin/Dashboard) |
-| **Demo User** | 	est@test.com | User@123 | Public & User Features (/Account/Profile, /Milad, /Donate) |
+### Configure the application
 
----
+1. Clone the repository and open `AdDiin.sln`.
+2. Review `AdDiin/appsettings.json`.
+3. Keep credentials and API keys out of source control. Use user secrets or
+   environment variables for local and production secrets.
+4. Set `ConnectionStrings:DefaultConnection` to a SQL Server database.
 
-## 🚀 How to Run in Visual Studio 2022
+The application includes a LocalDB fallback connection for development. Database
+initialization and seed data are handled when the application starts.
 
-### Method 1: Visual Studio 2022 GUI
-1. Open Visual Studio 2022.
-2. Click **Open a project or solution** and select AdDiin.sln.
-3. Press F5 (or click the green **Start** button).
-4. Visual Studio will restore NuGet packages, start Microsoft SQL Server LocalDB, apply EF Core migrations, seed initial data, and launch the browser.
+### Run with the .NET CLI
 
-### Method 2: .NET CLI
-`powershell
-# Restore & Build
+```powershell
 dotnet restore
 dotnet build
-
-# Apply Database Migrations (Automatic on startup, or manually):
 dotnet ef database update --project AdDiin/AdDiin.csproj
-
-# Run Application
 dotnet run --project AdDiin/AdDiin.csproj
-`
+```
 
-Open your browser at: https://localhost:7000 (or http://localhost:5000).
+Open the HTTPS URL printed by the application, commonly
+`https://localhost:7000`.
 
----
+### Run with Visual Studio
 
-## 🛡️ Security & Quality Standards
-- **Data Protection:** Passwords secured with salted PBKDF2 hashing via ASP.NET Core Identity.
-- **CSRF Defense:** [ValidateAntiForgeryToken] applied across all forms and state modifications.
-- **Role-Based Authorization:** [Authorize(Roles = "Admin")] protecting all admin capabilities.
-- **Database Safety:** Parameterized LINQ queries preventing SQL injection vulnerabilities.
+1. Open `AdDiin.sln` in Visual Studio 2022.
+2. Restore NuGet packages if prompted.
+3. Select the `AdDiin` project and press **F5**.
+4. Allow the application to initialize the database on first launch.
+
+## Important routes
+
+| Area | Route |
+| --- | --- |
+| Home | `/` |
+| Prayer times | `/prayer-times` |
+| Islamic calendar | `/islamic-calendar` |
+| Activities and programs | `/activities-and-programs` |
+| Zakat | `/zakat` |
+| Donations | `/donate` |
+| Diin AI | `/diin-ai` |
+| Product analyzer | `/product-analyzer` |
+| Messaging | `/messaging` |
+| User login | `/user-login` |
+| User registration | `/user-registration` |
+| Admin dashboard | `/admin-dashboard` |
+
+## Security and responsible use
+
+- ASP.NET Core Identity manages password hashing and authentication.
+- Role-based authorization protects administrative operations.
+- Anti-forgery protection is used for state-changing forms.
+- Entity Framework Core parameterizes database queries.
+- Secrets should be supplied through user secrets, environment variables, or
+  a managed secret store rather than committed to Git.
+- Diin AI is an educational aid, not a substitute for qualified scholars or
+  professional advice. Users should verify sensitive religious, legal, health,
+  and financial questions with trusted experts.
+
+## Project purpose and SDG alignment
+
+Ad-Diin supports the UN Sustainable Development Goal 9 by applying digital
+infrastructure and software innovation to Islamic community services. The
+platform helps make prayer information, learning resources, community programs,
+communication, and donation workflows more accessible and organized.
+
+## Team
+
+| Name | Responsibility |
+| --- | --- |
+| Danial Hossain Dani | Team Lead |
+| Toufikul Alam Yame | Backend Developer |
+| Md Salahuddin Yousuf | Frontend Developer |
