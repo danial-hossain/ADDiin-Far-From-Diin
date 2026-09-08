@@ -2,57 +2,50 @@
     ViewData["Title"] = "Diin AI - Islamic Learning Assistant";
 }
 
-<div class="container my-4 max-w-800 mx-auto">
-    <div class="card card-custom border-0 shadow-lg rounded-4 overflow-hidden">
-        <!-- AI Header -->
-        <div class="bg-emerald-dark text-white p-4 d-flex justify-content-between align-items-center">
+<div class="container diin-ai-page my-4 my-lg-5">
+    <div class="card diin-ai-shell border-0 shadow-lg rounded-4 overflow-hidden">
+        <aside class="diin-ai-sidebar" id="aiHistorySidebar">
+            <div class="diin-ai-sidebar-head">
+                <span class="diin-ai-sidebar-title"><i class="bi bi-clock-history me-2"></i>Chat history</span>
+                <button class="diin-ai-sidebar-close" id="btnCloseHistory" type="button" aria-label="Close history"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <button class="diin-ai-history-new" id="btnSidebarNewChat" type="button"><i class="bi bi-plus-lg"></i> New chat</button>
+            <div class="diin-ai-history-list" id="aiHistoryList"></div>
+            <div class="diin-ai-history-empty" id="aiHistoryEmpty">Your saved conversations will appear here.</div>
+        </aside>
+        <div class="diin-ai-header text-white p-4 p-lg-5 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <div class="w-48 h-48 bg-white text-emerald rounded-circle d-flex align-items-center justify-content-center fs-3 shadow-sm" style="width: 48px; height: 48px;">
-                    🕋
-                </div>
+                <button class="diin-ai-history-toggle" id="btnOpenHistory" type="button" aria-label="Open chat history"><i class="bi bi-layout-sidebar-inset"></i></button>
+                <div class="diin-ai-logo text-emerald rounded-4 d-flex align-items-center justify-content-center fs-3 shadow-sm">🕋</div>
                 <div>
-                    <h4 class="fw-bold mb-0">Diin AI</h4>
-                    <small class="text-emerald-light">Islamic Companion & Verified Learning Assistant</small>
+                    <div class="diin-ai-eyebrow">Your knowledge companion</div>
+                    <h1 class="fw-bold mb-1">Diin AI</h1>
+                    <small class="text-emerald-light">Islamic Companion &amp; Verified Learning Assistant</small>
                 </div>
             </div>
-            <button class="btn btn-sm btn-outline-light rounded-pill px-3" id="btnClearChat">
-                <i class="bi bi-arrow-counterclockwise me-1"></i> New Chat
+            <button class="btn diin-ai-new-chat btn-sm rounded-pill px-3" id="btnClearChat" type="button">
+                <i class="bi bi-plus-lg me-1"></i> New Chat
             </button>
         </div>
 
-        <!-- Chat Container -->
-        <div class="chat-box p-4" id="aiChatStream" style="height: 480px; overflow-y: auto; background-color: #f0fdf4;">
-            <!-- Initial Welcome Message -->
-            <div class="d-flex align-items-start gap-2 mb-3">
-                <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
-                <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
-                    <p class="mb-0 text-dark small leading-relaxed">
-                        আসসালামু আলাইকুম! আমি <strong>Diin AI</strong> - আপনার ব্যক্তিগত ইসলামিক সহায়ক। কুরআন ও সহীহ হাদিসের আলোকে সালাত, সাওম, যাকাত, হজ, তাফসির বা ইসলামের যে কোনো বিষয়ে প্রশ্ন করুন।
-                    </p>
-                </div>
-            </div>
+        <div class="diin-ai-chat p-3 p-md-4" id="aiChatStream" aria-live="polite"></div>
+
+        <div class="diin-ai-prompts px-4 py-3 d-flex flex-wrap align-items-center gap-2" id="quickPromptsBlock">
+            <span class="small prompt-label align-self-center">Try asking</span>
+            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="কুরআনে সালাতের গুরুত্ব কী?">সালাতের গুরুত্ব</button>
+            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="রোজার নিয়ত কী?">রোজার নিয়ত</button>
+            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="যাকাত কীভাবে হিসাব করতে হয়?">যাকাত হিসাব</button>
+            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="তাহাজ্জুদ নামাজ কীভাবে পড়ব?">তাহাজ্জুদ নামাজ</button>
         </div>
 
-        <!-- Suggested Quick Prompts -->
-        <div class="px-4 py-2 bg-white border-top border-light d-flex flex-wrap gap-2" id="quickPromptsBlock">
-            <span class="small text-muted align-self-center">Suggested:</span>
-            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="কুরআনে সালাতের গুরুত্ব কী?">সালাতের গুরুত্ব</button>
-            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="রোজার নিয়ত কী?">রোজার নিয়ত</button>
-            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="যাকাত কীভাবে হিসাব করতে হয়?">যাকাত হিসাব</button>
-            <button class="btn btn-sm btn-light border rounded-pill prompt-chip small" data-prompt="তাহাজ্জুদ নামাজ কীভাবে পড়ব?">তাহাজ্জুদ নামাজ</button>
-        </div>
-
-        <!-- AI Input Bar -->
-        <div class="p-3 bg-white border-top">
+        <div class="diin-ai-composer p-3 p-md-4">
             <form id="aiChatForm" class="d-flex gap-2">
-                <textarea id="aiMessageInput" rows="1" class="form-control rounded-4 py-2" placeholder="ইসলাম সম্পর্কিত যেকোনো প্রশ্ন লিখুন..." style="resize: none;"></textarea>
+                <textarea id="aiMessageInput" rows="1" class="form-control rounded-4 py-2" placeholder="ইসলাম সম্পর্কিত যেকোনো প্রশ্ন লিখুন..." aria-label="Your question"></textarea>
                 <button type="submit" id="btnSendAI" class="btn btn-emerald-gradient px-4 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-1">
                     <span>Send</span> <i class="bi bi-send-fill"></i>
                 </button>
             </form>
-            <div class="text-center mt-2" style="font-size: 0.72rem; color: #94a3b8;">
-                🕌 Diin AI কুরআন ও সুন্নাহর ভিত্তিতে ইসলামিক শিক্ষা প্রদানে নিবেদিত।
-            </div>
+            <div class="diin-ai-disclaimer text-center mt-2">🕌 আপনার chat history এই browser-এ এবং signed-in account-এ সংরক্ষিত হবে।</div>
         </div>
     </div>
 </div>
@@ -63,129 +56,206 @@
         const chatForm = document.getElementById('aiChatForm');
         const inputMsg = document.getElementById('aiMessageInput');
         const btnSend = document.getElementById('btnSendAI');
+        const historyList = document.getElementById('aiHistoryList');
+        const historyEmpty = document.getElementById('aiHistoryEmpty');
+        const guestHistoryKey = 'diin-ai-chat-history';
         let chatHistory = [];
+        let currentConversationId = null;
+        let isAuthenticated = false;
 
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+        function escapeHtml(value) {
+            return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
-        function appendMessage(sender, text, sources = null) {
+        function normalizeSources(rawSources) {
+            if (!Array.isArray(rawSources)) return [];
+            return rawSources.map(source => {
+                if (typeof source === 'string') return { source: 'Knowledge Base', reference: source, text: '' };
+                if (!source || typeof source !== 'object') return null;
+                return {
+                    source: source.source ?? source.Source ?? source.title ?? source.Title ?? 'Knowledge Base',
+                    reference: source.reference ?? source.Reference ?? source.citation ?? source.Citation ?? source.url ?? source.Url ?? '',
+                    text: source.text ?? source.Text ?? source.content ?? source.Content ?? ''
+                };
+            }).filter(source => source && (source.source || source.reference));
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return 'just now';
+            return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function appendMessage(sender, text, sources = [], timestamp = null) {
             const row = document.createElement('div');
-            row.className = sender === 'user' ? 'd-flex justify-content-end mb-3' : 'd-flex align-items-start gap-2 mb-3';
+            row.className = sender === 'user'
+                ? 'diin-ai-message user d-flex justify-content-end mb-3'
+                : 'diin-ai-message bot d-flex align-items-start gap-2 mb-3';
+            const time = `<span>• ${formatTime(timestamp)}</span>`;
+            let content;
 
-            let content = '';
             if (sender === 'user') {
-                content = `
-                    <div class="chat-bubble-user p-3 rounded-4" style="max-width: 80%; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff;">
-                        <p class="mb-0 small" style="white-space: pre-wrap;">${escapeHtml(text)}</p>
-                    </div>
-                `;
+                content = `<div class="chat-bubble-user p-3 rounded-4"><div class="message-label">You ${time}</div><p class="mb-0 small">${escapeHtml(text)}</p></div>`;
             } else {
-                let sourcesHtml = '';
-                if (sources && sources.length > 0) {
-                    sourcesHtml = '<div class="mt-2 pt-2 border-top small bg-light p-2 rounded-3 text-muted">';
-                    sourcesHtml += '<strong class="text-emerald d-block mb-1">📚 রেফারেন্স ও সূত্র:</strong>';
-                    sources.forEach(s => {
-                        sourcesHtml += `<div><strong>${escapeHtml(s.source)}:</strong> ${escapeHtml(s.reference)}</div>`;
-                    });
-                    sourcesHtml += '</div>';
-                }
-
-                content = `
-                    <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
-                    <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
-                        <p class="mb-0 text-dark small leading-relaxed" style="white-space: pre-line;">${escapeHtml(text)}</p>
-                        ${sourcesHtml}
-                    </div>
-                `;
+                const contactMarker = '[CONTACT_ADMIN:/contact]';
+                const isContactFallback = String(text || '').includes(contactMarker);
+                const displayText = String(text || '').replace(contactMarker, '').trim();
+                const normalizedSources = normalizeSources(sources);
+                const sourcesHtml = normalizedSources.length
+                    ? `<div class="diin-ai-sources mt-3 pt-3 small p-3 rounded-3"><strong class="d-block mb-2">📚 Knowledge Base Sources</strong>${normalizedSources.map(source => `<div class="diin-ai-source-item"><strong>${escapeHtml(source.source)}</strong><span class="diin-ai-source-reference">${escapeHtml(source.reference)}</span>${source.text ? `<span class="diin-ai-source-text">${escapeHtml(source.text)}</span>` : ''}</div>`).join('')}</div>`
+                    : '';
+                const contactLink = isContactFallback
+                    ? `<div class="mt-3"><a class="btn btn-sm btn-success rounded-pill" href="/contact"><i class="bi bi-chat-heart me-1"></i>যোগাযোগ করুন / Contact Admin</a></div>`
+                    : '';
+                content = `<div class="avatar-circle-sm ai-avatar fw-bold">AI</div><div class="chat-bubble-bot p-3 rounded-4"><div class="message-label">Diin AI ${time}</div><p class="mb-0 small leading-relaxed">${escapeHtml(displayText)}</p>${contactLink}${sourcesHtml}</div>`;
             }
-
             row.innerHTML = content;
             chatStream.appendChild(row);
             chatStream.scrollTop = chatStream.scrollHeight;
         }
 
-        chatForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        function renderWelcome() {
+            chatStream.innerHTML = '';
+            appendMessage('bot', 'আসসালামু আলাইকুম! আমি Diin AI — কুরআন ও সহীহ হাদিসের আলোকে আপনার ইসলামিক প্রশ্নের উত্তর দিতে প্রস্তুত।', []);
+        }
+
+        function renderHistory(messages) {
+            chatStream.innerHTML = '';
+            if (!messages || messages.length === 0) {
+                renderWelcome();
+                return;
+            }
+            messages.forEach(message => appendMessage(message.role === 'user' ? 'user' : 'bot', message.content, message.sources, message.timestamp));
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/ai/history');
+                const data = await response.json();
+                if (data.authenticated) {
+                    isAuthenticated = true;
+                    currentConversationId = data.conversationId;
+                    chatHistory = data.messages;
+                    renderHistory(chatHistory);
+                    await loadConversationList();
+                    return;
+                }
+            } catch (error) {
+                console.warn('Server chat history unavailable; using local history.', error);
+            }
+            try {
+                chatHistory = JSON.parse(localStorage.getItem(guestHistoryKey) || '[]');
+            } catch {
+                chatHistory = [];
+            }
+            renderHistory(chatHistory);
+        }
+
+        function formatHistoryDate(value) {
+            const date = new Date(value);
+            const today = new Date();
+            if (date.toDateString() === today.toDateString()) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        }
+
+        async function loadConversationList() {
+            if (!isAuthenticated) return;
+            const response = await fetch('/api/ai/conversations');
+            const data = await response.json();
+            historyList.innerHTML = '';
+            const conversations = data.conversations || [];
+            historyEmpty.classList.toggle('is-visible', conversations.length === 0);
+            conversations.forEach(conversation => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = `diin-ai-history-item${conversation.id === currentConversationId ? ' active' : ''}`;
+                item.dataset.conversationId = conversation.id;
+                item.innerHTML = `<span class="diin-ai-history-icon"><i class="bi bi-chat-left-text"></i></span><span class="diin-ai-history-copy"><strong>${escapeHtml(conversation.title || 'New chat')}</strong><small>${formatHistoryDate(conversation.updatedAt)}</small></span>`;
+                item.addEventListener('click', () => openConversation(conversation.id));
+                historyList.appendChild(item);
+            });
+        }
+
+        async function openConversation(conversationId) {
+            const response = await fetch(`/api/ai/history?conversationId=${conversationId}`);
+            if (!response.ok) return;
+            const data = await response.json();
+            currentConversationId = conversationId;
+            chatHistory = data.messages || [];
+            renderHistory(chatHistory);
+            await loadConversationList();
+            document.getElementById('aiHistorySidebar').classList.remove('open');
+        }
+
+        async function startNewChat() {
+            await fetch('/api/ai/new-chat', { method: 'POST' });
+            currentConversationId = null;
+            chatHistory = [];
+            localStorage.removeItem(guestHistoryKey);
+            renderWelcome();
+            await loadConversationList();
+            inputMsg.focus();
+        }
+
+        chatForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
             const text = inputMsg.value.trim();
-            if (!text) return;
+            if (!text || btnSend.disabled) return;
 
             appendMessage('user', text);
             inputMsg.value = '';
             btnSend.disabled = true;
-
-            // Loading indicator
             const loadingRow = document.createElement('div');
             loadingRow.id = 'loadingIndicator';
-            loadingRow.className = 'd-flex align-items-start gap-2 mb-3';
-            loadingRow.innerHTML = `
-                <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
-                <div class="bg-white border p-3 rounded-4 text-muted small">
-                    <span class="spinner-border spinner-border-sm text-emerald me-2"></span> যাচাই করে উত্তর প্রস্তুত করা হচ্ছে...
-                </div>
-            `;
+            loadingRow.className = 'diin-ai-message bot d-flex align-items-start gap-2 mb-3';
+            loadingRow.innerHTML = '<div class="avatar-circle-sm ai-avatar fw-bold">AI</div><div class="chat-bubble-bot p-3 rounded-4 small"><div class="message-label">Diin AI</div><span class="spinner-border spinner-border-sm text-emerald me-2"></span> যাচাই করে উত্তর প্রস্তুত করা হচ্ছে...</div>';
             chatStream.appendChild(loadingRow);
             chatStream.scrollTop = chatStream.scrollHeight;
 
             try {
-                const res = await fetch('/api/ai/ask', {
+                const response = await fetch('/api/ai/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: text })
+                    body: JSON.stringify({ query: text, conversationId: currentConversationId })
                 });
+                const data = await response.json();
+                loadingRow.remove();
+                if (!response.ok || !data.answer) throw new Error(data.error || 'No answer');
 
-                const data = await res.json();
-                document.getElementById('loadingIndicator')?.remove();
-
-                if (res.ok && data.answer) {
-                    appendMessage('bot', data.answer, data.sources);
-                    chatHistory.push({ role: 'user', content: text });
-                    chatHistory.push({ role: 'assistant', content: data.answer });
-                } else {
-                    appendMessage('bot', data.error || data.message || 'দুঃখিত, কোনো উত্তর পাওয়া যায়নি।');
-                }
-            } catch (err) {
-                document.getElementById('loadingIndicator')?.remove();
-                appendMessage('bot', 'দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না');
+                const assistantMessage = { role: 'assistant', content: data.answer, sources: data.sources || [], timestamp: new Date().toISOString() };
+                currentConversationId = data.conversationId || currentConversationId;
+                chatHistory.push({ role: 'user', content: text, timestamp: new Date().toISOString() }, assistantMessage);
+                if (!isAuthenticated) localStorage.setItem(guestHistoryKey, JSON.stringify(chatHistory));
+                appendMessage('bot', data.answer, data.sources, assistantMessage.timestamp);
+                await loadConversationList();
+            } catch (error) {
+                loadingRow.remove();
+                appendMessage('bot', 'দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না। পরে আবার চেষ্টা করুন। [CONTACT_ADMIN:/contact]');
             } finally {
                 btnSend.disabled = false;
                 inputMsg.focus();
             }
         });
 
-        // Allow pressing Enter (without Shift) to submit
-        inputMsg.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                chatForm.dispatchEvent(new Event('submit'));
+        inputMsg.addEventListener('keydown', event => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                chatForm.requestSubmit();
             }
         });
 
-        document.querySelectorAll('.prompt-chip').forEach(btn => {
-            btn.addEventListener('click', function() {
-                inputMsg.value = this.getAttribute('data-prompt');
-                chatForm.dispatchEvent(new Event('submit'));
-            });
-        });
+        document.querySelectorAll('.prompt-chip').forEach(button => button.addEventListener('click', () => {
+            inputMsg.value = button.dataset.prompt || '';
+            chatForm.requestSubmit();
+        }));
 
-        document.getElementById('btnClearChat')?.addEventListener('click', function() {
-            chatHistory = [];
-            chatStream.innerHTML = `
-                <div class="d-flex align-items-start gap-2 mb-3">
-                    <div class="avatar-circle-sm bg-emerald text-white fw-bold">AI</div>
-                    <div class="chat-bubble-bot bg-white border p-3 rounded-4 shadow-xs" style="max-width: 85%;">
-                        <p class="mb-0 text-dark small leading-relaxed">
-                            আসসালামু আলাইকুম! আমি <strong>Diin AI</strong> - আপনার ব্যক্তিগত ইসলামিক সহায়ক। কুরআন ও সহীহ হাদিসের আলোকে যেকোনো প্রশ্ন করুন।
-                        </p>
-                    </div>
-                </div>
-            `;
-        });
+        document.getElementById('btnClearChat').addEventListener('click', startNewChat);
+        document.getElementById('btnSidebarNewChat').addEventListener('click', startNewChat);
+        document.getElementById('btnOpenHistory').addEventListener('click', () => document.getElementById('aiHistorySidebar').classList.add('open'));
+        document.getElementById('btnCloseHistory').addEventListener('click', () => document.getElementById('aiHistorySidebar').classList.remove('open'));
+
+        loadHistory();
     </script>
 }

@@ -23,7 +23,7 @@
         <div class="flex gap-3">
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <a href="/my-activities" class="px-5 py-3 bg-white hover:bg-slate-100 text-slate-900 text-xs font-extrabold rounded-2xl shadow-md transition flex items-center gap-2 text-nowrap">
+                <a href="/my-activities" class="px-5 py-3 surface-cream hover:bg-slate-100 text-slate-900 text-xs font-extrabold rounded-2xl shadow-md transition flex items-center gap-2 text-nowrap">
                     <i class="bi bi-person-check-fill text-emerald-600"></i> My Registered Programs
                 </a>
             }
@@ -31,11 +31,11 @@
     </div>
 
     <!-- Search and Category Filters -->
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
+    <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200 space-y-4">
         <form method="get" action="/activities" class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
                 <i class="bi bi-search absolute left-4 top-3.5 text-slate-400"></i>
-                <input type="text" name="search" value="@searchQuery" placeholder="Search by title, speaker, topic, or location..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" />
+                <input type="text" name="search" value="@searchQuery" placeholder="Search by title, speaker, topic, or location..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-emerald-500 focus:bg-[var(--surface-cream)] transition" />
             </div>
             <input type="hidden" name="category" value="@selectedCategory" />
             <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-2xl shadow-xs transition">
@@ -68,7 +68,7 @@
         {
             @foreach (var act in Model)
             {
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div class="surface-cream rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition-all flex flex-col justify-between group">
                     <div>
                         <div class="relative h-48 overflow-hidden bg-slate-100">
                             @if (!string.IsNullOrEmpty(act.ImageUrl))
@@ -142,7 +142,7 @@
         }
         else
         {
-            <div class="col-span-full p-16 text-center bg-white rounded-3xl border border-slate-200 space-y-3">
+            <div class="col-span-full p-16 text-center surface-cream rounded-3xl border border-slate-200 space-y-3">
                 <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mx-auto">
                     <i class="bi bi-calendar-x"></i>
                 </div>
