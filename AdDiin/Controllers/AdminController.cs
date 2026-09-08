@@ -19,9 +19,7 @@ namespace AdDiin.Controllers
         private readonly IDonationService _donationService;
         private readonly IMiladService _miladService;
         private readonly IActivityService _activityService;
-        private readonly IContactService _contactService;
         private readonly IMessagingService _messagingService;
-        private readonly IAboutService _aboutService;
         private readonly IPhotoService _photoService;
 
         public AdminController(
@@ -32,9 +30,7 @@ namespace AdDiin.Controllers
             IDonationService donationService,
             IMiladService miladService,
             IActivityService activityService,
-            IContactService contactService,
             IMessagingService messagingService,
-            IAboutService aboutService,
             IPhotoService photoService)
         {
             _context = context;
@@ -44,9 +40,7 @@ namespace AdDiin.Controllers
             _donationService = donationService;
             _miladService = miladService;
             _activityService = activityService;
-            _contactService = contactService;
             _messagingService = messagingService;
-            _aboutService = aboutService;
             _photoService = photoService;
         }
 
@@ -72,7 +66,6 @@ namespace AdDiin.Controllers
 
             var totalEvents = await _context.IslamicEvents.CountAsync();
             var totalActivities = await _context.Activities.CountAsync();
-            var unreadContact = await _context.ContactMessages.CountAsync(c => c.Status == "unread");
             var activeConversations = await _context.Conversations.CountAsync(c => c.Status == "active");
 
             var recentDonations = await _context.Donations
@@ -123,7 +116,6 @@ namespace AdDiin.Controllers
                 TotalMiladCount = totalMilads,
                 TotalEventsCount = totalEvents,
                 TotalActivitiesCount = totalActivities,
-                UnreadContactCount = unreadContact,
                 ActiveConversationsCount = activeConversations,
                 RecentDonations = recentDonations,
                 RecentRegistrations = recentRegistrations,
@@ -653,42 +645,6 @@ namespace AdDiin.Controllers
             return RedirectToAction(nameof(Registrations));
         }
 
-        // ================= CONTACT MESSAGES =================
-        public async Task<IActionResult> Contact()
-        {
-            var messages = await _contactService.GetAllMessagesAsync();
-            return View(messages);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ContactMarkRead(int id)
-        {
-            await _contactService.MarkAsReadAsync(id);
-            return RedirectToAction(nameof(Contact));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ContactReply(int id, string replyText)
-        {
-            if (!string.IsNullOrWhiteSpace(replyText))
-            {
-                await _contactService.ReplyMessageAsync(id, replyText.Trim());
-                TempData["SuccessMessage"] = "Reply recorded and confirmation email dispatched.";
-            }
-            return RedirectToAction(nameof(Contact));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ContactDelete(int id)
-        {
-            await _contactService.DeleteMessageAsync(id);
-            TempData["SuccessMessage"] = "Contact message deleted.";
-            return RedirectToAction(nameof(Contact));
-        }
-
         // ================= MESSAGING =================
         public async Task<IActionResult> Messages(int? id)
         {
@@ -708,23 +664,8 @@ namespace AdDiin.Controllers
             }
 
             ViewBag.ActiveConversation = active;
-            return View(conversations);
+            return View("~/Views/Admin/Messages.cshtml", conversations);
         }
 
-        // ================= ABOUT CONTENT =================
-        public async Task<IActionResult> About()
-        {
-            var content = await _aboutService.GetContentAsync();
-            return View(content);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> About(AboutContentModel model)
-        {
-            await _aboutService.UpdateContentAsync(model);
-            TempData["SuccessMessage"] = "About Page content updated successfully.";
-            return RedirectToAction(nameof(About));
-        }
     }
 }
