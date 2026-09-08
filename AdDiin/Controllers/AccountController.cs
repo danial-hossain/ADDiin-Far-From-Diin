@@ -3,6 +3,7 @@ using AdDiin.Models.ViewModels;
 using AdDiin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -66,8 +67,16 @@ namespace AdDiin.Controllers
             if (!user.EmailConfirmed)
             {
                 // Send code and redirect to verification
-                var code = await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
-                TempData["InfoMessage"] = $"Please verify your email address. Verification code sent: {code}";
+                try
+                {
+                    await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
+                }
+                catch (SmtpException)
+                {
+                    ModelState.AddModelError(string.Empty, "We could not send the verification email. Please check the email service configuration and try again.");
+                    return View(model);
+                }
+                TempData["InfoMessage"] = "Please verify your email address. A verification code has been sent to your email.";
                 return RedirectToAction(nameof(VerifyEmail), new { email = user.Email, returnUrl = model.ReturnUrl });
             }
 
@@ -136,9 +145,17 @@ namespace AdDiin.Controllers
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "User");
-                var code = await _emailService.GenerateAndSendCodeAsync(user.Email, user.FullName);
+                try
+                {
+                    await _emailService.GenerateAndSendCodeAsync(user.Email, user.FullName);
+                }
+                catch (SmtpException)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account was created, but the verification email could not be sent. Please configure email delivery and request a new code.");
+                    return View(model);
+                }
 
-                TempData["SuccessMessage"] = $"Registration successful! Verification code: {code}";
+                TempData["SuccessMessage"] = "Registration successful! A verification code has been sent to your email.";
                 return RedirectToAction(nameof(VerifyEmail), new { email = user.Email });
             }
 
@@ -202,8 +219,15 @@ namespace AdDiin.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                var code = await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
-                TempData["InfoMessage"] = $"A new verification code has been sent: {code}";
+                try
+                {
+                    await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
+                    TempData["InfoMessage"] = "A new verification code has been sent to your email.";
+                }
+                catch (SmtpException)
+                {
+                    TempData["ErrorMessage"] = "We could not send the verification email. Please try again later.";
+                }
             }
 
             return RedirectToAction(nameof(VerifyEmail), new { email });

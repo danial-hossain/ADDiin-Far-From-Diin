@@ -17,7 +17,6 @@ namespace AdDiin.Models.ViewModels
         public int TotalMiladCount { get; set; }
         public int TotalEventsCount { get; set; }
         public int TotalActivitiesCount { get; set; }
-        public int UnreadContactCount { get; set; }
         public int ActiveConversationsCount { get; set; }
 
         public List<Donation> RecentDonations { get; set; } = new();

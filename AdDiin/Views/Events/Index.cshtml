@@ -1,4 +1,4 @@
-﻿@model List<AdDiin.Models.Entities.IslamicEvent>
+@model List<AdDiin.Models.Entities.IslamicEvent>
 @{
     ViewData["Title"] = "Islamic Calendar & Special Events";
     var upcoming = Model.Where(e => e.EventDate >= DateTime.Today).OrderBy(e => e.EventDate).ToList();
@@ -32,7 +32,7 @@
                 var daysRemaining = (evt.EventDate.Date - DateTime.Today).Days;
 
                 <div class="col-lg-6">
-                    <div class="card card-custom h-100 p-4 border rounded-4 bg-white shadow-sm d-flex flex-column justify-content-between">
+                    <div class="card card-custom h-100 p-4 border rounded-4 surface-cream shadow-sm d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
@@ -67,7 +67,7 @@
     @if (past.Any())
     {
         <h4 class="fw-bold mb-3 text-muted"><i class="bi bi-clock-history me-2"></i> Past Events Archive</h4>
-        <div class="card card-custom border rounded-4 bg-white p-4">
+        <div class="card card-custom border rounded-4 surface-cream p-4">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 small">
                     <thead>

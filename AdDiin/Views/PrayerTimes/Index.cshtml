@@ -5,14 +5,187 @@
     var naflPrayers = Model.Where(p => (p.Category == "nafl" || p.PrayerType == "optional" || p.Category == "sunnah") && p.PrayerType != "jamaat").OrderBy(p => p.DisplayOrder).ToList();
 }
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+@section Styles {
+<style>
+    .prayer-page {
+        position: relative;
+        isolation: isolate;
+        background:
+            radial-gradient(circle at 8% 4%, rgba(16, 185, 129, .08), transparent 28rem),
+            radial-gradient(circle at 92% 22%, rgba(201, 164, 78, .08), transparent 26rem);
+    }
+    .prayer-page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: .35;
+        background-image:
+            linear-gradient(135deg, rgba(15, 118, 88, .035) 25%, transparent 25%),
+            linear-gradient(315deg, rgba(201, 164, 78, .025) 25%, transparent 25%);
+        background-size: 42px 42px;
+    }
+    .prayer-hero {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(110, 231, 183, .2);
+        background:
+            radial-gradient(circle at 82% 18%, rgba(226, 203, 144, .18), transparent 16rem),
+            linear-gradient(135deg, #03251d 0%, #07513d 52%, #071f1b 100%);
+        box-shadow: 0 24px 55px rgba(3, 37, 29, .22);
+    }
+    .prayer-hero::before {
+        content: "";
+        position: absolute;
+        width: 20rem;
+        height: 20rem;
+        right: -7rem;
+        top: -8rem;
+        border: 1px solid rgba(226, 203, 144, .2);
+        border-radius: 50%;
+        box-shadow: 0 0 0 2rem rgba(226, 203, 144, .025), 0 0 0 5rem rgba(226, 203, 144, .018);
+        transform: rotateX(60deg);
+    }
+    .prayer-hero::after {
+        content: "✦";
+        position: absolute;
+        right: 12%;
+        bottom: 12%;
+        color: rgba(226, 203, 144, .24);
+        font-size: 3rem;
+        transform: rotate(18deg);
+    }
+    .prayer-surface {
+        border: 1px solid rgba(15, 118, 88, .12);
+        background:
+            linear-gradient(145deg, rgba(26, 46, 36, .98), rgba(16, 38, 29, .96));
+        border-color: rgba(127, 217, 181, .18);
+        color: #f5f1e8;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, .2);
+        backdrop-filter: blur(14px);
+    }
+    .prayer-surface .text-slate-900,
+    .prayer-surface .text-slate-800 {
+        color: #f5f1e8 !important;
+    }
+    .prayer-surface .text-slate-600,
+    .prayer-surface .text-slate-500,
+    .prayer-surface .text-slate-400 {
+        color: #b9c9bf !important;
+    }
+    .prayer-surface .border-slate-100,
+    .prayer-surface .border-slate-200 {
+        border-color: rgba(127, 217, 181, .16) !important;
+    }
+    .prayer-select {
+        background: #102a20 !important;
+        color: #f5f1e8 !important;
+        border-color: rgba(127, 217, 181, .28) !important;
+    }
+    .prayer-select option {
+        background: #102a20;
+        color: #f5f1e8;
+    }
+    .prayer-next {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(110, 231, 183, .32);
+        background:
+            radial-gradient(circle at 12% 8%, rgba(255,255,255,.12), transparent 14rem),
+            linear-gradient(115deg, #063f30, #0b8060 58%, #063126);
+        box-shadow: 0 22px 48px rgba(4, 65, 48, .22);
+    }
+    .prayer-next::after {
+        content: "";
+        position: absolute;
+        width: 22rem;
+        height: 22rem;
+        right: -12rem;
+        bottom: -15rem;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 50%;
+        box-shadow: 0 0 0 2rem rgba(255,255,255,.025), 0 0 0 4rem rgba(255,255,255,.018);
+        pointer-events: none;
+    }
+    .prayer-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 10.5rem;
+        border-color: rgba(127, 217, 181, .2) !important;
+        background: linear-gradient(145deg, #203d30, #162d23) !important;
+        color: #f5f1e8;
+        transform: translateZ(0);
+        transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+    }
+    .prayer-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(127,217,181,.12), transparent 44%);
+        pointer-events: none;
+    }
+    .prayer-card .text-slate-900 {
+        color: #f5f1e8 !important;
+    }
+    .prayer-card .text-slate-400 {
+        color: #b9c9bf !important;
+    }
+    .prayer-card .text-emerald-900 {
+        color: #7fd9b5 !important;
+    }
+    .prayer-card .text-purple-900 {
+        color: #e8ce7a !important;
+    }
+    .prayer-surface .bg-emerald-100,
+    .prayer-card .bg-emerald-100 {
+        background: rgba(47, 169, 124, .18) !important;
+        color: #b9efd5 !important;
+    }
+    .prayer-surface .bg-purple-100,
+    .prayer-card .bg-purple-100 {
+        background: rgba(168, 120, 220, .18) !important;
+        color: #e2c8ff !important;
+    }
+    .prayer-card:hover {
+        transform: translateY(-7px) rotateX(2deg) rotateY(-2deg);
+        border-color: rgba(16, 185, 129, .42);
+        box-shadow: 0 18px 35px rgba(6, 78, 59, .14);
+    }
+    .prayer-card .prayer-orb {
+        position: absolute;
+        width: 5rem;
+        height: 5rem;
+        right: -1.7rem;
+        top: -1.8rem;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(226,203,144,.25), rgba(226,203,144,0) 70%);
+    }
+    .prayer-section-title {
+        letter-spacing: -.025em;
+    }
+    .prayer-select {
+        box-shadow: inset 0 1px 2px rgba(16,52,41,.04);
+    }
+    @@media (max-width: 640px) {
+        .prayer-card { min-height: 9.5rem; }
+        .prayer-hero::after { right: 5%; bottom: 7%; font-size: 2rem; }
+    }
+    @@media (prefers-reduced-motion: reduce) {
+        .prayer-card { transition: none; }
+        .prayer-card:hover { transform: none; }
+    }
+</style>
+}
+
+<div class="prayer-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     <!-- Header Banner -->
-    <div class="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div class="prayer-hero rounded-[2rem] p-8 sm:p-10 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-3 max-w-2xl">
             <span class="px-3.5 py-1 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold rounded-full uppercase tracking-wider">
                 <i class="bi bi-geo-alt-fill me-1"></i> বিভাগভিত্তিক সময়সূচী (Division-Based Timing)
             </span>
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Daily Prayer Schedule & Azan</h1>
+            <h1 class="relative z-10 text-3xl sm:text-4xl font-extrabold tracking-tight">Daily Prayer Schedule & Azan</h1>
             <p class="text-slate-300 text-sm sm:text-base leading-relaxed" id="location-description">
                 ইসলামিক ফাউন্ডেশন বাংলাদেশ মান অনুযায়ী <strong class="text-emerald-300" id="current-location-text">ঢাকা বিভাগ (Dhaka Division)</strong> এর সঠিক আযান ও নামাযের সময়সূচী।
             </p>
@@ -29,13 +202,13 @@
     </div>
 
     <!-- Bangladesh 8 Divisions Selector Controls -->
-    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200">
+    <div class="prayer-surface rounded-3xl p-5 sm:p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div>
                 <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">
                     <i class="bi bi-pin-map-fill text-emerald-600 me-1"></i> বিভাগ নির্বাচন করুন (Select Division)
                 </label>
-                <select id="division-select" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm font-semibold rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                <select id="division-select" class="prayer-select w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm font-semibold rounded-xl px-3.5 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
                     <option value="Dhaka" data-offset="0" data-name-bn="ঢাকা বিভাগ" selected>ঢাকা (Dhaka) - Standard</option>
                     <option value="Chittagong" data-offset="-5" data-name-bn="চট্টগ্রাম বিভাগ">চট্টগ্রাম (Chittagong) [-5m]</option>
                     <option value="Sylhet" data-offset="-6" data-name-bn="সিলেট বিভাগ">সিলেট (Sylhet) [-6m]</option>
@@ -62,7 +235,7 @@
     </div>
 
     <!-- Live Next Prayer Alert Banner -->
-    <div class="bg-gradient-to-r from-emerald-900 to-teal-900 rounded-3xl p-6 sm:p-7 text-white shadow-lg border border-emerald-700/50 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="prayer-next rounded-[2rem] p-6 sm:p-7 text-white flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-4">
             <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-2xl border border-white/15 shrink-0">
                 <i class="bi bi-alarm-fill text-amber-300 animate-bounce"></i>
@@ -97,7 +270,7 @@
     </div>
 
     <!-- Obligatory Daily Prayers (Fard / Azan) -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+    <div class="prayer-surface rounded-[2rem] p-6 sm:p-8 space-y-6">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
                 <h3 class="font-extrabold text-slate-900 text-lg">ফারদ্ব নামাযের আযান (Obligatory Daily Prayers)</h3>
@@ -112,7 +285,8 @@
             @foreach (var prayer in fardPrayers)
             {
                 var time12 = DateTime.Today.Add(prayer.PrayerTimeValue).ToString("hh:mm tt");
-                <div class="p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 text-center space-y-2 hover:shadow-md transition">
+                <div class="prayer-card p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/70 to-teal-50/35 text-center space-y-2">
+                    <div class="prayer-orb" aria-hidden="true"></div>
                     <span class="text-xs uppercase font-bold text-slate-400">@prayer.DisplayNameBn</span>
                     <h4 class="text-lg font-black text-slate-900">@prayer.DisplayNameEn</h4>
                     <div id="prayer-time-@prayer.Id" data-prayer-id="@prayer.Id" data-base-time="@prayer.PrayerTimeValue.ToString(@"hh\:mm")" class="dynamic-prayer-time text-2xl sm:text-3xl font-black text-emerald-900 font-mono py-1">
@@ -129,7 +303,7 @@
     <!-- Voluntary Sunnah & Nafl Prayers -->
     @if (naflPrayers.Any())
     {
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+        <div class="prayer-surface rounded-[2rem] p-6 sm:p-8 space-y-6">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div>
                     <h3 class="font-extrabold text-slate-900 text-lg">সুন্নাত ও নফল নামায (Sunnah & Nafl Prayers)</h3>
@@ -144,7 +318,8 @@
                 @foreach (var prayer in naflPrayers)
                 {
                     var time12 = DateTime.Today.Add(prayer.PrayerTimeValue).ToString("hh:mm tt");
-                    <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-center space-y-2 hover:bg-white hover:border-purple-300 hover:shadow-md transition">
+                    <div class="prayer-card p-5 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-purple-50/30 text-center space-y-2">
+                        <div class="prayer-orb" aria-hidden="true"></div>
                         <span class="text-xs uppercase font-bold text-slate-400">@prayer.DisplayNameBn</span>
                         <h4 class="text-base font-bold text-slate-900">@prayer.DisplayNameEn</h4>
                         <div id="prayer-time-@prayer.Id" data-prayer-id="@prayer.Id" data-base-time="@prayer.PrayerTimeValue.ToString(@"hh\:mm")" class="dynamic-prayer-time text-2xl font-black text-purple-900 font-mono py-1">
