@@ -18,6 +18,7 @@ namespace AdDiin.Services
 
     public class DiinAIService : IDiinAIService
     {
+        public const string ContactFallbackMarker = "[CONTACT_ADMIN:/contact]";
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly ILogger<DiinAIService> _logger;
@@ -56,6 +57,17 @@ namespace AdDiin.Services
             return OffTopicKeywords.Any(
                 k => lower.Contains(k.ToLowerInvariant())
             );
+        }
+
+        public static bool IsContactFallback(string? answer)
+        {
+            return !string.IsNullOrWhiteSpace(answer) &&
+                answer.Contains(ContactFallbackMarker, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string ContactFallback(string message)
+        {
+            return $"{message} সহায়তার জন্য আমাদের সাথে যোগাযোগ করুন: {ContactFallbackMarker}";
         }
 
         public async Task<(bool IsHealthy, string Details)> CheckHealthAsync()
@@ -136,7 +148,7 @@ namespace AdDiin.Services
             {
                 _logger.LogWarning("Diin AI Backend URL is not configured.");
                 return (
-                    "দুঃখিত, AI সার্ভার কনফিগারেশন পাওয়া যায়নি। অনুগ্রহ করে appsettings.json এ DiinAI:BackendUrl সেট করুন।",
+                    ContactFallback("দুঃখিত, AI সার্ভার কনফিগারেশন পাওয়া যায়নি। অনুগ্রহ করে appsettings.json এ DiinAI:BackendUrl সেট করুন।"),
                     new List<DiinAISource>()
                 );
             }
@@ -150,7 +162,12 @@ namespace AdDiin.Services
                 var payload = new
                 {
                     question = question.Trim(),
-                    query = question.Trim()
+                    query = question.Trim(),
+                    history = history?.TakeLast(20).Select(message => new
+                    {
+                        role = message.Role,
+                        content = message.Content
+                    })
                 };
 
                 _logger.LogInformation("Sending question to Diin AI backend: {Endpoint}", endpoint);
@@ -171,17 +188,14 @@ namespace AdDiin.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var responseJson = await response.Content.ReadAsStringAsync();
-                    var jsonOptions = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
+                    using var document = JsonDocument.Parse(responseJson);
+                    var root = document.RootElement;
+                    var answer = ReadString(root, "answer", "response", "message");
 
-                    var result = JsonSerializer.Deserialize<AIApiAskResponse>(responseJson, jsonOptions);
-
-                    if (result != null && !string.IsNullOrWhiteSpace(result.Answer))
+                    if (!string.IsNullOrWhiteSpace(answer))
                     {
                         _logger.LogInformation("Diin AI answer received successfully.");
-                        return (result.Answer, result.Sources ?? new List<DiinAISource>());
+                        return (answer, ReadSources(root));
                     }
 
                     _logger.LogWarning("Diin AI backend returned empty answer field. Raw body: {Body}", responseJson);
@@ -196,7 +210,7 @@ namespace AdDiin.Services
             {
                 _logger.LogError(ex, "Timeout while connecting to Diin AI backend at {BackendUrl}", backendUrl);
                 return (
-                    "দুঃখিত, AI সার্ভার থেকে উত্তর পেতে বেশি সময় লাগছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+                    ContactFallback("দুঃখিত, AI সার্ভার থেকে উত্তর পেতে বেশি সময় লাগছে। অনুগ্রহ করে আবার চেষ্টা করুন।"),
                     new List<DiinAISource>()
                 );
             }
@@ -204,7 +218,7 @@ namespace AdDiin.Services
             {
                 _logger.LogError(ex, "Failed to connect to Diin AI backend at {BackendUrl}. Message: {Message}", backendUrl, ex.Message);
                 return (
-                    "দুঃখিত, AI সার্ভারের সাথে সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে নিশ্চিত করুন যে Colab AI সার্ভার ও ngrok চালু আছে।",
+                    ContactFallback("দুঃখিত, AI সার্ভারের সাথে সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে নিশ্চিত করুন যে Colab AI সার্ভার ও ngrok চালু আছে।"),
                     new List<DiinAISource>()
                 );
             }
@@ -214,9 +228,128 @@ namespace AdDiin.Services
             }
 
             return (
-                "দুঃখিত, AI সার্ভারের সাথে সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে পরে আবার চেষ্টা করুন।",
+                ContactFallback("দুঃখিত, AI সার্ভারের সাথে সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে পরে আবার চেষ্টা করুন।"),
                 new List<DiinAISource>()
             );
+        }
+
+        private static string? ReadString(JsonElement element, params string[] names)
+        {
+            foreach (var name in names)
+            {
+                if (element.TryGetProperty(name, out var value) &&
+                    value.ValueKind == JsonValueKind.String)
+                {
+                    return value.GetString();
+                }
+
+                var property = element.EnumerateObject()
+                    .FirstOrDefault(property => string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase));
+                if (property.Value.ValueKind == JsonValueKind.String)
+                {
+                    return property.Value.GetString();
+                }
+            }
+
+            return null;
+        }
+
+        private static List<DiinAISource> ReadSources(JsonElement root)
+        {
+            var sourceArray = FindSourceArray(root);
+
+            if (sourceArray.ValueKind != JsonValueKind.Array)
+            {
+                return new List<DiinAISource>();
+            }
+
+            var sources = new List<DiinAISource>();
+            foreach (var item in sourceArray.EnumerateArray())
+            {
+                if (item.ValueKind == JsonValueKind.String)
+                {
+                    var reference = item.GetString();
+                    if (!string.IsNullOrWhiteSpace(reference))
+                    {
+                        sources.Add(new DiinAISource
+                        {
+                            Source = "Knowledge Base",
+                            Reference = reference
+                        });
+                    }
+
+                    continue;
+                }
+
+                if (item.ValueKind != JsonValueKind.Object)
+                {
+                    continue;
+                }
+
+                var id = ReadString(item, "id", "key");
+                var source = ReadString(item, "source", "name", "title", "document", "file", "filename");
+                var itemReference = ReadString(item, "reference", "citation", "url", "link", "page", "locator", "content");
+                var text = ReadString(item, "text", "content", "page_content", "pageContent", "excerpt");
+
+                if (!string.IsNullOrWhiteSpace(source) ||
+                    !string.IsNullOrWhiteSpace(itemReference) ||
+                    !string.IsNullOrWhiteSpace(text))
+                {
+                    sources.Add(new DiinAISource
+                    {
+                        Id = id ?? string.Empty,
+                        Source = string.IsNullOrWhiteSpace(source) ? "Knowledge Base" : source,
+                        Reference = itemReference ?? string.Empty,
+                        Text = text ?? string.Empty
+                    });
+                }
+            }
+
+            return sources;
+        }
+
+        private static JsonElement FindSourceArray(JsonElement element)
+        {
+            if (element.ValueKind == JsonValueKind.Object)
+            {
+                var sourceNames = new[]
+                {
+                    "sources", "references", "citations", "documents",
+                    "knowledge_base_sources", "knowledgeBaseSources",
+                    "retrieved_documents", "retrievedDocuments", "context"
+                };
+
+                foreach (var property in element.EnumerateObject())
+                {
+                    if (sourceNames.Any(name => string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) &&
+                        property.Value.ValueKind == JsonValueKind.Array)
+                    {
+                        return property.Value;
+                    }
+                }
+
+                foreach (var property in element.EnumerateObject())
+                {
+                    var nested = FindSourceArray(property.Value);
+                    if (nested.ValueKind == JsonValueKind.Array)
+                    {
+                        return nested;
+                    }
+                }
+            }
+            else if (element.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in element.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.Object &&
+                        (ReadString(item, "source", "reference", "text", "page_content") != null))
+                    {
+                        return element;
+                    }
+                }
+            }
+
+            return default;
         }
     }
 }

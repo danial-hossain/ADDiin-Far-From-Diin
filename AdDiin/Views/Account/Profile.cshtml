@@ -39,7 +39,7 @@
 
     <!-- Statistics Overview Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+        <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
             <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
                 <span>Prayer Consistency</span>
                 <i class="bi bi-clock-history text-emerald-600 text-base"></i>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+        <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
             <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
                 <span>Quran Recitation</span>
                 <i class="bi bi-book text-amber-600 text-base"></i>
@@ -59,7 +59,7 @@
             <p class="text-xs text-slate-500">Total pages tracked</p>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+        <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
             <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
                 <span>Dhikr Recitations</span>
                 <i class="bi bi-heart-pulse text-teal-600 text-base"></i>
@@ -68,7 +68,7 @@
             <p class="text-xs text-slate-500">Glorifications counted</p>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
+        <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200 space-y-2">
             <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
                 <span>Charity Given</span>
                 <i class="bi bi-gift text-purple-600 text-base"></i>
@@ -79,7 +79,7 @@
     </div>
 
     <!-- Achievements & Badges -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+    <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 gap-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shadow-xs border border-amber-200/60">
@@ -103,7 +103,7 @@
             {
                 <div class="group relative flex flex-col items-center justify-between p-4 rounded-2xl border text-center transition-all duration-200 @(badge.IsUnlocked ? "border-amber-200/80 bg-gradient-to-b from-amber-50/60 to-orange-50/20 shadow-xs hover:shadow-md hover:border-amber-300" : "border-slate-100 bg-slate-50/70 hover:bg-slate-50")">
                     <div class="flex flex-col items-center w-full">
-                        <div class="w-13 h-13 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-2.5 transition-transform duration-200 group-hover:scale-105 @(badge.IsUnlocked ? "bg-white text-amber-500 shadow-sm border border-amber-100" : "bg-slate-200/80 text-slate-400")">
+                        <div class="w-13 h-13 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-2.5 transition-transform duration-200 group-hover:scale-105 @(badge.IsUnlocked ? "surface-cream text-amber-500 shadow-sm border border-amber-100" : "bg-slate-200/80 text-slate-400")">
                             @if (badge.Icon.StartsWith("bi-") || badge.Icon.StartsWith("fa"))
                             {
                                 <i class="bi @badge.Icon text-2xl @(badge.IsUnlocked ? "text-amber-500" : "text-slate-400")"></i>
@@ -147,7 +147,7 @@
         
         <!-- Left 6 cols: Personal Information & Edit -->
         <div class="lg:col-span-6 space-y-6">
-            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
+            <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="font-extrabold text-slate-900 text-base">Personal Information</h3>
                     <a href="/Account/ChangePassword" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">
@@ -189,7 +189,7 @@
         <div class="lg:col-span-6 space-y-6">
             
             <!-- My Activities Log -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+            <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="font-extrabold text-slate-900 text-base">My Registered Programs</h3>
                     <a href="/my-activities" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">View All &rarr;</a>
@@ -219,7 +219,7 @@
             </div>
 
             <!-- My Charity Log -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+            <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <h3 class="font-extrabold text-slate-900 text-base">Recent Charity & Zakat</h3>
                     <a href="/my-donations" class="text-xs font-bold text-emerald-700 hover:text-emerald-800">View History &rarr;</a>

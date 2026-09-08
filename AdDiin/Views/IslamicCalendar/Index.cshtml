@@ -28,7 +28,7 @@
     <!-- Next Upcoming Major Occasion Countdown -->
     @if (nextOccasion != null)
     {
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-3xl shadow-xs">
                     🌙
@@ -68,17 +68,17 @@
             The Prophet Muhammad (ﷺ) encouraged fasting on Mondays and Thursdays, as well as the 13th, 14th, and 15th of every lunar Hijri month (The White Days).
         </p>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div class="p-4 bg-white rounded-2xl border border-emerald-200 text-center">
+            <div class="p-4 surface-cream rounded-2xl border border-emerald-200 text-center">
                 <span class="text-xs font-bold text-slate-400 uppercase">Mondays & Thursdays</span>
                 <p class="text-sm font-extrabold text-slate-800 mt-1">Weekly Sunnah Fasting</p>
                 <p class="text-[11px] text-emerald-700 mt-1">Deeds presented to Allah</p>
             </div>
-            <div class="p-4 bg-white rounded-2xl border border-emerald-200 text-center">
+            <div class="p-4 surface-cream rounded-2xl border border-emerald-200 text-center">
                 <span class="text-xs font-bold text-slate-400 uppercase">13th, 14th, 15th Hijri</span>
                 <p class="text-sm font-extrabold text-slate-800 mt-1">The White Days (Ayyam al-Beed)</p>
                 <p class="text-[11px] text-emerald-700 mt-1">Reward like fasting whole year</p>
             </div>
-            <div class="p-4 bg-white rounded-2xl border border-emerald-200 text-center">
+            <div class="p-4 surface-cream rounded-2xl border border-emerald-200 text-center">
                 <span class="text-xs font-bold text-slate-400 uppercase">Special Fasting Days</span>
                 <p class="text-sm font-extrabold text-slate-800 mt-1">Day of Arafah & Ashura</p>
                 <p class="text-[11px] text-emerald-700 mt-1">Expiation of sins</p>
@@ -87,12 +87,12 @@
     </div>
 
     <!-- Islamic Events List -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+    <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
         <h3 class="font-extrabold text-slate-900 text-lg">Yearly Islamic Occasions Schedule</h3>
         <div class="space-y-4">
             @foreach (var ev in Model.UpcomingEvents)
             {
-                <div class="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:border-emerald-300 hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 hover:bg-[var(--surface-cream)] hover:border-emerald-300 hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="flex items-start gap-4">
                         <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-xl font-bold">
                             🌙
