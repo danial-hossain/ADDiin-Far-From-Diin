@@ -24,7 +24,7 @@
     </div>
 
     <!-- Calculator Card -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+    <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
         <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
             <div>
                 <h3 class="font-extrabold text-slate-900 text-lg">Calculate Your Zakat</h3>
@@ -38,32 +38,32 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
                 <label class="text-xs font-bold text-slate-700">Cash in Hand & Bank Accounts (৳)</label>
-                <input type="number" id="z_cash" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" id="z_cash" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-[var(--surface-cream)] focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div>
                 <label class="text-xs font-bold text-slate-700">Value of Gold & Silver Owned (৳)</label>
-                <input type="number" id="z_gold" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" id="z_gold" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-[var(--surface-cream)] focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div>
                 <label class="text-xs font-bold text-slate-700">Business Inventory & Merchandise (৳)</label>
-                <input type="number" id="z_business" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" id="z_business" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-[var(--surface-cream)] focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div>
                 <label class="text-xs font-bold text-slate-700">Investments, Shares & Savings Bonds (৳)</label>
-                <input type="number" id="z_invest" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-emerald-500" />
+                <input type="number" id="z_invest" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-[var(--surface-cream)] focus:outline-none focus:border-emerald-500" />
             </div>
 
             <div class="sm:col-span-2">
                 <label class="text-xs font-bold text-red-600">Deductible Liabilities & Immediate Debts (৳)</label>
-                <input type="number" id="z_debts" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-red-50/50 border border-red-200 rounded-xl focus:bg-white focus:outline-none focus:border-red-400" />
+                <input type="number" id="z_debts" value="0" min="0" oninput="calcZakat()" class="mt-1 w-full text-xs font-bold px-3.5 py-2.5 bg-red-50/50 border border-red-200 rounded-xl focus:bg-[var(--surface-cream)] focus:outline-none focus:border-red-400" />
             </div>
         </div>
 
         <!-- Calculated Summary Box -->
-        <div class="p-6 rounded-3xl bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-5">
+        <div class="zakat-result p-6 rounded-3xl bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-5">
             <div>
                 <span class="text-xs font-black uppercase text-emerald-800 tracking-wider">Total Net Zakat Payable (2.5%)</span>
                 <div class="text-3xl sm:text-4xl font-black text-emerald-950 font-mono mt-1" id="zakatResultDisplay">
@@ -91,7 +91,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- 1. Destitute & Debt Relief -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+            <div class="surface-cream p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
                 <div class="space-y-2">
                     <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg font-bold">
                         <i class="bi bi-person-heart"></i>
@@ -105,7 +105,7 @@
             </div>
 
             <!-- 2. Orphan & Student Education -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+            <div class="surface-cream p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
                 <div class="space-y-2">
                     <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg font-bold">
                         <i class="bi bi-mortarboard-fill"></i>
@@ -119,7 +119,7 @@
             </div>
 
             <!-- 3. Emergency Medical Aid -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+            <div class="surface-cream p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
                 <div class="space-y-2">
                     <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg font-bold">
                         <i class="bi bi-capsule"></i>
@@ -133,7 +133,7 @@
             </div>
 
             <!-- 4. Winter & Flood Relief -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
+            <div class="surface-cream p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition">
                 <div class="space-y-2">
                     <div class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center text-lg font-bold">
                         <i class="bi bi-box2-heart-fill"></i>
@@ -180,4 +180,3 @@
     }
 </script>
 }
-

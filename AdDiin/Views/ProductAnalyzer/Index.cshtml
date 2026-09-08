@@ -117,7 +117,7 @@
         </div>
 
         <!-- Sample Presets For Instant Demo -->
-        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex flex-wrap items-center justify-between gap-3 surface-cream p-4 rounded-2xl border border-slate-200 shadow-xs">
             <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
                 <i class="bi bi-stars text-amber-500 text-base"></i>
                 <span>Try Demo Ingredients Label:</span>
@@ -136,14 +136,14 @@
         </div>
 
         <!-- 2. INPUT MODE SWITCHER & CARDS -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3 sm:p-4 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 surface-cream p-3 sm:p-4 rounded-3xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-2.5 text-xs font-extrabold text-slate-800 uppercase tracking-wider">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                 <span>Select Analysis Mode:</span>
             </div>
             <!-- Mode Switcher Tabs -->
             <div class="flex items-center p-1.5 bg-slate-100 rounded-2xl w-full sm:w-auto border border-slate-200/80">
-                <button type="button" id="tabModeImage" onclick="switchAnalysisMode('image')" class="flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-slate-900 shadow-sm border border-slate-200/60">
+                <button type="button" id="tabModeImage" onclick="switchAnalysisMode('image')" class="flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 surface-cream text-slate-900 shadow-sm border border-slate-200/60">
                     <span class="text-base">📷</span>
                     <span>Upload Product Image</span>
                 </button>
@@ -245,7 +245,7 @@
                         <label for="manualIngredientsInput" class="block text-xs font-bold text-slate-700">
                             Ingredient List
                         </label>
-                        <textarea id="manualIngredientsInput" rows="7" class="w-full rounded-2xl border border-slate-200 bg-slate-50/50 p-4 text-sm font-mono text-slate-800 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition leading-relaxed" placeholder="Enter the ingredients from the product label..."></textarea>
+                        <textarea id="manualIngredientsInput" rows="7" class="w-full rounded-2xl border border-slate-200 bg-slate-50/50 p-4 text-sm font-mono text-slate-800 placeholder-slate-400 focus:bg-[var(--surface-cream)] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition leading-relaxed" placeholder="Enter the ingredients from the product label..."></textarea>
                         
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-500">
                             <span><strong>Example:</strong> Potatoes, Vegetable Oil, E471, Sugar, Salt</span>
@@ -265,7 +265,7 @@
                 </div>
 
                 <!-- 7. OCR / TEXT INPUT VIEW SECTION (Collapsible) -->
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200">
                     <button type="button" onclick="toggleOcrAccordion()" class="w-full flex items-center justify-between text-left focus:outline-none group">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-base">
@@ -295,7 +295,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             <div class="lg:col-span-5 space-y-6">
                 
                 <!-- Pipeline / Progress Card -->
-                <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200/80 space-y-6">
+                <div class="surface-cream rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200/80 space-y-6">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -310,7 +310,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                     <div class="space-y-4" id="pipelineStepsList">
                         <!-- Step 1 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step1">
-                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-eye"></i>
                             </div>
                             <div class="space-y-0.5">
@@ -321,7 +321,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
                         <!-- Step 2 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step2">
-                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-fonts"></i>
                             </div>
                             <div class="space-y-0.5">
@@ -332,7 +332,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
                         <!-- Step 3 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step3">
-                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-database-check"></i>
                             </div>
                             <div class="space-y-0.5">
@@ -343,7 +343,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
                         <!-- Step 4 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step4">
-                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-cpu"></i>
                             </div>
                             <div class="space-y-0.5">
@@ -354,7 +354,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
                         <!-- Step 5 -->
                         <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step5">
-                            <div class="w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
+                            <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-chat-left-quote-fill"></i>
                             </div>
                             <div class="space-y-0.5">
@@ -429,7 +429,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 
                 <!-- Left 8 cols: Detailed Ingredient Analysis Table -->
                 <div class="lg:col-span-8 space-y-6">
-                    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
+                    <div class="surface-cream rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="font-extrabold text-slate-900 text-lg">Detected Evidence & Ingredients</h3>
@@ -491,7 +491,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                     </div>
 
                     <!-- E-Number Reference Card -->
-                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 space-y-3">
+                    <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200 space-y-3">
                         <div class="flex items-center gap-2 text-slate-900 font-bold text-sm">
                             <i class="bi bi-info-square-fill text-emerald-600"></i>
                             <span>Knowledge Base Rules</span>
@@ -519,7 +519,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="historyCardsContainer">
                 
                 <!-- History Card 1 -->
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                <div class="surface-cream rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
                     <div class="w-full h-32 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center text-4xl border border-emerald-100">
                         🍪
                     </div>
@@ -534,7 +534,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 </div>
 
                 <!-- History Card 2 -->
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                <div class="surface-cream rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
                     <div class="w-full h-32 rounded-xl bg-gradient-to-br from-amber-100 to-orange-50 flex items-center justify-center text-4xl border border-amber-100">
                         🍬
                     </div>
@@ -549,7 +549,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 </div>
 
                 <!-- History Card 3 -->
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                <div class="surface-cream rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
                     <div class="w-full h-32 rounded-xl bg-gradient-to-br from-rose-100 to-pink-50 flex items-center justify-center text-4xl border border-rose-100">
                         🍷
                     </div>
@@ -564,7 +564,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 </div>
 
                 <!-- History Card 4 -->
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
+                <div class="surface-cream rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition space-y-3">
                     <div class="w-full h-32 rounded-xl bg-gradient-to-br from-emerald-100 to-cyan-50 flex items-center justify-center text-4xl border border-emerald-100">
                         🍫
                     </div>
@@ -660,7 +660,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
             if (mode === 'image') {
                 if (tabImg) {
-                    tabImg.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-slate-900 shadow-sm border border-slate-200/60';
+                    tabImg.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 surface-cream text-slate-900 shadow-sm border border-slate-200/60';
                 }
                 if (tabTxt) {
                     tabTxt.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
@@ -671,7 +671,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 if (ocrSub) ocrSub.textContent = 'Raw text parsed from product label image via EasyOCR';
             } else {
                 if (tabTxt) {
-                    tabTxt.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 bg-white text-slate-900 shadow-sm border border-slate-200/60';
+                    tabTxt.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 surface-cream text-slate-900 shadow-sm border border-slate-200/60';
                 }
                 if (tabImg) {
                     tabImg.className = 'flex-1 sm:flex-initial py-2.5 px-6 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
@@ -960,7 +960,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 if (el) {
                     el.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all';
                     const ind = el.querySelector('.step-indicator');
-                    if (ind) ind.className = 'w-8 h-8 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
+                    if (ind) ind.className = 'w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
                 }
             }
 

@@ -10,12 +10,14 @@ namespace AdDiin.Services
         Task<Conversation> GetOrCreateConversationAsync(int userId, string subject = "Support Request");
         Task<Conversation?> GetConversationWithMessagesAsync(int conversationId, int currentUserId, bool isAdmin);
         Task<Message?> SendMessageAsync(int conversationId, int senderId, string content, bool isAdmin);
+        Task<bool> MarkConversationReadAsync(int conversationId, int currentUserId, bool isAdmin);
         Task<bool> CloseConversationAsync(int conversationId);
         Task<int> GetUnreadCountAsync(int userId, bool isAdmin);
     }
 
     public class MessagingService : IMessagingService
     {
+        public const int MaxMessageLength = 4000;
         private readonly ApplicationDbContext _context;
 
         public MessagingService(ApplicationDbContext context)
@@ -104,10 +106,20 @@ namespace AdDiin.Services
 
         public async Task<Message?> SendMessageAsync(int conversationId, int senderId, string content, bool isAdmin)
         {
+            if (string.IsNullOrWhiteSpace(content) || content.Trim().Length > MaxMessageLength)
+            {
+                return null;
+            }
+
             var conversation = await _context.Conversations.FindAsync(conversationId);
             if (conversation == null) return null;
 
             if (!isAdmin && conversation.UserId != senderId)
+            {
+                return null;
+            }
+
+            if (conversation.Status != "active")
             {
                 return null;
             }
@@ -121,7 +133,7 @@ namespace AdDiin.Services
             {
                 ConversationId = conversationId,
                 SenderId = senderId,
-                MessageContent = content,
+                MessageContent = content.Trim(),
                 SenderType = isAdmin ? "admin" : "user",
                 IsRead = false,
                 CreatedAt = DateTime.UtcNow
@@ -132,7 +144,39 @@ namespace AdDiin.Services
             await _context.SaveChangesAsync();
 
             await _context.Entry(message).Reference(m => m.Sender).LoadAsync();
+            await _context.Entry(message).Reference(m => m.Conversation).LoadAsync();
             return message;
+        }
+
+        public async Task<bool> MarkConversationReadAsync(int conversationId, int currentUserId, bool isAdmin)
+        {
+            var conversation = await _context.Conversations
+                .Include(c => c.Messages)
+                .FirstOrDefaultAsync(c => c.Id == conversationId);
+
+            if (conversation == null || (!isAdmin && conversation.UserId != currentUserId))
+            {
+                return false;
+            }
+
+            var unreadMessages = conversation.Messages
+                .Where(message => message.SenderId != currentUserId && !message.IsRead)
+                .ToList();
+
+            if (unreadMessages.Count == 0)
+            {
+                return true;
+            }
+
+            var readAt = DateTime.UtcNow;
+            foreach (var message in unreadMessages)
+            {
+                message.IsRead = true;
+                message.ReadAt = readAt;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> CloseConversationAsync(int conversationId)

@@ -1,4 +1,5 @@
 using AdDiin.Data;
+using AdDiin.Hubs;
 using AdDiin.Models.Entities;
 using AdDiin.Services;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 // Add MVC Services
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 // Register Application Services for Dependency Injection
 builder.Services.AddScoped<IPrayerTimeService, PrayerTimeService>();
@@ -48,7 +50,6 @@ builder.Services.AddScoped<IMiladService, MiladService>();
 builder.Services.AddScoped<IIslamicEventService, IslamicEventService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
-builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddHttpClient<IDiinAIService, DiinAIService>((serviceProvider, client) =>
 {
     var config = serviceProvider.GetRequiredService<IConfiguration>();
@@ -98,7 +99,7 @@ app.UseAuthorization();
 
 // Route Aliases matching user-centric structure
 app.MapControllerRoute(name: "about", pattern: "about", defaults: new { controller = "Home", action = "About" });
-app.MapControllerRoute(name: "contact", pattern: "contact", defaults: new { controller = "Home", action = "Contact" });
+app.MapControllerRoute(name: "contact", pattern: "contact", defaults: new { controller = "Messages", action = "Index" });
 app.MapControllerRoute(name: "sdg9", pattern: "sdg9", defaults: new { controller = "Home", action = "SDG9" });
 app.MapControllerRoute(name: "privacy", pattern: "privacy", defaults: new { controller = "Home", action = "Privacy" });
 
@@ -133,8 +134,11 @@ app.MapControllerRoute(name: "verifyEmail", pattern: "verify-email", defaults: n
 
 app.MapControllerRoute(name: "adminRegistrations", pattern: "admin/registrations", defaults: new { controller = "Admin", action = "Registrations" });
 app.MapControllerRoute(name: "adminPrograms", pattern: "admin/programs", defaults: new { controller = "Admin", action = "Activities" });
+app.MapControllerRoute(name: "adminMessages", pattern: "admin/messages", defaults: new { controller = "Admin", action = "Messages" });
 app.MapControllerRoute(name: "adminPanel", pattern: "admin/panel", defaults: new { controller = "Admin", action = "Dashboard" });
 app.MapControllerRoute(name: "adminDashboard", pattern: "admin-dashboard", defaults: new { controller = "Admin", action = "Dashboard" });
+
+app.MapHub<SupportChatHub>("/hubs/support-chat");
 
 // Default Conventional Route
 app.MapControllerRoute(

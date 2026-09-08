@@ -1,6 +1,47 @@
 ﻿// Ad-Diin Interactive Scripts
 document.addEventListener('DOMContentLoaded', function () {
 
+    // Lightweight motion layer shared by all views. It only enhances existing
+    // elements and never changes form, navigation, or feature behavior.
+    document.body.classList.add('page-enter');
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealTargets = document.querySelectorAll(
+        'main > section, main > div > section, main .card-custom, main .glass-card, main .rounded-3xl.border'
+    );
+
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('ad-reveal', 'is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px' });
+
+        revealTargets.forEach(function (element) {
+            element.classList.add('ad-reveal');
+            revealObserver.observe(element);
+        });
+    }
+
+    if (!reduceMotion) {
+        document.querySelectorAll('.card-custom, .glass-card, .prayer-time-card').forEach(function (card) {
+            card.classList.add('ad-tilt');
+            card.addEventListener('pointermove', function (event) {
+                if (event.pointerType === 'touch') return;
+                const rect = card.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width - 0.5;
+                const y = (event.clientY - rect.top) / rect.height - 0.5;
+                card.style.transform = `perspective(900px) rotateX(${(y * -2.2).toFixed(2)}deg) rotateY(${(x * 2.2).toFixed(2)}deg) translateY(-2px)`;
+            });
+            card.addEventListener('pointerleave', function () {
+                card.style.transform = '';
+            });
+        });
+    }
+
     // ==========================================
     // Auto-dismiss alerts after 6 seconds
     // ==========================================
