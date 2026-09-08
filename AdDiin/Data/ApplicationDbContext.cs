@@ -29,6 +29,8 @@ namespace AdDiin.Data
         public DbSet<UserNotification> UserNotifications => Set<UserNotification>();
         public DbSet<UserDeenSettings> UserDeenSettings => Set<UserDeenSettings>();
         public DbSet<VerificationCode> VerificationCodes => Set<VerificationCode>();
+        public DbSet<DiinAIConversation> DiinAIConversations => Set<DiinAIConversation>();
+        public DbSet<DiinAIMessage> DiinAIMessages => Set<DiinAIMessage>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -114,6 +116,21 @@ namespace AdDiin.Data
             // Configure VerificationCode
             builder.Entity<VerificationCode>()
                 .HasIndex(v => v.Email);
+
+            builder.Entity<DiinAIConversation>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<DiinAIMessage>()
+                .HasOne(m => m.Conversation)
+                .WithMany(c => c.Messages)
+                .HasForeignKey(m => m.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<DiinAIConversation>()
+                .HasIndex(c => new { c.UserId, c.UpdatedAt });
         }
     }
 }
