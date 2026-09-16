@@ -1,0 +1,302 @@
+================================================================================
+  AD-DIIN — ANTIGRAVITY MIGRATION PROMPT
+  Project Architecture Reference Document
+  Generated: 2026-09-16
+================================================================================
+
+PROJECT NAME: Ad-Diin (ADDiin) — Personal Islamic Development & Community Platform
+SOLUTION FILE: AdDiin.sln
+PROJECT FILE: AdDiin/AdDiin.csproj
+
+================================================================================
+  1. FRONTEND ARCHITECTURE
+================================================================================
+
+Rendering Engine:
+  - ASP.NET Core Razor Views (.cshtml) — Server-side rendered MVC views
+  - Tag Helpers & Razor syntax for dynamic content
+
+CSS Frameworks & Libraries:
+  - Tailwind CSS (CDN — https://cdn.tailwindcss.com) — Primary utility-first CSS
+    - Custom theme config (emerald color palette, Plus Jakarta Sans / Inter / Amiri fonts)
+  - Bootstrap 5.3.3 (CDN — cdn.jsdelivr.net) — Component framework (modals, dropdowns, etc.)
+  - Bootstrap Icons 1.11.3 (CDN) — Icon library
+  - Custom CSS:
+    - wwwroot/css/site.css (36 KB)
+    - wwwroot/css/custom.css (26 KB)
+
+JavaScript:
+  - Vanilla JavaScript (ES6+) — No SPA framework (React/Angular/Vue)
+  - jQuery (bundled in wwwroot/lib/) — DOM manipulation & validation
+  - jQuery Validation + jQuery Validation Unobtrusive (wwwroot/lib/) — Client-side form validation
+  - Bootstrap 5.3.3 JS Bundle (CDN) — Bootstrap components JS
+  - Microsoft SignalR Client 8.0.7 (CDN — cdnjs.cloudflare.com) — Real-time WebSocket communication
+  - Custom JS: wwwroot/js/site.js (5.6 KB)
+
+Fonts (Google Fonts CDN):
+  - Plus Jakarta Sans (primary sans-serif)
+  - Inter (secondary sans-serif)
+  - Amiri (Arabic serif font)
+
+Browser Extension (Bundled in wwwroot/extension/):
+  - Chrome/Edge extension for Focus Mode feature
+  - Files: manifest.json, background.js, blocked.html, blocked.js, sync_bridge.js
+
+Layouts:
+  - Views/Shared/_Layout.cshtml — Main public layout (24 KB, responsive navbar, footer)
+  - Views/Shared/_AdminLayout.cshtml — Admin panel layout (5 KB)
+  - Views/Shared/_NotificationToast.cshtml — Toast notification partial
+
+View Folders (17 feature areas):
+  Account, Activities, Admin, DiinAI, Donate, Events, Focus, Home,
+  IslamicCalendar, Messages, Milad, MyDeen, Notifications, PrayerTimes,
+  ProductAnalyzer, Shared, Zakat
+
+================================================================================
+  2. BACKEND ARCHITECTURE
+================================================================================
+
+Framework & Runtime:
+  - ASP.NET Core MVC on .NET 9 (net9.0)
+  - C# language
+  - Microsoft.NET.Sdk.Web project SDK
+
+Architecture Pattern:
+  - MVC (Model-View-Controller) with Service Layer
+  - Dependency Injection (built-in ASP.NET Core DI container)
+  - Repository-like pattern via service interfaces
+
+Authentication & Authorization:
+  - ASP.NET Core Identity (Microsoft.AspNetCore.Identity.EntityFrameworkCore 9.0.2)
+  - Custom ApplicationUser : IdentityUser<int> (integer primary key)
+  - IdentityRole<int> — Role-based authorization (User/Admin roles)
+  - Cookie authentication (30-day sliding expiration)
+  - Email verification service (SMTP via Gmail)
+
+Controllers (16 MVC Controllers):
+  - AccountController — User registration, login, profile, email verification
+  - ActivitiesController — Islamic activities & program management
+  - AdminController — Admin dashboard, user management, content management (28 KB — largest)
+  - DiinAIController — AI chatbot interface & conversation management
+  - DonateController — Donation workflow, payment processing, receipts
+  - EventsController — Islamic events
+  - FocusController — Focus mode / digital wellbeing
+  - HomeController — Homepage, about page, SDG9, privacy
+  - IslamicCalendarController — Islamic calendar & events
+  - MessagesController — User-admin messaging & support chat
+  - MiladController — Milad/Mahfil/Dua request management
+  - MyDeenController — Personal Islamic growth tracking
+  - NotificationsController — User notification system
+  - PrayerTimesController — Prayer time schedules
+  - ProductAnalyzerController — Halal/Haram product analysis
+  - ZakatController — Zakat calculator
+
+Services (14 Service Classes with Interface-based DI):
+  - PrayerTimeService / IPrayerTimeService — Prayer time logic
+  - DonationService / IDonationService — Donation processing
+  - MiladService / IMiladService — Milad request handling
+  - IslamicEventService / IIslamicEventService — Event management
+  - ActivityService / IActivityService — Activities & program registration
+  - MessagingService / IMessagingService — Chat/messaging logic
+  - DiinAIService / IDiinAIService — AI backend communication (HttpClient, 120s timeout)
+  - HalalDetectorService / IHalalDetectorService — Product analyzer (HttpClient, 120s timeout)
+  - EmailVerificationService / IEmailVerificationService — Email/SMTP service
+  - NotificationService / INotificationService — Notification management
+  - MyDeenService / IMyDeenService — Islamic personal growth tracking (41 KB — largest)
+  - PhotoService / IPhotoService — Cloudinary image upload
+  - SslCommerzService / ISslCommerzService — Payment gateway integration
+  - AboutService / IAboutService — Static about page content (Singleton)
+
+Real-Time Communication:
+  - ASP.NET Core SignalR — WebSocket hub
+  - SupportChatHub (/hubs/support-chat) — Real-time messaging between users and admins
+
+External Service Integrations:
+  - Cloudinary (CloudinaryDotNet 1.29.3) — Image/media storage & CDN
+  - SSLCommerz — Payment gateway (sandbox + live modes)
+  - SMTP (Gmail) — Email sending
+  - Diin AI Backend — RAG-based Islamic AI assistant (Python/FastAPI via ngrok)
+  - Halal Detector Backend — Product ingredient analysis (Python/FastAPI via ngrok)
+
+NuGet Packages:
+  - Microsoft.EntityFrameworkCore.SqlServer 9.0.2
+  - Microsoft.EntityFrameworkCore.Tools 9.0.2
+  - Microsoft.EntityFrameworkCore.Design 9.0.2
+  - Microsoft.AspNetCore.Identity.EntityFrameworkCore 9.0.2
+  - CloudinaryDotNet 1.29.3
+
+Route Configuration:
+  - 30+ custom named routes with user-friendly URL patterns
+  - Default conventional route: {controller=Home}/{action=Index}/{id?}
+
+================================================================================
+  3. DATABASE ARCHITECTURE
+================================================================================
+
+Database Engine:
+  - Microsoft SQL Server (LocalDB for development)
+  - Connection: Server=(localdb)\\mssqllocaldb;Database=AdDiinDb
+
+ORM:
+  - Entity Framework Core 9 (Code-First approach)
+  - ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
+
+Migrations (3 migrations):
+  1. 20260823195932_InitialCreate — Core schema setup
+  2. 20260826014912_AddMyDeenAndProgramFeatures — MyDeen tracking + program registration
+  3. 20260908183645_AddDiinAIChatHistory — AI conversation persistence
+
+Database Seeding:
+  - DbInitializer.SeedDatabaseAsync() — Automatic seed on application startup (25 KB seed file)
+
+Entity Models (14 Domain Entities):
+
+  Identity & Users:
+    - ApplicationUser — Extends IdentityUser<int>, navigation to conversations, messages,
+      milad requests, donations
+
+  Worship & Islamic Content:
+    - PrayerTime — Prayer schedules (unique PrayerName, DisplayOrder index)
+    - IslamicEvent — Islamic calendar events
+
+  Community & Activities:
+    - Activity — Programs, events, activities
+    - ProgramRegistration — User registrations for activities (Status index)
+    - MiladRequest — Milad/Mahfil/Dua requests (Status index)
+
+  Communication:
+    - Conversation — User-Admin chat conversations
+    - Message — Individual messages in conversations
+    - ContactMessage — Public contact form submissions
+
+  Donations & Finance:
+    - Donation — Financial donations (unique TranId, PaymentStatus index, Category index)
+
+  Personal Islamic Growth (MyDeen):
+    - DhikrRecord — Dhikr counting/tracking
+    - QuranReadingLog — Quran reading progress
+    - AdhkarLog — Morning/evening adhkar tracking
+    - RuqyahLog — Ruqyah recitation tracking
+    - DailyDeenGoal — Daily Islamic goals
+    - UserDeenSettings — User preferences for MyDeen features
+
+  AI & Chat:
+    - DiinAIConversation — AI chat sessions (composite index: UserId + UpdatedAt)
+    - DiinAIMessage — Individual AI chat messages
+
+  System:
+    - UserNotification — In-app notification system
+    - VerificationCode — Email verification codes (Email index)
+
+  Static Content:
+    - AboutContentModel — About page structured content (not persisted in DB)
+
+ViewModels (5 files):
+  - AccountViewModels — Login, register, profile forms
+  - AdminViewModels — Admin dashboard data
+  - GeneralViewModels — Shared/cross-cutting view models (13.6 KB)
+  - HomeViewModel — Homepage data
+  - MyDeenViewModels — MyDeen feature UI models
+
+Relationship Configuration (Fluent API):
+  - Conversation → User: Restrict delete (prevent cascade cycle)
+  - Conversation → Admin: Restrict delete
+  - Message → Conversation: Cascade delete
+  - Message → Sender: Restrict delete
+  - ProgramRegistration → Activity: Cascade delete
+  - ProgramRegistration → User: SetNull on delete
+  - MiladRequest → User: Restrict delete
+  - Donation → User: SetNull on delete
+  - DiinAIConversation → User: Cascade delete
+  - DiinAIMessage → Conversation: Cascade delete
+
+Indexes:
+  - PrayerTime.PrayerName (Unique)
+  - PrayerTime.DisplayOrder
+  - ProgramRegistration.Status
+  - MiladRequest.Status
+  - Donation.TranId (Unique)
+  - Donation.PaymentStatus
+  - Donation.Category
+  - VerificationCode.Email
+  - DiinAIConversation (UserId, UpdatedAt) — Composite
+
+================================================================================
+  4. AI / ML MICROSERVICES (External Python Backends)
+================================================================================
+
+Diin AI — Islamic Learning RAG Pipeline:
+  - Runtime: Google Colab / Python
+  - Framework: FastAPI + Uvicorn
+  - AI Stack: LangChain, Sentence Transformers, ChromaDB (vector store), Google Gemini
+  - Tunneling: ngrok (for localhost exposure)
+  - Document Loaders: PyPDF (PDF knowledge base)
+  - Embeddings: HuggingFace sentence-transformers
+
+Halal Detector — Product Analyzer Pipeline:
+  - Runtime: Google Colab / Python
+  - Framework: FastAPI + CORS middleware
+  - AI Stack: EasyOCR (image text extraction), ChromaDB, Qwen3-8B (LLM)
+  - Endpoints:
+    - POST /api/analyze-product (image → OCR → classification)
+    - POST /api/analyze-text (text → classification)
+    - GET /health
+
+================================================================================
+  5. ARCHITECTURE SUMMARY DIAGRAM
+================================================================================
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                        CLIENT (Browser)                         │
+  │  Razor Views + Tailwind CSS + Bootstrap 5 + jQuery + SignalR JS │
+  └────────────────────────────┬─────────────────────────────────────┘
+                               │ HTTPS
+  ┌────────────────────────────▼─────────────────────────────────────┐
+  │                    ASP.NET Core MVC (.NET 9)                     │
+  │  ┌─────────────┐  ┌──────────────┐  ┌────────────────────────┐  │
+  │  │ Controllers  │  │  SignalR Hub  │  │   ASP.NET Identity     │  │
+  │  │ (16 MVC)     │  │ (WebSocket)  │  │ (Cookie Auth + Roles)  │  │
+  │  └──────┬───────┘  └──────────────┘  └────────────────────────┘  │
+  │         │                                                        │
+  │  ┌──────▼───────────────────────────────────────────────────┐    │
+  │  │              Service Layer (14 Services via DI)           │    │
+  │  └──────┬──────────────────┬───────────────────┬────────────┘    │
+  │         │                  │                   │                 │
+  │  ┌──────▼──────┐  ┌───────▼────────┐  ┌───────▼──────────┐     │
+  │  │ EF Core 9   │  │ HttpClient     │  │ External APIs    │     │
+  │  │ (Code-First)│  │ (AI Services)  │  │ Cloudinary/SMTP/ │     │
+  │  └──────┬──────┘  └───────┬────────┘  │ SSLCommerz       │     │
+  │         │                 │           └──────────────────┘     │
+  └─────────┼─────────────────┼────────────────────────────────────┘
+            │                 │
+  ┌─────────▼──────┐  ┌──────▼──────────────────────────────────┐
+  │  SQL Server    │  │  Python FastAPI Microservices (Colab)    │
+  │  (LocalDB)     │  │  ┌─────────────┐  ┌──────────────────┐  │
+  │  AdDiinDb      │  │  │ Diin AI RAG │  │ Halal Detector   │  │
+  │  19 DbSets     │  │  │ (Gemini+    │  │ (Qwen3-8B +      │  │
+  │                │  │  │  ChromaDB)  │  │  EasyOCR +       │  │
+  │                │  │  │             │  │  ChromaDB)        │  │
+  │                │  │  └─────────────┘  └──────────────────┘  │
+  └────────────────┘  └─────────────────────────────────────────┘
+
+================================================================================
+  6. KEY CONFIGURATION FILES
+================================================================================
+
+  - AdDiin.csproj          → Target framework, NuGet packages
+  - appsettings.json       → Connection string, email, Cloudinary, SSLCommerz, AI URLs
+  - Program.cs             → DI registration, middleware pipeline, routing (148 lines)
+  - Data/ApplicationDbContext.cs → DbSets, Fluent API relationships (136 lines)
+  - Data/DbInitializer.cs  → Database seeding logic (25 KB)
+
+================================================================================
+  7. TEAM
+================================================================================
+
+  Danial Hossain Dani     — Team Lead
+  Toufikul Alam Yame      — Backend Developer
+  Md Salahuddin Yousuf    — Frontend Developer
+
+================================================================================
+  END OF MIGRATION PROMPT
+================================================================================
