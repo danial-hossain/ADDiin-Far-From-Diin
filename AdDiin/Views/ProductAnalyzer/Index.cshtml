@@ -66,14 +66,880 @@
         .step-indicator {
             transition: all 0.3s ease;
         }
+
+        /* Keep the analyzer's data surfaces readable against the shared dark theme. */
+        .product-analyzer-page .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            border-color: rgba(226, 232, 240, 0.8);
+            color: #10231f;
+        }
+
+        .product-analyzer-page .surface-cream {
+            background-color: #faf7f0 !important;
+            border-color: #dce9e3 !important;
+            color: #10231f;
+        }
+
+        .product-analyzer-page .surface-cream .text-slate-900,
+        .product-analyzer-page .surface-cream .text-slate-800,
+        .product-analyzer-page .surface-cream .text-slate-700,
+        .product-analyzer-page .surface-cream .text-slate-600,
+        .product-analyzer-page .surface-cream .text-slate-500,
+        .product-analyzer-page .surface-cream .text-slate-400,
+        .product-analyzer-page .surface-cream label,
+        .product-analyzer-page .surface-cream input,
+        .product-analyzer-page .surface-cream select,
+        .product-analyzer-page .surface-cream textarea {
+            color: inherit !important;
+        }
+
+        .product-analyzer-page .surface-cream .text-slate-900 { color: #10231f !important; }
+        .product-analyzer-page .surface-cream .text-slate-800 { color: #19352c !important; }
+        .product-analyzer-page .surface-cream .text-slate-700 { color: #29463c !important; }
+        .product-analyzer-page .surface-cream .text-slate-600 { color: #496259 !important; }
+        .product-analyzer-page .surface-cream .text-slate-500 { color: #637873 !important; }
+        .product-analyzer-page .surface-cream .text-slate-400 { color: #82938c !important; }
+
+        .product-analyzer-page .pipeline-step {
+            background: rgba(248, 250, 252, 0.9);
+            border-color: #e2e8f0;
+        }
+
+        .product-analyzer-page .pipeline-step.is-active {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+
+        .product-analyzer-page .pipeline-step .text-slate-800 {
+            color: #19352c !important;
+        }
+
+        .product-analyzer-page .pipeline-step .text-slate-500 {
+            color: #637873 !important;
+        }
+
+        @@media (max-width: 767.98px) {
+            .product-analyzer-page .pipeline-step {
+                padding: .75rem;
+            }
+        }
+
+        /* Product Analyzer visual system */
+        .product-analyzer-page {
+            --analyzer-ink: #17352b;
+            --analyzer-muted: #61776e;
+            --analyzer-green: #079b70;
+            --analyzer-green-dark: #075844;
+            --analyzer-border: #d9e8df;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 8% 8%, rgba(31, 180, 133, .16), transparent 26rem),
+                radial-gradient(circle at 92% 20%, rgba(200, 148, 50, .10), transparent 22rem),
+                linear-gradient(145deg, #071f19 0%, #0c3025 48%, #102d23 100%);
+            color: var(--analyzer-ink);
+        }
+
+        .product-analyzer-page::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: .22;
+            background-image: radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px);
+            background-size: 26px 26px;
+            mask-image: linear-gradient(to bottom, black, transparent 68%);
+        }
+
+        .product-analyzer-page > .max-w-7xl {
+            position: relative;
+            z-index: 1;
+            max-width: 88rem;
+        }
+
+        .product-analyzer-page .hero-panel {
+            min-height: 18rem;
+            padding: clamp(1.5rem, 4vw, 3.25rem);
+            background:
+                linear-gradient(125deg, rgba(4, 32, 25, .97), rgba(7, 91, 67, .92) 58%, rgba(15, 118, 86, .88)),
+                radial-gradient(circle at 78% 20%, rgba(255,255,255,.14), transparent 18rem);
+            border: 1px solid rgba(115, 229, 185, .30);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .28), inset 0 1px rgba(255,255,255,.10);
+            animation: analyzer-rise .7s cubic-bezier(.2,.75,.2,1) both;
+        }
+
+        .product-analyzer-page .hero-panel h1,
+        .product-analyzer-page .hero-panel p,
+        .product-analyzer-page .hero-panel .text-white {
+            color: #f6fbf8 !important;
+        }
+
+        .product-analyzer-page .hero-panel .text-slate-300 {
+            color: #c4ddd2 !important;
+        }
+
+        .product-analyzer-page .hero-panel h1 {
+            max-width: 48rem;
+            font-size: clamp(2rem, 4.2vw, 4rem);
+            line-height: 1.08;
+            letter-spacing: -.045em;
+        }
+
+        .product-analyzer-page .hero-panel .engine-widget {
+            border: 1px solid rgba(187, 244, 220, .20);
+            background: rgba(0, 34, 25, .34);
+            box-shadow: 0 14px 30px rgba(0,0,0,.16);
+        }
+
+        .product-analyzer-page .demo-toolbar,
+        .product-analyzer-page .mode-toolbar {
+            background: rgba(250, 247, 240, .97) !important;
+            border: 1px solid rgba(212, 231, 220, .96) !important;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .14);
+            animation: analyzer-rise .7s .08s cubic-bezier(.2,.75,.2,1) both;
+        }
+
+        .product-analyzer-page .demo-toolbar {
+            padding: .85rem 1.15rem;
+        }
+
+        .product-analyzer-page .demo-toolbar button {
+            min-height: 2.35rem;
+            box-shadow: 0 3px 8px rgba(18, 54, 42, .08);
+        }
+
+        .product-analyzer-page .mode-toolbar {
+            padding: .8rem 1rem;
+        }
+
+        .product-analyzer-page .mode-toolbar > div:last-child {
+            background: #e8f1eb !important;
+            border-color: #d1e2d6 !important;
+        }
+
+        .product-analyzer-page .mode-toolbar button.surface-cream {
+            background: #ffffff !important;
+            color: var(--analyzer-ink) !important;
+            border-color: #d8e8df !important;
+            box-shadow: 0 5px 14px rgba(16, 52, 41, .12);
+        }
+
+        .product-analyzer-page .workspace-grid > * {
+            animation: analyzer-rise .7s .16s cubic-bezier(.2,.75,.2,1) both;
+        }
+
+        .product-analyzer-page .workspace-grid > *:nth-child(2) {
+            animation-delay: .24s;
+        }
+
+        .product-analyzer-page .upload-card,
+        .product-analyzer-page .pipeline-card,
+        .product-analyzer-page .ocr-card,
+        .product-analyzer-page .info-card {
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .14), 0 2px 0 rgba(255,255,255,.7) inset;
+        }
+
+        .product-analyzer-page .upload-card {
+            background: rgba(250, 247, 240, .98) !important;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone {
+            min-height: 17rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-color: #b9d8c9;
+            background:
+                linear-gradient(135deg, rgba(236, 253, 245, .78), rgba(255,255,255,.84)),
+                repeating-linear-gradient(135deg, transparent 0 12px, rgba(7, 155, 112, .035) 12px 24px);
+        }
+
+        .product-analyzer-page .upload-card .drop-zone:hover {
+            border-color: var(--analyzer-green);
+            box-shadow: 0 0 0 5px rgba(7, 155, 112, .09), 0 14px 28px rgba(7, 155, 112, .10);
+            transform: translateY(-2px);
+        }
+
+        .product-analyzer-page .pipeline-card {
+            background: rgba(250, 247, 240, .98) !important;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step {
+            min-height: 4.4rem;
+            align-items: center;
+            background: #f8fcfa;
+            border-color: #d8e8df;
+            box-shadow: 0 4px 12px rgba(26, 75, 57, .05);
+            transition: transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 18px rgba(26, 75, 57, .10);
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step.is-active {
+            background: linear-gradient(100deg, #e8fbf2, #f7fffb);
+            border-color: #81d7b0;
+            box-shadow: 0 8px 22px rgba(7, 155, 112, .13);
+        }
+
+        .product-analyzer-page .pipeline-card .step-indicator {
+            background: #ffffff;
+            color: var(--analyzer-green-dark);
+            border-color: #c5dfd1;
+        }
+
+        .product-analyzer-page .pipeline-card .is-active .step-indicator {
+            animation: analyzer-pulse 1.8s ease-in-out infinite;
+        }
+
+        .product-analyzer-page .ocr-card,
+        .product-analyzer-page .info-card {
+            background: rgba(250, 247, 240, .98) !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer {
+            animation: analyzer-rise .7s .22s cubic-bezier(.2,.75,.2,1) both;
+        }
+
+        .product-analyzer-page #resultsMainContainer > .flex h2,
+        .product-analyzer-page > .max-w-7xl > .space-y-6 > .flex h3 {
+            color: #f1faf5 !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer .surface-cream,
+        .product-analyzer-page #historyCardsContainer .surface-cream {
+            background: rgba(250, 247, 240, .98) !important;
+        }
+
+        .product-analyzer-page #historyCardsContainer > * {
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .product-analyzer-page #historyCardsContainer > *:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 28px rgba(0,0,0,.16);
+        }
+
+        @@keyframes analyzer-rise {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @@keyframes analyzer-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(7, 155, 112, .20); }
+            50% { box-shadow: 0 0 0 7px rgba(7, 155, 112, 0); }
+        }
+
+        @@media (max-width: 991.98px) {
+            .product-analyzer-page .hero-panel {
+                min-height: auto;
+            }
+        }
+
+        @@media (max-width: 767.98px) {
+            .product-analyzer-page {
+                padding-top: 1.1rem !important;
+            }
+
+            .product-analyzer-page .demo-toolbar,
+            .product-analyzer-page .mode-toolbar {
+                align-items: stretch;
+            }
+
+            .product-analyzer-page .mode-toolbar > div:last-child {
+                width: 100%;
+            }
+
+            .product-analyzer-page .hero-panel h1 {
+                font-size: 2.15rem;
+            }
+
+            .product-analyzer-page .hero-panel .engine-widget {
+                min-width: 0;
+            }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            .product-analyzer-page *,
+            .product-analyzer-page *::before,
+            .product-analyzer-page *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+            }
+        }
+
+        /* Premium workspace refinements */
+        .product-analyzer-page {
+            background: #08291f;
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        }
+
+        .product-analyzer-page > .max-w-7xl {
+            max-width: 76rem;
+        }
+
+        .product-analyzer-page .hero-panel {
+            min-height: 0;
+            padding: clamp(1.5rem, 3vw, 2.75rem);
+            background: #0d382b;
+            border: 1px solid rgba(128, 220, 183, .26);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, .2);
+        }
+
+        .product-analyzer-page .hero-panel h1 {
+            max-width: 42rem;
+            font-size: clamp(2.25rem, 4.5vw, 4.15rem);
+            line-height: 1.02;
+        }
+
+        .product-analyzer-page .hero-panel h1 span {
+            background: none;
+            color: #54d8af;
+        }
+
+        .product-analyzer-page .hero-panel p {
+            max-width: 38rem;
+            color: #b9d9cd !important;
+            font-size: .95rem;
+        }
+
+        .product-analyzer-page .hero-panel > div:first-child::after {
+            content: "◌  OCR  ·  KB  ·  AI";
+            position: absolute;
+            right: 2.5rem;
+            bottom: 1.5rem;
+            color: rgba(164, 235, 207, .32);
+            font-size: .62rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+        }
+
+        .product-analyzer-page .engine-widget {
+            min-width: 15rem;
+            padding: 1rem 1.1rem;
+            border-radius: 1rem;
+            background: rgba(3, 27, 21, .5);
+            border-color: rgba(164, 235, 207, .26);
+        }
+
+        .product-analyzer-page .engine-widget .text-xl {
+            font-size: .9rem;
+        }
+
+        .product-analyzer-page .demo-toolbar,
+        .product-analyzer-page .mode-toolbar {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+        }
+
+        .product-analyzer-page .demo-toolbar {
+            padding: .65rem .9rem;
+        }
+
+        .product-analyzer-page .demo-toolbar button {
+            min-height: 2rem;
+            padding: .4rem .7rem;
+            border: 0;
+            box-shadow: none;
+            font-size: .68rem;
+        }
+
+        .product-analyzer-page .mode-toolbar {
+            padding: .55rem .75rem;
+            border-radius: 1rem;
+        }
+
+        .product-analyzer-page .mode-toolbar > div:last-child {
+            padding: .25rem;
+            border-radius: .8rem;
+        }
+
+        .product-analyzer-page .mode-toolbar button {
+            min-height: 2.25rem;
+            padding: .55rem 1rem;
+        }
+
+        .product-analyzer-page .workspace-grid {
+            gap: 1.25rem;
+            align-items: start;
+        }
+
+        .product-analyzer-page .workspace-grid > .lg\:col-span-7 {
+            grid-column: span 7 / span 7;
+        }
+
+        .product-analyzer-page .workspace-grid > .lg\:col-span-5 {
+            grid-column: span 5 / span 5;
+        }
+
+        .product-analyzer-page .upload-card,
+        .product-analyzer-page .pipeline-card,
+        .product-analyzer-page .ocr-card,
+        .product-analyzer-page .info-card {
+            border-radius: 1.15rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .13);
+        }
+
+        .product-analyzer-page .upload-card,
+        .product-analyzer-page .pipeline-card {
+            padding: 1.25rem;
+        }
+
+        .product-analyzer-page .upload-card {
+            gap: 1rem;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone {
+            min-height: 14rem;
+            padding: 2rem;
+            border-radius: 1rem;
+            background: #f4fbf7;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone > div:first-of-type {
+            width: 3.5rem;
+            height: 3.5rem;
+            margin-bottom: .75rem;
+            border-radius: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .product-analyzer-page .pipeline-card {
+            padding-bottom: 1.4rem;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step {
+            position: relative;
+            min-height: 3.6rem;
+            padding: .7rem .75rem;
+            border: 0;
+            border-left: 2px solid #d8e8df;
+            border-radius: 0 .7rem .7rem 0;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step.is-active {
+            border-left-color: #079b70;
+            background: #e8f8f0;
+            box-shadow: none;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step.is-complete {
+            border-left-color: #7acbad;
+            background: rgba(232, 248, 240, .55);
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step:hover {
+            transform: translateX(2px);
+            box-shadow: none;
+        }
+
+        .product-analyzer-page .pipeline-card .step-indicator {
+            width: 2rem;
+            height: 2rem;
+            border-radius: .7rem;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step:not(.is-active) .step-indicator {
+            background: #f1f6f3;
+        }
+
+        .product-analyzer-page .info-card {
+            padding: 1rem 1.15rem;
+            background: #10352a !important;
+            border-color: rgba(128, 220, 183, .22);
+        }
+
+        .product-analyzer-page .ocr-card {
+            padding: 1rem 1.15rem;
+        }
+
+        .product-analyzer-page #resultsMainContainer {
+            padding-top: 0;
+        }
+
+        .product-analyzer-page #masterStatusCard {
+            padding: 1.5rem;
+            border-radius: 1.15rem;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, .16);
+        }
+
+        .product-analyzer-page #masterStatusCard #statusHeading {
+            font-size: clamp(1.55rem, 3vw, 2.4rem);
+            letter-spacing: -.035em;
+        }
+
+        .product-analyzer-page #masterStatusCard #confidenceScoreDisplay {
+            font-size: 2.25rem;
+        }
+
+        .product-analyzer-page #resultsMainContainer .surface-cream {
+            border-radius: 1.15rem;
+            padding: 1.25rem;
+        }
+
+        .product-analyzer-page .result-details {
+            border-top: 1px solid rgba(255, 255, 255, .12);
+            padding-top: .75rem;
+        }
+
+        .product-analyzer-page .result-details summary {
+            cursor: pointer;
+            color: #a7ead0;
+            font-size: .72rem;
+            font-weight: 800;
+            list-style: none;
+        }
+
+        .product-analyzer-page .result-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .product-analyzer-page .result-details summary::before {
+            content: "+";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.1rem;
+            height: 1.1rem;
+            margin-right: .45rem;
+            border: 1px solid rgba(167, 234, 208, .4);
+            border-radius: 50%;
+        }
+
+        .product-analyzer-page .result-details[open] summary::before {
+            content: "−";
+        }
+
+        /* Neon dark theme: keep analyzer surfaces consistent with the product shell. */
+        .product-analyzer-page .glass-card,
+        .product-analyzer-page .surface-cream,
+        .product-analyzer-page .demo-toolbar,
+        .product-analyzer-page .mode-toolbar,
+        .product-analyzer-page .upload-card,
+        .product-analyzer-page .pipeline-card,
+        .product-analyzer-page .ocr-card,
+        .product-analyzer-page .info-card,
+        .product-analyzer-page #resultsMainContainer .surface-cream,
+        .product-analyzer-page #historyCardsContainer .surface-cream {
+            background: rgba(8, 38, 30, .92) !important;
+            border-color: rgba(63, 206, 157, .22) !important;
+            color: #e1f6ec !important;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .22), inset 0 1px rgba(141, 255, 211, .05);
+        }
+
+        .product-analyzer-page .surface-cream .text-slate-900,
+        .product-analyzer-page .surface-cream .text-slate-800,
+        .product-analyzer-page .surface-cream .text-slate-700,
+        .product-analyzer-page .surface-cream .text-slate-600,
+        .product-analyzer-page .surface-cream .text-slate-500,
+        .product-analyzer-page .surface-cream .text-slate-400,
+        .product-analyzer-page .surface-cream label,
+        .product-analyzer-page .surface-cream h2,
+        .product-analyzer-page .surface-cream h3,
+        .product-analyzer-page .surface-cream h4,
+        .product-analyzer-page .surface-cream p {
+            color: #d5eee3 !important;
+        }
+
+        .product-analyzer-page .surface-cream .text-slate-500,
+        .product-analyzer-page .surface-cream .text-slate-400 {
+            color: #8eb8a9 !important;
+        }
+
+        .product-analyzer-page .demo-toolbar,
+        .product-analyzer-page .mode-toolbar {
+            background: rgba(7, 46, 35, .96) !important;
+            border-color: rgba(60, 224, 164, .28) !important;
+        }
+
+        .product-analyzer-page .mode-toolbar > div:last-child {
+            background: rgba(2, 25, 19, .72) !important;
+            border-color: rgba(62, 203, 157, .24) !important;
+        }
+
+        .product-analyzer-page .mode-toolbar button.surface-cream,
+        .product-analyzer-page .mode-toolbar button[class*="surface-cream"] {
+            background: #18a879 !important;
+            border-color: #52e0b0 !important;
+            color: #031b14 !important;
+            box-shadow: 0 0 18px rgba(24, 168, 121, .28);
+        }
+
+        .product-analyzer-page .mode-toolbar button:not(.surface-cream) {
+            color: #a9d3c2 !important;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone {
+            background:
+                linear-gradient(135deg, rgba(11, 65, 49, .92), rgba(4, 34, 26, .96)),
+                repeating-linear-gradient(135deg, transparent 0 12px, rgba(65, 222, 167, .05) 12px 24px) !important;
+            border-color: rgba(66, 215, 166, .42) !important;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone h4 {
+            color: #dffbef !important;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone p,
+        .product-analyzer-page .upload-card .text-slate-500 {
+            color: #8fb9aa !important;
+        }
+
+        .product-analyzer-page .upload-card .drop-zone > div:first-of-type {
+            background: rgba(39, 199, 145, .16) !important;
+            color: #62e9bd !important;
+            box-shadow: 0 0 24px rgba(39, 199, 145, .16);
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step,
+        .product-analyzer-page .pipeline-card .pipeline-step.is-complete {
+            background: rgba(6, 54, 41, .58) !important;
+            border-left-color: rgba(62, 204, 157, .28) !important;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step.is-active {
+            background: rgba(21, 135, 96, .28) !important;
+            border-left-color: #50e0ae !important;
+            box-shadow: 0 0 18px rgba(38, 205, 151, .12);
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step .text-slate-800 {
+            color: #d9f4e8 !important;
+        }
+
+        .product-analyzer-page .pipeline-card .pipeline-step .text-slate-500 {
+            color: #86b4a4 !important;
+        }
+
+        .product-analyzer-page .pipeline-card .step-indicator {
+            background: #0a3e2e !important;
+            border-color: rgba(75, 215, 168, .34) !important;
+            color: #a8e6d0 !important;
+        }
+
+        .product-analyzer-page textarea,
+        .product-analyzer-page #ocrRawTextDisplay {
+            background: #06271e !important;
+            border-color: rgba(69, 210, 163, .26) !important;
+            color: #d9f5e9 !important;
+        }
+
+        .product-analyzer-page textarea::placeholder {
+            color: #739e90 !important;
+        }
+
+        .product-analyzer-page #ocrRawTextDisplay {
+            color: #9ed6bd !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer .surface-cream,
+        .product-analyzer-page #historyCardsContainer .surface-cream {
+            background: rgba(8, 38, 30, .94) !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer .bg-white\/80 {
+            background: rgba(3, 27, 21, .72) !important;
+            border-color: rgba(68, 211, 161, .22) !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer .bg-white\/80 .text-slate-900,
+        .product-analyzer-page #resultsMainContainer .bg-white\/80 .text-slate-500 {
+            color: #d8f2e6 !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer .border-slate-100,
+        .product-analyzer-page #resultsMainContainer .border-slate-200,
+        .product-analyzer-page #resultsMainContainer .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+            border-color: rgba(69, 199, 156, .18) !important;
+        }
+
+        .product-analyzer-page #resultsMainContainer .hover\:bg-slate-50\/80:hover,
+        .product-analyzer-page #historyCardsContainer > *:hover {
+            background: rgba(15, 73, 54, .72) !important;
+        }
+
+        .product-analyzer-page .analysis-progress-state {
+            display: none;
+            border: 1px solid rgba(78, 225, 174, .28);
+            border-radius: 1.15rem;
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            background: rgba(7, 48, 36, .94);
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .2);
+            text-align: center;
+        }
+
+        .product-analyzer-page .analysis-progress-state.is-visible {
+            display: block;
+            animation: analyzer-reveal .45s ease both;
+        }
+
+        .product-analyzer-page .analysis-progress-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.25rem;
+            color: #65edbe;
+            background: rgba(45, 208, 154, .14);
+            box-shadow: 0 0 0 8px rgba(45, 208, 154, .05), 0 0 30px rgba(45, 208, 154, .18);
+            animation: analyzer-pulse 1.8s ease-in-out infinite;
+        }
+
+        .product-analyzer-page .analysis-progress-bar {
+            width: min(100%, 24rem);
+            height: .35rem;
+            margin: 1.25rem auto .8rem;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(127, 211, 183, .14);
+        }
+
+        .product-analyzer-page .analysis-progress-bar::after {
+            content: "";
+            display: block;
+            width: 38%;
+            height: 100%;
+            border-radius: inherit;
+            background: #49ddb0;
+            box-shadow: 0 0 16px rgba(73, 221, 176, .65);
+            animation: analyzer-progress 1.5s ease-in-out infinite;
+        }
+
+        .product-analyzer-page .analysis-progress-state h2 {
+            color: #e7fff4;
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 800;
+        }
+
+        .product-analyzer-page .analysis-progress-state p {
+            color: #91c5b2;
+            font-size: .8rem;
+        }
+
+        .product-analyzer-page .analysis-close-button {
+            width: 2.2rem;
+            height: 2.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            border: 1px solid rgba(95, 218, 174, .28);
+            border-radius: .7rem;
+            color: #9ed6bd;
+            background: rgba(4, 39, 29, .72);
+            transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+
+        .product-analyzer-page .analysis-close-button:hover {
+            color: #e7fff4;
+            background: rgba(25, 168, 121, .65);
+            border-color: #5de4b5;
+            transform: translateY(-1px);
+        }
+
+        .product-analyzer-page .pipeline-step.is-processing .step-indicator i {
+            animation: analyzer-spin .9s linear infinite;
+        }
+
+        .product-analyzer-page .pipeline-step.is-processing::after {
+            content: "Processing...";
+            margin-left: auto;
+            color: #65edbe;
+            font-size: .62rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .product-analyzer-page .pipeline-step.is-pending {
+            opacity: .58;
+        }
+
+        .product-analyzer-page .pipeline-step.is-pending::after {
+            content: "Waiting...";
+            margin-left: auto;
+            color: #78a898;
+            font-size: .62rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .product-analyzer-page .pipeline-step.is-failed {
+            border-left-color: #fb7185 !important;
+            background: rgba(127, 29, 54, .25) !important;
+        }
+
+        .product-analyzer-page .pipeline-step.is-processing {
+            border-left-color: #50e0ae !important;
+            background: rgba(21, 135, 96, .28) !important;
+            box-shadow: 0 0 18px rgba(38, 205, 151, .12);
+        }
+
+        .product-analyzer-page .pipeline-step.is-failed::after {
+            content: "Failed";
+            margin-left: auto;
+            color: #fda4af;
+            font-size: .62rem;
+            font-weight: 800;
+        }
+
+        @@keyframes analyzer-progress {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(360%); }
+        }
+
+        @@keyframes analyzer-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @@keyframes analyzer-reveal {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @@media (max-width: 991.98px) {
+            .product-analyzer-page .workspace-grid > .lg\:col-span-7,
+            .product-analyzer-page .workspace-grid > .lg\:col-span-5 {
+                grid-column: span 12 / span 12;
+            }
+        }
+
+        @@media (max-width: 767.98px) {
+            .product-analyzer-page .hero-panel > div:first-child::after {
+                display: none;
+            }
+
+            .product-analyzer-page .hero-panel h1 {
+                font-size: 2.3rem;
+            }
+
+            .product-analyzer-page .demo-toolbar,
+            .product-analyzer-page .mode-toolbar {
+                align-items: flex-start;
+            }
+
+            .product-analyzer-page .mode-toolbar > div:last-child {
+                width: 100%;
+            }
+
+            .product-analyzer-page .mode-toolbar button {
+                padding-inline: .55rem;
+                font-size: .68rem;
+            }
+        }
     </style>
 }
 
-<div class="ai-analyzer-bg min-h-screen py-8">
+<div class="product-analyzer-page ai-analyzer-bg min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
         <!-- 1. HERO / HEADER SECTION -->
-        <div class="relative overflow-hidden rounded-3xl glass-dark-card text-white p-8 sm:p-12 shadow-2xl">
+        <div class="hero-panel relative overflow-hidden rounded-3xl glass-dark-card text-white p-8 sm:p-12 shadow-2xl">
             <!-- Geometric Pattern Texture -->
             <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
 
@@ -94,7 +960,7 @@
                 </div>
 
                 <!-- Live AI Stats Widget -->
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 w-full sm:w-auto min-w-[260px] space-y-3 shadow-xl">
+                <div class="engine-widget bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 w-full sm:w-auto min-w-[260px] space-y-3 shadow-xl">
                     <div class="flex items-center justify-between">
                         <span class="text-xs uppercase font-bold text-emerald-300 tracking-wider">Engine Status</span>
                         <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-bold">
@@ -117,7 +983,7 @@
         </div>
 
         <!-- Sample Presets For Instant Demo -->
-        <div class="flex flex-wrap items-center justify-between gap-3 surface-cream p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="demo-toolbar flex flex-wrap items-center justify-between gap-3 surface-cream p-4 rounded-2xl border border-slate-200 shadow-xs">
             <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
                 <i class="bi bi-stars text-amber-500 text-base"></i>
                 <span>Try Demo Ingredients Label:</span>
@@ -136,7 +1002,7 @@
         </div>
 
         <!-- 2. INPUT MODE SWITCHER & CARDS -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 surface-cream p-3 sm:p-4 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="mode-toolbar flex flex-col sm:flex-row items-center justify-between gap-4 surface-cream p-3 sm:p-4 rounded-3xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-2.5 text-xs font-extrabold text-slate-800 uppercase tracking-wider">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                 <span>Select Analysis Mode:</span>
@@ -155,13 +1021,13 @@
         </div>
 
         <!-- 2. IMAGE UPLOAD / TEXT INPUT & 3. PREVIEW SECTION -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="workspace-grid grid grid-cols-1 lg:grid-cols-12 gap-8">
             
             <!-- Left 7 cols: Interactive Upload Zone or Manual Text Area -->
             <div class="lg:col-span-7 space-y-6">
                 
                 <!-- Mode A: Main Drag & Drop Glass Card -->
-                <div id="imageModeCard" class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+                <div id="imageModeCard" class="upload-card glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shadow-xs">
@@ -225,7 +1091,7 @@
                 </div>
 
                 <!-- Mode B: Manual Text Input Glass Card -->
-                <div id="textModeCard" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+                <div id="textModeCard" class="hidden upload-card glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xl shadow-xs">
@@ -265,7 +1131,7 @@
                 </div>
 
                 <!-- 7. OCR / TEXT INPUT VIEW SECTION (Collapsible) -->
-                <div class="surface-cream rounded-3xl p-6 shadow-sm border border-slate-200">
+                <div class="ocr-card surface-cream rounded-3xl p-6 shadow-sm border border-slate-200">
                     <button type="button" onclick="toggleOcrAccordion()" class="w-full flex items-center justify-between text-left focus:outline-none group">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-base">
@@ -295,7 +1161,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             <div class="lg:col-span-5 space-y-6">
                 
                 <!-- Pipeline / Progress Card -->
-                <div class="surface-cream rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200/80 space-y-6">
+                <div class="pipeline-card surface-cream rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-200/80 space-y-6">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -309,7 +1175,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                     <!-- 5 Animated Processing Steps -->
                     <div class="space-y-4" id="pipelineStepsList">
                         <!-- Step 1 -->
-                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step1">
+                        <div class="pipeline-step flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step1">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-eye"></i>
                             </div>
@@ -320,7 +1186,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                         </div>
 
                         <!-- Step 2 -->
-                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step2">
+                        <div class="pipeline-step flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step2">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-fonts"></i>
                             </div>
@@ -331,7 +1197,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                         </div>
 
                         <!-- Step 3 -->
-                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step3">
+                        <div class="pipeline-step flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step3">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-database-check"></i>
                             </div>
@@ -342,7 +1208,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                         </div>
 
                         <!-- Step 4 -->
-                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step4">
+                        <div class="pipeline-step flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step4">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-cpu"></i>
                             </div>
@@ -353,7 +1219,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                         </div>
 
                         <!-- Step 5 -->
-                        <div class="flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step5">
+                        <div class="pipeline-step flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all" id="step5">
                             <div class="w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator">
                                 <i class="bi bi-chat-left-quote-fill"></i>
                             </div>
@@ -366,7 +1232,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 </div>
 
                 <!-- Academic Exhibition Info Badge -->
-                <div class="rounded-3xl p-5 bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-indigo-800/40 shadow-sm space-y-2.5">
+                <div class="info-card rounded-3xl p-5 bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-indigo-800/40 shadow-sm space-y-2.5">
                     <div class="flex items-center gap-2 text-amber-300 text-xs font-bold">
                         <i class="bi bi-mortarboard-fill"></i>
                         <span>AI Halal Knowledge Base & Decision Pipeline</span>
@@ -379,12 +1245,31 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
         </div>
 
         <!-- 5. ANALYSIS RESULT SECTION (Visible after processing) -->
-        <div id="resultsMainContainer" class="space-y-8 pt-4">
+        <div id="resultsMainContainer" class="hidden space-y-8 pt-4">
+            <div id="analysisProgressState" class="analysis-progress-state" aria-live="polite">
+                <div class="analysis-progress-icon">
+                    <i class="bi bi-cpu-fill text-2xl"></i>
+                </div>
+                <h2 id="analysisProgressTitle">Analyzing Product...</h2>
+                <p id="analysisProgressMessage">AI is reading the ingredient label and checking halal compliance.</p>
+                <div class="analysis-progress-bar" aria-hidden="true"></div>
+                <p id="analysisProgressHint" class="text-[11px]">Please keep this page open while the current analysis completes.</p>
+                <button type="button" id="analysisRetryButton" class="hidden mt-4 px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold" onclick="startAIAnalysis()">
+                    <i class="bi bi-arrow-repeat"></i> Try Again
+                </button>
+            </div>
+
+            <div id="resultsReportContent" class="space-y-8">
             
             <!-- Result Title Divider -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
                 <div class="w-2.5 h-8 bg-emerald-600 rounded-full"></div>
                 <h2 class="text-2xl font-black text-slate-900 tracking-tight">Analysis & Classification Report</h2>
+                </div>
+                <button type="button" id="closeAnalysisReportButton" onclick="closeAnalysisReport()" class="analysis-close-button" aria-label="Close analysis report" title="Close report">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
 
             <!-- Master Classification Card -->
@@ -404,6 +1289,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                             <p class="text-sm font-medium opacity-90" id="statusSubtext">
                                 Some ingredients require further verification regarding animal or synthetic origin.
                             </p>
+                        </div>
                         </div>
                     </div>
 
@@ -470,9 +1356,12 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
                         <h4 class="text-lg font-black text-white">Decision Rationale</h4>
 
-                        <p class="text-xs text-slate-300 leading-relaxed" id="aiExplanationText">
-                            Analysis generated by the deterministic decision engine and explained by Qwen3-8B.
-                        </p>
+                        <details class="result-details" open>
+                            <summary>Why this result?</summary>
+                            <p class="mt-3 text-xs text-slate-300 leading-relaxed" id="aiExplanationText">
+                                Analysis generated by the deterministic decision engine and explained by Qwen3-8B.
+                            </p>
+                        </details>
 
                         <div class="pt-3 border-t border-white/10 space-y-2">
                             <div class="flex items-center justify-between text-xs">
@@ -908,6 +1797,111 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             }
         }
 
+        let pipelineTimers = [];
+        let analysisRunId = 0;
+
+        function setAnalysisVisibility(isAnalyzing) {
+            const results = getEl('resultsMainContainer');
+            const progress = getEl('analysisProgressState');
+            const report = getEl('resultsReportContent');
+            if (results) results.classList.remove('hidden');
+            if (progress) progress.classList.toggle('is-visible', isAnalyzing);
+            if (report) report.classList.toggle('hidden', isAnalyzing);
+        }
+
+        function closeAnalysisReport() {
+            analysisRunId++;
+            pipelineTimers.forEach(timer => clearTimeout(timer));
+            pipelineTimers = [];
+            const results = getEl('resultsMainContainer');
+            const progress = getEl('analysisProgressState');
+            const report = getEl('resultsReportContent');
+            const scannerLaser = getEl('scannerLaser');
+            if (results) results.classList.add('hidden');
+            if (progress) progress.classList.remove('is-visible');
+            if (report) report.classList.add('hidden');
+            if (scannerLaser) scannerLaser.classList.add('hidden');
+            resetPipelineState();
+            const badge = getEl('pipelineStatusBadge');
+            if (badge) {
+                badge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-300';
+                badge.textContent = 'Ready';
+            }
+        }
+
+        function resetPipelineState() {
+            pipelineTimers.forEach(timer => clearTimeout(timer));
+            pipelineTimers = [];
+
+            const icons = ['bi-eye', 'bi-fonts', 'bi-database-check', 'bi-cpu', 'bi-chat-left-quote-fill'];
+            for (let i = 1; i <= 5; i++) {
+                const step = getEl(`step${i}`);
+                if (!step) continue;
+                step.className = 'pipeline-step is-pending flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all';
+                const indicator = step.querySelector('.step-indicator');
+                if (indicator) {
+                    indicator.className = 'w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
+                    indicator.innerHTML = `<i class="bi ${icons[i - 1]}"></i>`;
+                }
+            }
+        }
+
+        function setPipelineStep(index, state) {
+            const step = getEl(`step${index}`);
+            if (!step) return;
+
+            const icons = ['bi-eye', 'bi-fonts', 'bi-database-check', 'bi-cpu', 'bi-chat-left-quote-fill'];
+            const indicator = step.querySelector('.step-indicator');
+            step.className = `pipeline-step is-${state} flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all`;
+
+            if (indicator) {
+                if (state === 'processing') {
+                    indicator.className = 'w-8 h-8 rounded-xl border border-emerald-400 bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
+                    indicator.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+                } else if (state === 'complete') {
+                    indicator.className = 'w-8 h-8 rounded-xl border border-emerald-500 bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
+                    indicator.innerHTML = '<i class="bi bi-check2"></i>';
+                } else if (state === 'failed') {
+                    indicator.className = 'w-8 h-8 rounded-xl border border-rose-400 bg-rose-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
+                    indicator.innerHTML = '<i class="bi bi-x"></i>';
+                } else {
+                    indicator.className = 'w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
+                    indicator.innerHTML = `<i class="bi ${icons[index - 1]}"></i>`;
+                }
+            }
+        }
+
+        function startPipelineProgress(runId) {
+            resetPipelineState();
+            for (let i = 1; i <= 5; i++) {
+                pipelineTimers.push(setTimeout(() => {
+                    if (runId !== analysisRunId) return;
+                    if (i > 1) setPipelineStep(i - 1, 'complete');
+                    setPipelineStep(i, 'processing');
+                    const message = getEl('analysisProgressMessage');
+                    if (message) message.textContent = `Stage ${i} of 5: ${getEl(`step${i}`)?.querySelector('p')?.textContent?.replace(/^\d+\.\s*/, '') || 'Processing analysis...'}`;
+                }, (i - 1) * 850));
+            }
+        }
+
+        function completePipeline() {
+            pipelineTimers.forEach(timer => clearTimeout(timer));
+            pipelineTimers = [];
+            for (let i = 1; i <= 5; i++) setPipelineStep(i, 'complete');
+        }
+
+        function failPipeline() {
+            pipelineTimers.forEach(timer => clearTimeout(timer));
+            pipelineTimers = [];
+            const activeStep = document.querySelector('.pipeline-step.is-processing') || getEl('step5');
+            if (activeStep) {
+                activeStep.classList.remove('is-processing');
+                activeStep.classList.add('is-failed');
+                const indicator = activeStep.querySelector('.step-indicator');
+                if (indicator) indicator.innerHTML = '<i class="bi bi-x"></i>';
+            }
+        }
+
         // Pipeline animation & AI execution
         async function startAIAnalysis() {
             const manualInput = getEl('manualIngredientsInput');
@@ -941,41 +1935,23 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                 scannerLaser.classList.remove('hidden');
             }
 
+            analysisRunId++;
+            const currentRunId = analysisRunId;
+            setAnalysisVisibility(true);
+            const retryButton = getEl('analysisRetryButton');
+            const progressHint = getEl('analysisProgressHint');
+            const progressTitle = getEl('analysisProgressTitle');
+            const progressBar = document.querySelector('.analysis-progress-bar');
+            if (retryButton) retryButton.classList.add('hidden');
+            if (progressTitle) progressTitle.textContent = 'Analyzing Product...';
+            if (progressHint) progressHint.textContent = 'Please keep this page open while the current analysis completes.';
+            if (progressBar) progressBar.classList.remove('hidden');
+            startPipelineProgress(currentRunId);
+
             if (pipelineStatusBadge) {
-                pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 animate-pulse';
+                pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 animate-pulse';
                 pipelineStatusBadge.textContent = activeInputMode === 'image' ? 'Analyzing Image...' : 'Analyzing Ingredients Text...';
             }
-
-            const steps = [
-                { id: 'step1', delay: 400 },
-                { id: 'step2', delay: 400 },
-                { id: 'step3', delay: 400 },
-                { id: 'step4', delay: 400 },
-                { id: 'step5', delay: 400 }
-            ];
-
-            // Reset step indicators
-            for (let i = 1; i <= 5; i++) {
-                const el = getEl(`step${i}`);
-                if (el) {
-                    el.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-slate-100 bg-slate-50/60 transition-all';
-                    const ind = el.querySelector('.step-indicator');
-                    if (ind) ind.className = 'w-8 h-8 rounded-xl border border-slate-200 surface-cream flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 step-indicator';
-                }
-            }
-
-            // Animate through pipeline steps sequentially
-            const stepPromise = (async () => {
-                for (let i = 0; i < steps.length; i++) {
-                    const stepEl = getEl(steps[i].id);
-                    if (stepEl) {
-                        const indicator = stepEl.querySelector('.step-indicator');
-                        stepEl.className = 'flex items-start gap-3.5 p-3 rounded-2xl border border-emerald-300 bg-emerald-50/80 transition-all shadow-xs';
-                        if (indicator) indicator.className = 'w-8 h-8 rounded-xl border border-emerald-500 bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 step-indicator';
-                    }
-                    await new Promise(r => setTimeout(r, steps[i].delay));
-                }
-            })();
 
             try {
                 let res;
@@ -1005,41 +1981,50 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                     console.warn("Could not parse backend json:", e);
                 }
 
-                await stepPromise;
-
                 if (res.ok && json && json.success) {
+                    completePipeline();
                     if (pipelineStatusBadge) {
-                        pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white';
+                        pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950';
                         pipelineStatusBadge.textContent = 'Analysis Complete';
                     }
                     
                     const mappedData = mapBackendResultToUi(json);
                     renderAnalysisReport(mappedData);
                 } else {
+                    failPipeline();
                     const errorMsg = (json && (json.error || json.errorMessage || json.message)) || `Server returned status ${res.status}`;
                     if (pipelineStatusBadge) {
                         pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-600 text-white';
                         pipelineStatusBadge.textContent = 'Analysis Error';
                     }
-                    alert(`Analysis Failed: ${errorMsg}`);
+                    showAnalysisError(`Analysis failed: ${errorMsg}`);
                 }
             } catch (err) {
                 console.error("Analysis network error:", err);
-                await stepPromise;
+                failPipeline();
                 if (pipelineStatusBadge) {
                     pipelineStatusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-600 text-white';
                     pipelineStatusBadge.textContent = 'Connection Error';
                 }
-                alert("Connection to Halal/Haram AI server failed. Please check network connection and try again.");
+                showAnalysisError("Connection to the Halal/Haram AI server failed. Please check your network connection and try again.");
             } finally {
                 if (scannerLaser) scannerLaser.classList.add('hidden');
                 if (btnAnalyzeAI) btnAnalyzeAI.disabled = false;
                 if (btnAnalyzeText) btnAnalyzeText.disabled = false;
-                const resContainer = document.getElementById('resultsMainContainer');
-                if (resContainer) {
-                    resContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
             }
+        }
+
+        function showAnalysisError(message) {
+            const progressMessage = getEl('analysisProgressMessage');
+            const progressHint = getEl('analysisProgressHint');
+            const progressTitle = getEl('analysisProgressTitle');
+            const progressBar = document.querySelector('.analysis-progress-bar');
+            const retryButton = getEl('analysisRetryButton');
+            if (progressTitle) progressTitle.textContent = 'Analysis could not be completed';
+            if (progressMessage) progressMessage.textContent = 'Analysis could not be completed.';
+            if (progressHint) progressHint.textContent = message;
+            if (progressBar) progressBar.classList.add('hidden');
+            if (retryButton) retryButton.classList.remove('hidden');
         }
 
         function mapBackendResultToUi(apiData) {
@@ -1127,6 +2112,7 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
         }
 
         function renderAnalysisReport(data) {
+            setAnalysisVisibility(false);
             const card = document.getElementById('masterStatusCard');
             const iconBox = document.getElementById('statusIconBox');
             const pill = document.getElementById('statusPill');
@@ -1180,6 +2166,11 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             document.getElementById('statVerifyCount').textContent = data.stats.verify;
             document.getElementById('statHalalCertified').textContent = data.stats.certified;
             document.getElementById('ingredientCountBadge').textContent = `${data.ingredients.length} Evidence Detected`;
+
+            const resContainer = document.getElementById('resultsMainContainer');
+            if (resContainer) {
+                resContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
 
             // Table rows
             const tbody = document.getElementById('ingredientTableBody');
@@ -1265,10 +2256,11 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
         window.handleFileSelect = handleFileSelect;
         window.toggleOcrAccordion = toggleOcrAccordion;
         window.clearHistoryDemo = clearHistoryDemo;
+        window.closeAnalysisReport = closeAnalysisReport;
 
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
-            renderAnalysisReport(samplePresets.verify);
+            closeAnalysisReport();
         });
 
         // Also call setup immediately in case script executes after DOMContentLoaded
