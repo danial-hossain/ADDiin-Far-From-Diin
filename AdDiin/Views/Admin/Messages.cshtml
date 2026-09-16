@@ -51,7 +51,8 @@
                         var lastMsg = c.Messages.LastOrDefault()?.MessageContent ?? "No messages";
                         var updatedTime = c.UpdatedAt?.ToString("hh:mm tt") ?? "";
                         <a asp-controller="Admin" asp-action="Messages" asp-route-id="@c.Id"
-                           class="msgr-conv-item@(isAct ? " active" : "") text-decoration-none">
+                           class="msgr-conv-item@(isAct ? " active" : "") text-decoration-none"
+                           data-conv-id="@c.Id">
                             <div class="msgr-conv-avatar">@initials</div>
                             <div class="msgr-conv-body min-w-0">
                                 <div class="d-flex justify-content-between align-items-baseline gap-1">
@@ -188,9 +189,11 @@
                                 <textarea name="messageContent"
                                           class="msgr-input"
                                           rows="1"
+                                          maxlength="4000"
                                           placeholder="Type your reply…"
                                           required
                                           autocomplete="off"
+                                          aria-label="Reply to @(active.User?.FullName ?? "user")"
                                           id="adminMessageInput"></textarea>
                             </div>
                             <button type="submit" class="msgr-send-btn" aria-label="Send reply">
