@@ -2,6 +2,9 @@
 
 ## Islamic Development Platform
 
+[![Build and deploy](https://github.com/danial-hossain/ADDiin-Far-From-Diin/actions/workflows/deploy-somee.yml/badge.svg?branch=developer)](https://github.com/danial-hossain/ADDiin-Far-From-Diin/actions/workflows/deploy-somee.yml)
+[![Live site](https://img.shields.io/badge/live%20site-addiin.somee.com-0f766e?logo=googlechrome&logoColor=white)](http://addiin.somee.com/)
+
 **Live site:** [addiin.somee.com](http://addiin.somee.com/)
 
 Ad-Diin is a community-focused Islamic development platform that brings worship,
@@ -12,6 +15,23 @@ management of community activities.
 
 The platform is built as an ASP.NET Core MVC application with a responsive
 Razor UI, role-based administration, Entity Framework Core, and SQL Server.
+
+## Deployment
+
+The `developer` branch is configured for deployment to Somee through GitHub
+Actions. Each successful workflow run is recorded by GitHub under the
+`production` environment and links to the live site.
+
+To enable automatic deployment, add these repository secrets under
+**Settings → Secrets and variables → Actions**:
+
+- `SOMEE_FTP_SERVER`
+- `SOMEE_FTP_USERNAME`
+- `SOMEE_FTP_PASSWORD`
+- `SOMEE_FTP_SERVER_DIR`
+
+After adding the secrets, push to `developer` or run **Deploy to Somee** from
+the repository's **Actions** tab.
 
 ## Platform capabilities
 
