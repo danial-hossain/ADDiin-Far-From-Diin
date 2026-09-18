@@ -1,30 +1,21 @@
-# Render environment variables for Ad-Diin
-# Replace every <REPLACE_WITH_...> value in the Render dashboard.
-# Do not commit real passwords, API keys, or connection strings to GitHub.
-
-ConnectionStrings__DefaultConnection=<REPLACE_WITH_SOMEE_SQL_CONNECTION_STRING>
-
+ConnectionStrings__DefaultConnection=REPLACE_WITH_SOMEE_SQL_CONNECTION_STRING
 EmailSettings__Host=smtp.gmail.com
 EmailSettings__Port=587
-EmailSettings__Username=<REPLACE_WITH_GMAIL_ADDRESS>
-EmailSettings__Password=<REPLACE_WITH_GMAIL_APP_PASSWORD>
-EmailSettings__FromEmail=<REPLACE_WITH_GMAIL_ADDRESS>
+EmailSettings__Username=REPLACE_WITH_GMAIL_ADDRESS
+EmailSettings__Password=REPLACE_WITH_GMAIL_APP_PASSWORD
+EmailSettings__FromEmail=REPLACE_WITH_GMAIL_ADDRESS
 EmailSettings__FromName=Ad-Diin
-
-CloudinarySettings__CloudName=<REPLACE_WITH_CLOUDINARY_CLOUD_NAME>
-CloudinarySettings__ApiKey=<REPLACE_WITH_CLOUDINARY_API_KEY>
-CloudinarySettings__ApiSecret=<REPLACE_WITH_CLOUDINARY_API_SECRET>
-
-SslCommerzSettings__StoreId=<REPLACE_WITH_SSLCOMMERZ_STORE_ID>
-SslCommerzSettings__StorePassword=<REPLACE_WITH_SSLCOMMERZ_STORE_PASSWORD>
+CloudinarySettings__CloudName=REPLACE_WITH_CLOUDINARY_CLOUD_NAME
+CloudinarySettings__ApiKey=REPLACE_WITH_CLOUDINARY_API_KEY
+CloudinarySettings__ApiSecret=REPLACE_WITH_CLOUDINARY_API_SECRET
+SslCommerzSettings__StoreId=REPLACE_WITH_SSLCOMMERZ_STORE_ID
+SslCommerzSettings__StorePassword=REPLACE_WITH_SSLCOMMERZ_STORE_PASSWORD
 SslCommerzSettings__IsTestMode=true
 SslCommerzSettings__Prefix=sslcommerz
 SslCommerzSettings__IsLocalhost=false
 SslCommerzSettings__SandboxUrl=https://sandbox.sslcommerz.com
 SslCommerzSettings__LiveUrl=https://securepay.sslcommerz.com
-
 AISettings__TimeoutSeconds=120
-DiinAI__BackendUrl=<REPLACE_WITH_DIIN_AI_BACKEND_URL>
-HalalDetector__BackendUrl=<REPLACE_WITH_HALAL_DETECTOR_BACKEND_URL>
+DiinAI__BackendUrl=REPLACE_WITH_DIIN_AI_BACKEND_URL
+HalalDetector__BackendUrl=REPLACE_WITH_HALAL_DETECTOR_BACKEND_URL
 
-# Render supplies PORT automatically. Do not add it manually.
