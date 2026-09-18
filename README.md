@@ -2,6 +2,8 @@
 
 ## Islamic Development Platform
 
+**Live site:** [addiin.somee.com](http://addiin.somee.com/)
+
 Ad-Diin is a community-focused Islamic development platform that brings worship,
 learning, community programs, communication, and transparent support services
 into one web application. It is designed to help individuals, families,
