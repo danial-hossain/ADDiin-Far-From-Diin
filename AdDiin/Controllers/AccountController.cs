@@ -15,17 +15,20 @@ namespace AdDiin.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailVerificationService _emailService;
         private readonly IMyDeenService _myDeenService;
+        private readonly IWebHostEnvironment _environment;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailVerificationService emailService,
-            IMyDeenService myDeenService)
+            IMyDeenService myDeenService,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
             _myDeenService = myDeenService;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -66,6 +69,13 @@ namespace AdDiin.Controllers
 
             if (!user.EmailConfirmed)
             {
+                if (_environment.IsDevelopment())
+                {
+                    user.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(user);
+                }
+                else
+                {
                 // Send code and redirect to verification
                 try
                 {
@@ -78,6 +88,7 @@ namespace AdDiin.Controllers
                 }
                 TempData["InfoMessage"] = "Please verify your email address. A verification code has been sent to your email.";
                 return RedirectToAction(nameof(VerifyEmail), new { email = user.Email, returnUrl = model.ReturnUrl });
+                }
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -145,6 +156,15 @@ namespace AdDiin.Controllers
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "User");
+                if (_environment.IsDevelopment())
+                {
+                    user.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(user);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    TempData["SuccessMessage"] = "Registration successful! Welcome to Ad-Diin.";
+                    return RedirectToAction("Index", "Home");
+                }
+
                 try
                 {
                     await _emailService.GenerateAndSendCodeAsync(user.Email, user.FullName);
