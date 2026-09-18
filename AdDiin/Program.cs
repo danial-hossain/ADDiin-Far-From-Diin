@@ -42,6 +42,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Add MVC Services
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddMemoryCache();
 
 // Register Application Services for Dependency Injection
 builder.Services.AddScoped<IPrayerTimeService, PrayerTimeService>();
@@ -61,6 +62,11 @@ builder.Services.AddHttpClient<IHalalDetectorService, HalalDetectorService>((ser
     var config = serviceProvider.GetRequiredService<IConfiguration>();
     var timeoutSeconds = config.GetValue<int>("AISettings:TimeoutSeconds", 120);
     client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+});
+builder.Services.AddHttpClient<IHadithService, HadithService>(client =>
+{
+    client.BaseAddress = new Uri("https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/");
+    client.Timeout = TimeSpan.FromSeconds(15);
 });
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
