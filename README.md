@@ -4,8 +4,11 @@
 
 [![Build and deploy](https://github.com/danial-hossain/ADDiin-Far-From-Diin/actions/workflows/deploy-somee.yml/badge.svg?branch=developer)](https://github.com/danial-hossain/ADDiin-Far-From-Diin/actions/workflows/deploy-somee.yml)
 [![Live site](https://img.shields.io/badge/live%20site-addiin.somee.com-0f766e?logo=googlechrome&logoColor=white)](http://addiin.somee.com/)
+[![Render](https://img.shields.io/badge/render-live-46e3b7?logo=render&logoColor=111111)](https://addiin-far-from-diin.onrender.com/)
 
 **Live site:** [addiin.somee.com](http://addiin.somee.com/)
+
+**Render deployment:** [addiin-far-from-diin.onrender.com](https://addiin-far-from-diin.onrender.com/)
 
 Ad-Diin is a community-focused Islamic development platform that brings worship,
 learning, community programs, communication, and transparent support services
