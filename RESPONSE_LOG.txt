@@ -108,4 +108,12 @@ Configuration review findings:
 - The registration request depends on both SQL Server and Gmail SMTP. Render logs immediately after a submit are required to distinguish those failures.
 - All pasted credentials are exposed and must be rotated. Do not save them in this response log.
 
+[2026-09-20 12:57:58 +06:00]
+
+Added this empty section to `AdDiin/appsettings.json` for local configuration:
+
+`"Gemini": { "ApiKey": "" }`
+
+For Render, use the separate environment variable `GEMINI_API_KEY` instead of committing a Gemini key to `appsettings.json`. The key must be rotated because the previous key was exposed.
+
 Server=AdDiinDb.mssql.somee.com;Database=AdDiinDb;User Id=Danial369_SQLLogin_1;Password=Y@@JxcCkpv/r5x8;TrustServerCertificate=True;MultipleActiveResultSets=true
