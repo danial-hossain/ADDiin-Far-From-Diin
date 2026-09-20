@@ -84,3 +84,11 @@ Render action checklist for the registration loading problem:
 5. Trigger a deploy of the latest `developer` commit, `1fd03c2`.
 6. Test account creation. If email delivery is unavailable, the request should now return an error within 15 seconds instead of loading forever.
 7. Check Render Logs. Database connection or SMTP errors shown there identify the remaining configuration issue.
+
+[2026-09-20 12:52:46 +06:00]
+
+Safe Render database setting format. Put this in Render as `ConnectionStrings__DefaultConnection`, replacing only the placeholder with the newly rotated SQL password. Do not put the real password in this repository log:
+
+`Server=AdDiinDb.mssql.somee.com;Database=AdDiinDb;User Id=Danial369_SQLLogin_1;Password=REPLACE_WITH_ROTATED_SQL_PASSWORD;TrustServerCertificate=True;MultipleActiveResultSets=true`
+
+The database password was exposed again in chat and must be rotated before continuing. Do not include quotation marks around the value in Render.
