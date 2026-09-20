@@ -154,7 +154,7 @@ namespace AdDiin.Controllers
                 id, user.Id, request.Content, isAdmin);
             if (message == null)
             {
-                return Conflict(new { error = "This conversation is closed or unavailable." });
+                return Conflict(new { error = "This conversation is unavailable." });
             }
 
             try
