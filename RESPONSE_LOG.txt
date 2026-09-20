@@ -68,3 +68,7 @@ Committed and pushed the pending Hadith, profile, messaging, migration, and UI c
 [2026-09-20 12:43:33 +06:00]
 
 The latest code is already pushed to the `developer` branch. For Render, use the connected `developer` branch and trigger a deploy of the latest commit if auto-deploy did not start. Confirm the production environment variables, especially the remote SQL connection string and rotated Gemini API key. After deployment, check Render logs for database migration/table creation and open the live My Deen and messaging pages.
+
+[2026-09-20 12:49:03 +06:00]
+
+The live registration GET page responds, but registration submission can wait on the database or SMTP connection. Render environment settings showed the SQL connection value surrounded by quotation marks; remove those outer quotes so the value starts with `Server=` and ends with the final connection option. Do not store credentials in the response log. The application now limits SMTP waiting to 15 seconds and returns a visible configuration error instead of hanging indefinitely. Set `SslCommerzSettings__IsLocalhost=false` in Render, and add a rotated `GEMINI_API_KEY` if scheduled Hadith generation is required.
