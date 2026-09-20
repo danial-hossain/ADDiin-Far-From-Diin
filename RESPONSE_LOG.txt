@@ -64,3 +64,7 @@ The existing conversation was already stored with status `closed`, so removing t
 [2026-09-20]
 
 Committed and pushed the pending Hadith, profile, messaging, migration, and UI changes to the `developer` branch. Commit: `ee3bda3`. The local `AdDiin/appsettings.json` change was intentionally excluded because it contains database and email credentials.
+
+[2026-09-20 12:43:33 +06:00]
+
+The latest code is already pushed to the `developer` branch. For Render, use the connected `developer` branch and trigger a deploy of the latest commit if auto-deploy did not start. Confirm the production environment variables, especially the remote SQL connection string and rotated Gemini API key. After deployment, check Render logs for database migration/table creation and open the live My Deen and messaging pages.
