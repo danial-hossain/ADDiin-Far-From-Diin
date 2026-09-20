@@ -120,4 +120,15 @@ For Render, use the separate environment variable `GEMINI_API_KEY` instead of co
 
 Render environment-variable clarification: if the Render input box contains no surrounding quotation marks, leave it that way. Exported `.env` files, shell output, or deployment tools may display values surrounded by quotes to preserve special characters; those quotes are formatting and should not be copied into the Render value. Save the environment changes, deploy the latest `developer` commit, and check Render logs after testing registration. Do not store the Gemini key or other secrets in this log.
 
+[2026-09-20 13:00:47 +06:00]
+
+Render Gemini environment variable:
+
+- Key/name: `GEMINI_API_KEY`
+- Value: the newly rotated Gemini API key
+- Do not add quotation marks around the value in Render.
+- Save the environment change and redeploy the service.
+
+Do not write the actual API key into `RESPONSE_LOG.txt`, Git, or chat.
+
 Server=AdDiinDb.mssql.somee.com;Database=AdDiinDb;User Id=Danial369_SQLLogin_1;Password=Y@@JxcCkpv/r5x8;TrustServerCertificate=True;MultipleActiveResultSets=true
