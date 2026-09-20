@@ -146,3 +146,10 @@ Server=AdDiinDb.mssql.somee.com;Database=AdDiinDb;User Id=Danial369_SQLLogin_1;P
 [2026-09-20 13:40:03 +06:00]
 
 Removed obsolete Railway/development artifacts: `railway.toml`, the Railway deployment section from `README.md`, and `AdDiin/antigravity_migration_prompt.txt`. Kept the `Dockerfile` because Render uses it, and kept the Render environment example, Somee deployment workflow, migrations, and SQL deployment script.
+
+[2026-09-20 13:42:04 +06:00]
+
+For reviewing Render OTP delivery, the two relevant files are:
+
+1. `AdDiin/Services/EmailVerificationService.cs` — generates the OTP, saves it, reads SMTP settings, and sends the email.
+2. `AdDiin/Controllers/AccountController.cs` — contains the `Register` POST action that creates the user, calls the email service, and redirects to `VerifyEmail`.
