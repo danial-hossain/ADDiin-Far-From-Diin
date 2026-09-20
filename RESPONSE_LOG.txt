@@ -72,3 +72,15 @@ The latest code is already pushed to the `developer` branch. For Render, use the
 [2026-09-20 12:49:03 +06:00]
 
 The live registration GET page responds, but registration submission can wait on the database or SMTP connection. Render environment settings showed the SQL connection value surrounded by quotation marks; remove those outer quotes so the value starts with `Server=` and ends with the final connection option. Do not store credentials in the response log. The application now limits SMTP waiting to 15 seconds and returns a visible configuration error instead of hanging indefinitely. Set `SslCommerzSettings__IsLocalhost=false` in Render, and add a rotated `GEMINI_API_KEY` if scheduled Hadith generation is required.
+
+[2026-09-20 12:51:19 +06:00]
+
+Render action checklist for the registration loading problem:
+
+1. Open the Render service and select Environment.
+2. Edit `ConnectionStrings__DefaultConnection`; remove the outer quotation marks so the value starts directly with `Server=`. Save the change.
+3. Set `SslCommerzSettings__IsLocalhost=false`.
+4. Rotate the exposed SQL, Gmail, Cloudinary, SSLCommerz, and Gemini credentials, then replace them in Render Environment. Never put replacement secrets in this log.
+5. Trigger a deploy of the latest `developer` commit, `1fd03c2`.
+6. Test account creation. If email delivery is unavailable, the request should now return an error within 15 seconds instead of loading forever.
+7. Check Render Logs. Database connection or SMTP errors shown there identify the remaining configuration issue.
