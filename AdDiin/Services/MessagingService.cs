@@ -119,16 +119,12 @@ namespace AdDiin.Services
                 return null;
             }
 
-            if (conversation.Status != "active")
-            {
-                return null;
-            }
-
             if (isAdmin && conversation.AdminId == null)
             {
                 conversation.AdminId = senderId;
             }
 
+            conversation.Status = "active";
             var message = new Message
             {
                 ConversationId = conversationId,
