@@ -36,19 +36,6 @@ To enable automatic deployment, add these repository secrets under
 After adding the secrets, push to `developer` or run **Deploy to Somee** from
 the repository's **Actions** tab.
 
-### Railway
-
-The repository also includes a `Dockerfile` and `railway.toml` for deploying
-the complete ASP.NET Core application to Railway. In Railway, create a
-project from this GitHub repository, select the `developer` branch, and deploy
-the service using the detected Dockerfile.
-
-Add the production values as Railway variables using the same names as the
-configuration keys, for example
-`ConnectionStrings__DefaultConnection` and
-`EmailSettings__Password`. Do not commit production credentials to GitHub.
-Railway automatically provides the `PORT` variable used by the container.
-
 ## Platform capabilities
 
 ### Worship and Islamic learning
