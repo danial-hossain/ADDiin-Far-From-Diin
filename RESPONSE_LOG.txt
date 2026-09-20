@@ -60,3 +60,7 @@ Removed the visible “Close Thread” conversation option from both the user me
 [2026-09-20 12:22:38 +06:00]
 
 The existing conversation was already stored with status `closed`, so removing the button alone did not reopen it. Removed closed/read-only labels and notices, made the composer available again, and changed message sending to reactivate legacy closed conversations automatically.
+
+[2026-09-20]
+
+Committed and pushed the pending Hadith, profile, messaging, migration, and UI changes to the `developer` branch. Commit: `ee3bda3`. The local `AdDiin/appsettings.json` change was intentionally excluded because it contains database and email credentials.
