@@ -76,6 +76,11 @@ namespace AdDiin.Controllers
                     ModelState.AddModelError(string.Empty, "We could not send the verification email. Please check the email service configuration and try again.");
                     return View(model);
                 }
+                catch (InvalidOperationException)
+                {
+                    ModelState.AddModelError(string.Empty, "We could not send the verification email because email delivery is not configured.");
+                    return View(model);
+                }
                 TempData["InfoMessage"] = "Please verify your email address. A verification code has been sent to your email.";
                 return RedirectToAction(nameof(VerifyEmail), new { email = user.Email, returnUrl = model.ReturnUrl });
             }
@@ -152,6 +157,11 @@ namespace AdDiin.Controllers
                 catch (SmtpException)
                 {
                     ModelState.AddModelError(string.Empty, "Your account was created, but the verification email could not be sent. Please configure email delivery and request a new code.");
+                    return View(model);
+                }
+                catch (InvalidOperationException)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account was created, but email delivery is not configured. Please configure it and request a new verification code.");
                     return View(model);
                 }
 
