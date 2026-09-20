@@ -51,6 +51,62 @@
     backdrop-filter: blur(16px);
 }
 
+/* Keep every admin surface consistent with the dark admin cards. */
+.admin-page {
+    background: #081610 !important;
+    color: var(--text-on-dark-primary);
+}
+
+.admin-page .bg-slate-50,
+.admin-page .bg-slate-100 {
+    background-color: var(--surface-dark-alt) !important;
+}
+
+.admin-page .border-slate-100,
+.admin-page .border-slate-200,
+.admin-page .border-slate-200\/80 {
+    border-color: var(--surface-glass-border) !important;
+}
+
+.admin-page .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--surface-glass-border) !important;
+}
+
+.admin-page input,
+.admin-page select,
+.admin-page textarea {
+    background-color: var(--surface-dark-alt) !important;
+    border-color: var(--surface-glass-border) !important;
+    color: var(--text-on-dark-primary) !important;
+}
+
+.admin-page input::placeholder,
+.admin-page select option {
+    color: var(--text-on-dark-secondary);
+}
+
+.admin-page .text-slate-900,
+.admin-page .text-slate-800,
+.admin-page .text-slate-700,
+.admin-page .text-slate-600,
+.admin-page .text-slate-500,
+.admin-page .text-slate-400 {
+    color: var(--text-on-dark-primary) !important;
+}
+
+.admin-page .text-slate-400,
+.admin-page .text-slate-500 {
+    color: var(--text-on-dark-secondary) !important;
+}
+
+.admin-page table thead {
+    background-color: var(--surface-dark-alt) !important;
+}
+
+.admin-page table tbody tr:hover {
+    background-color: rgba(127, 217, 181, .08) !important;
+}
+
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
