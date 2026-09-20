@@ -23,11 +23,16 @@ namespace AdDiin.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IHadithService _hadithService;
 
-        public MyDeenService(ApplicationDbContext context, INotificationService notificationService)
+        public MyDeenService(
+            ApplicationDbContext context,
+            INotificationService notificationService,
+            IHadithService hadithService)
         {
             _context = context;
             _notificationService = notificationService;
+            _hadithService = hadithService;
         }
 
         public async Task<UserDeenSettings> GetOrCreateSettingsAsync(int userId)
@@ -643,7 +648,8 @@ namespace AdDiin.Services
                 MonthlyProgressPercent = monthlyAvg,
                 CurrentStreak = settings.CurrentStreak,
                 LongestStreak = settings.LongestStreak,
-                OverallGoalCompletionRate = monthlyAvg
+                OverallGoalCompletionRate = monthlyAvg,
+                CurrentHadith = await _hadithService.GetCurrentHadithAsync()
             };
         }
 
