@@ -1,4 +1,42 @@
 /* Admin and feature-specific refinements */
+html:has(body.admin-page),
+body.admin-page {
+    background: #081610 !important;
+    color: #f5f1e8 !important;
+}
+
+body.admin-page main {
+    background:
+        radial-gradient(circle at 0 0, rgba(61, 189, 135, .08), transparent 34rem),
+        #081610 !important;
+}
+
+body.admin-page .admin-nav {
+    background: #0d2119 !important;
+    border-color: rgba(127, 217, 181, .16) !important;
+}
+
+.admin-page .admin-nav .text-slate-700,
+.admin-page .admin-nav a {
+    color: #d6e8de !important;
+}
+
+.admin-page .admin-nav a:hover {
+    color: #a9ebcb !important;
+    background: rgba(61, 189, 135, .14) !important;
+}
+
+.admin-page h1,
+.admin-page h2,
+.admin-page h3,
+.admin-page h4 {
+    color: #f5f1e8 !important;
+}
+
+.admin-page p {
+    color: #b9c9bf;
+}
+
 .admin-wrapper {
     min-height: 100vh;
 }
