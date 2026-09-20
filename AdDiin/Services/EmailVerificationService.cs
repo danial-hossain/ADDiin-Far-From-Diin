@@ -191,6 +191,7 @@ namespace AdDiin.Services
             using var smtp = new SmtpClient(smtpHost, smtpPort);
 
             smtp.EnableSsl = true;
+            smtp.Timeout = 15000;
 
             smtp.UseDefaultCredentials = false;
 
