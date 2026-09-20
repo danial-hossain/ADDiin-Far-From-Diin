@@ -97,4 +97,15 @@ The database password was exposed again in chat and must be rotated before conti
 
 The corrected connection string is expected to look almost the same as the old one. The meaningful changes are: no outer quotation marks, a newly rotated SQL password, and a fresh Render deploy after saving the environment variable. If registration still loads forever, open Render Logs immediately after submitting the form and identify whether the failure is SQL Server connection, database migration, or SMTP email delivery. The application-side SMTP timeout is included in commit `1fd03c2`.
 
+[2026-09-20 12:56:43 +06:00]
+
+Configuration review findings:
+
+- The pasted Render SQL value still shows outer double quotes. In Render, remove them; quotes are correct inside JSON `appsettings.json`, but not around a Render environment-variable value.
+- `SslCommerzSettings__IsLocalhost=true` is wrong for Render; set it to `false`. This does not normally affect registration, but it will break production payment callback behavior.
+- `GEMINI_API_KEY` is absent, so scheduled Gemini Hadith generation cannot work until it is added.
+- The two JSON objects pasted one after another would be invalid if saved as one file. Keep only one JSON object in `appsettings.json`; Render environment variables should be separate key/value entries.
+- The registration request depends on both SQL Server and Gmail SMTP. Render logs immediately after a submit are required to distinguish those failures.
+- All pasted credentials are exposed and must be rotated. Do not save them in this response log.
+
 Server=AdDiinDb.mssql.somee.com;Database=AdDiinDb;User Id=Danial369_SQLLogin_1;Password=Y@@JxcCkpv/r5x8;TrustServerCertificate=True;MultipleActiveResultSets=true
