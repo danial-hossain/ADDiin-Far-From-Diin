@@ -65,6 +65,8 @@ builder.Services.AddHttpClient<IHalalDetectorService, HalalDetectorService>((ser
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMyDeenService, MyDeenService>();
+builder.Services.AddHttpClient<IHadithService, HadithService>();
+builder.Services.AddHostedService<HadithSchedulerService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<ISslCommerzService, SslCommerzService>();
 builder.Services.AddSingleton<IAboutService, AboutService>();

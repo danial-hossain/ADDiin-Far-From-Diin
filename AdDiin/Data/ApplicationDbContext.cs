@@ -31,6 +31,7 @@ namespace AdDiin.Data
         public DbSet<VerificationCode> VerificationCodes => Set<VerificationCode>();
         public DbSet<DiinAIConversation> DiinAIConversations => Set<DiinAIConversation>();
         public DbSet<DiinAIMessage> DiinAIMessages => Set<DiinAIMessage>();
+        public DbSet<ScheduledHadith> ScheduledHadiths => Set<ScheduledHadith>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -131,6 +132,10 @@ namespace AdDiin.Data
 
             builder.Entity<DiinAIConversation>()
                 .HasIndex(c => new { c.UserId, c.UpdatedAt });
+
+            builder.Entity<ScheduledHadith>()
+                .HasIndex(h => new { h.SlotDate, h.SlotTime })
+                .IsUnique();
         }
     }
 }

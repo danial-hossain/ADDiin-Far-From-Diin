@@ -76,18 +76,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                    @if (isAdmin)
-                    {
-                        <form id="closeConversationForm" asp-controller="Messages" asp-action="CloseConversation" method="post" class="d-none">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" id="closeConversationId" />
-                            <button type="submit" class="btn msgr-header-btn">
-                                <i class="bi bi-x-circle me-1"></i>Close Thread
-                            </button>
-                        </form>
-                    }
-                </div>
             </header>
 
             <div id="chatBox" class="msgr-message-area flex-grow-1" aria-live="polite">
@@ -243,8 +231,6 @@
             const sendButton     = document.getElementById('sendButton');
             const errorBox       = document.getElementById('chatError');
             const statusDot      = document.getElementById('connectionStatus');
-            const closeForm      = document.getElementById('closeConversationForm');
-            const closeId        = document.getElementById('closeConversationId');
             const searchInput    = document.getElementById('conversationSearch');
             const sidebarEl      = document.getElementById('msgrSidebar');
             const backdropEl     = document.getElementById('msgrBackdrop');
@@ -346,7 +332,6 @@
                             <div class="msgr-conv-preview text-truncate">${escapeHtml(preview)}</div>
                         </div>
                         ${c.unreadCount > 0 ? `<span class="msgr-unread-badge">${c.unreadCount > 99 ? '99+' : c.unreadCount}</span>` : ''}
-                        ${c.status === 'closed' ? '<span class="msgr-closed-pill">Closed</span>' : ''}
                     `;
                     item.addEventListener('click', () => {
                         selectConversation(c.id);
@@ -460,14 +445,9 @@
                     headerAvatar.textContent = getInitials(data.conversation.userDisplayName || 'M');
                 }
 
-                input.disabled = data.conversation.status !== 'active';
-                input.placeholder = input.disabled ? 'This conversation is closed.' : (isAdmin ? 'Type your reply…' : 'Write your message…');
+                input.disabled = false;
+                input.placeholder = isAdmin ? 'Type your reply…' : 'Write your message…';
                 sendButton.disabled = input.disabled;
-
-                if (closeForm) {
-                    closeForm.classList.toggle('d-none', !isAdmin || data.conversation.status !== 'active');
-                    closeId.value = id;
-                }
 
                 renderMessages(data.messages || []);
                 renderConversationList();

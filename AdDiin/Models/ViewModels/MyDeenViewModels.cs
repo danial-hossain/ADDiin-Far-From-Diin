@@ -21,6 +21,7 @@ namespace AdDiin.Models.ViewModels
         public int CurrentStreak { get; set; }
         public int LongestStreak { get; set; }
         public int OverallGoalCompletionRate { get; set; }
+        public ScheduledHadith? CurrentHadith { get; set; }
     }
 
     public class DhikrPresetItem
