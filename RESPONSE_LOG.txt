@@ -131,4 +131,10 @@ Render Gemini environment variable:
 
 Do not write the actual API key into `RESPONSE_LOG.txt`, Git, or chat.
 
+[2026-09-20 13:02:02 +06:00]
+
+Render registration diagnosis: the newly created user appearing in the admin panel proves that Render can connect to SQL Server and complete `UserManager.CreateAsync`. The missing verification-page redirect occurs afterward while `EmailVerificationService` saves the OTP and sends the Gmail SMTP message. Confirm the Render email variables use the Gmail address, a Gmail App Password (not the normal account password), `smtp.gmail.com`, port `587`, and SSL. Check spam/junk and Render logs immediately after a registration attempt for `SmtpException`, authentication failure, connection timeout, or missing email settings.
+
+If the account already exists, do not register it again. Use the verification page directly at `/Account/VerifyEmail?email=YOUR_EMAIL` after the OTP is available, or delete the test account from the admin panel and retry after fixing SMTP. The registration timeout fix is included in the deployed `developer` branch.
+
 Server=AdDiinDb.mssql.somee.com;Database=AdDiinDb;User Id=Danial369_SQLLogin_1;Password=Y@@JxcCkpv/r5x8;TrustServerCertificate=True;MultipleActiveResultSets=true
