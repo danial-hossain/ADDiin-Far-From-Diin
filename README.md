@@ -195,6 +195,7 @@ communication, and donation workflows more accessible and organized.
 - [Architecture notes](docs/architecture.md)
 - [API reference](docs/api.md)
 - [Configuration reference](docs/configuration.md)
+- [Testing guide](docs/testing.md)
 - [Deployment notes](docs/deployment.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
