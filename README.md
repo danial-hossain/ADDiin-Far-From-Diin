@@ -193,6 +193,7 @@ communication, and donation workflows more accessible and organized.
 - [Contribution guide](CONTRIBUTING.md)
 - [Development guide](docs/development.md)
 - [Architecture notes](docs/architecture.md)
+- [API reference](docs/api.md)
 - [Deployment notes](docs/deployment.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
