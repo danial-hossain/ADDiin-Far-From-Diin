@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Database Context with SQL Server
+// The fallback keeps local development usable when no connection string has
+// been supplied through appsettings, user secrets, or environment variables.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? "Server=(localdb)\\mssqllocaldb;Database=AdDiinDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
 
@@ -43,7 +44,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
-// Register Application Services for Dependency Injection
+// Keep domain services scoped so each request receives a consistent unit of
+// work while HTTP clients remain managed by IHttpClientFactory.
 builder.Services.AddScoped<IPrayerTimeService, PrayerTimeService>();
 builder.Services.AddScoped<IDonationService, DonationService>();
 builder.Services.AddScoped<IMiladService, MiladService>();
@@ -73,7 +75,8 @@ builder.Services.AddSingleton<IAboutService, AboutService>();
 
 var app = builder.Build();
 
-// Seed Database automatically on startup
+// Initialization is deliberately performed before the request pipeline starts
+// so roles, migrations, and baseline data are available to the first request.
 try
 {
     await DbInitializer.SeedDatabaseAsync(app.Services);
@@ -84,7 +87,7 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred during database seeding.");
 }
 
-// Configure HTTP Pipeline
+// Configure middleware before mapping routes and the SignalR hub.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -99,7 +102,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Route Aliases matching user-centric structure
+// These aliases preserve the public, user-facing URLs while controllers retain
+// conventional action names internally.
 app.MapControllerRoute(name: "about", pattern: "about", defaults: new { controller = "Home", action = "About" });
 app.MapControllerRoute(name: "contact", pattern: "contact", defaults: new { controller = "Messages", action = "Index" });
 app.MapControllerRoute(name: "sdg9", pattern: "sdg9", defaults: new { controller = "Home", action = "SDG9" });
