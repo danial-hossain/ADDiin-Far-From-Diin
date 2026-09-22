@@ -1317,3 +1317,33 @@ Authenticated users can load conversation history, view conversation lists, and 
 1. Browser loads the page.
 2. Browser optionally loads the authenticated user’s conversation list.
 3. User enters a question.
+4. Browser sends JSON to `/api/ai/ask`.
+5. Server validates the message and calls `IDiinAIService`.
+6. Response includes answer content and cited Islamic sources where available.
+7. Authenticated conversations and messages are persisted.
+8. Browser renders the answer and source list.
+
+### Safety and correctness expectations
+
+The assistant should not invent citations. Service errors should produce a controlled response. API keys and provider details must remain server-side. User messages should be bounded by length and stored according to the data lifecycle policy.
+
+### QA checklist
+
+- Guest question works without persistence.
+- Authenticated history loads only for the current user.
+- Empty question is rejected.
+- Long question is handled according to limits.
+- API timeout displays a useful error.
+- New chat clears only the intended client state.
+- Source links are safely rendered.
+- Sensitive configuration never appears in JSON responses.
+
+---
+
+## Page 34: User Messaging and Contact
+
+### Identity
+
+- **Routes**: `/contact`, `/messaging`
+- **Controller**: `MessagesController.Index`
+- **View**: `AdDiin/Views/Messages/Index.cshtml`
