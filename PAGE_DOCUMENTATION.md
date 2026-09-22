@@ -1562,3 +1562,33 @@ Reviews submitted Milad and Dua requests and changes their status with administr
 - Search requests.
 - `MiladUpdateStatus` changes workflow state.
 - Add or update admin remarks.
+
+### QA checklist
+
+- Status transitions follow workflow rules.
+- User receives notification where configured.
+- Remarks are encoded and length-limited.
+- Admin cannot update a missing request.
+- User detail page reflects the updated state.
+
+---
+
+## Page 40: Admin Donations
+
+### Identity
+
+- **Route**: `/Admin/Donations`
+- **Controller**: `AdminController.Donations`
+- **View**: `AdDiin/Views/Admin/Donations.cshtml`
+- **Model**: `AdminDonationsViewModel`
+- **Access**: Admin role
+
+### Purpose
+
+Provides donation oversight, filtering, manual record creation, status management, edit, deletion, totals, and receipt access.
+
+### Actions
+
+- Search by transaction or donor.
+- Filter by category.
+- Filter by payment status.
