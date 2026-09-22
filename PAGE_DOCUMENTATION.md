@@ -673,3 +673,33 @@ Verification codes must be short-lived, single-use where possible, and rate-limi
 - Verified account cannot be verified repeatedly as a new flow.
 - Successful verification sends the user to the expected page.
 
+---
+
+## Page 15: User Profile
+
+### Identity
+
+- **Route**: `/user-profile`
+- **Controller**: `AccountController.Profile` and `UpdateInfo`
+- **View**: `AdDiin/Views/Account/Profile.cshtml`
+- **Model**: `UserProfileDashboardViewModel`
+- **Access**: Authenticated users
+
+### Purpose
+
+The profile dashboard combines personal information, progress statistics, streaks, badges, and links to personal features.
+
+### Data shown
+
+- Display name and account email.
+- Prayer progress.
+- Quran progress.
+- Dhikr progress.
+- Donation totals.
+- Streak information.
+- Achievement badges.
+- Links to password change and My Deen.
+
+### Update flow
+
+1. Authenticated user opens profile.
