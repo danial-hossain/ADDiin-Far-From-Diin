@@ -1255,3 +1255,34 @@ Every write must use the current authenticated user and the current day or recor
 - **Controller**: `NotificationsController.Index`
 - **View**: `AdDiin/Views/Notifications/Index.cshtml`
 - **Model**: `NotificationsPageViewModel`
+- **Access**: Authenticated users
+
+### Purpose
+
+Shows personal reminders, unread notification counts, categories, and notification preferences.
+
+### Actions
+
+- `MarkAllRead` marks all applicable notifications as read.
+- `MarkRead` marks one notification as read.
+- `Delete` removes one notification where allowed.
+- `UpdatePreferences` changes reminder preferences.
+- `GetUnreadCount` supplies navbar badge data.
+
+### Flow
+
+1. User opens notifications.
+2. Controller loads only the user’s records.
+3. View groups or filters notifications.
+4. User marks, deletes, or changes preferences.
+5. Browser updates the unread badge after server confirmation.
+
+### QA checklist
+
+- Notification ownership is checked server-side.
+- Marking one item does not mark another user’s item.
+- Deleted records disappear only after success.
+- Failed AJAX actions restore the previous state.
+- Empty notifications have a clear empty state.
+- Unread count matches database state after refresh.
+
