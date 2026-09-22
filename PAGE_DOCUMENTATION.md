@@ -366,3 +366,34 @@ Keep prayer database seed changes, admin prayer CRUD, public prayer display, and
 
 ### Identity
 
+- **Route**: `/islamic-calendar`
+- **Alternative route**: `/events`
+- **Controller**: `IslamicCalendarController.Index`
+- **View**: `AdDiin/Views/IslamicCalendar/Index.cshtml`
+- **Model**: `IslamicCalendarPageViewModel`
+- **Access**: Public page; reminders require authentication
+
+### Purpose
+
+The Islamic Calendar page provides Hijri date context, upcoming occasions, Sunnah fasting guidance, White Days information, countdowns, and reminder controls.
+
+### Main features
+
+- Current Hijri date.
+- Gregorian date relationship.
+- Upcoming Islamic occasions.
+- Sunnah fasting guidance.
+- White Days information.
+- Countdown to a selected occasion.
+- Reminder buttons.
+
+### Reminder flow
+
+1. A visitor selects a reminder button.
+2. Browser JavaScript sends a POST request to `SetEventReminder`.
+3. The server checks whether the visitor is authenticated.
+4. An authenticated user receives or updates a reminder.
+5. An anonymous visitor receives a login prompt or redirect.
+6. The notification badge may update after a successful request.
+
+### Security rules
