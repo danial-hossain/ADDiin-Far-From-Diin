@@ -9,6 +9,9 @@ using System.Security.Claims;
 
 namespace AdDiin.Controllers
 {
+    /// <summary>
+    /// Handles registration, sign-in, and email verification for platform users.
+    /// </summary>
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,6 +35,9 @@ namespace AdDiin.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Displays the sign-in form or redirects an already authenticated user.
+        /// </summary>
         public IActionResult Login(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -76,22 +82,41 @@ namespace AdDiin.Controllers
                 }
                 else
                 {
-                // Send code and redirect to verification
-                try
-                {
-                    await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
-                }
-                catch (SmtpException)
-                {
-                    ModelState.AddModelError(string.Empty, "We could not send the verification email. Please check the email service configuration and try again.");
-                    return View(model);
-                }
-                TempData["InfoMessage"] = "Please verify your email address. A verification code has been sent to your email.";
-                return RedirectToAction(nameof(VerifyEmail), new { email = user.Email, returnUrl = model.ReturnUrl });
+                    // Send code and redirect to verification
+                    try
+                    {
+                        await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
+                    }
+                    catch (SmtpException)
+                    {
+                        ModelState.AddModelError(
+                            string.Empty,
+                            "We could not send the verification email. Please check the email service configuration and try again.");
+                        return View(model);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        ModelState.AddModelError(
+                            string.Empty,
+                            "We could not send the verification email because email delivery is not configured.");
+                        return View(model);
+                    }
+
+                    TempData["InfoMessage"] =
+                        "Please verify your email address. A verification code has been sent to your email.";
+
+                    return RedirectToAction(
+                        nameof(VerifyEmail),
+                        new { email = user.Email, returnUrl = model.ReturnUrl });
                 }
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(
+                user.UserName!,
+                model.Password,
+                model.RememberMe,
+                lockoutOnFailure: false);
+
             if (result.Succeeded)
             {
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
@@ -112,6 +137,9 @@ namespace AdDiin.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Displays the registration form for a new account.
+        /// </summary>
         public IActionResult Register()
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -132,7 +160,10 @@ namespace AdDiin.Controllers
             var existing = await _userManager.FindByEmailAsync(model.Email);
             if (existing != null)
             {
-                ModelState.AddModelError(nameof(model.Email), "A user with this email address already exists.");
+                ModelState.AddModelError(
+                    nameof(model.Email),
+                    "A user with this email address already exists.");
+
                 return View(model);
             }
 
@@ -153,9 +184,14 @@ namespace AdDiin.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
+
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "User");
+
+                // Feature branch code — kept for reference only.
+                // It is intentionally inactive.
+                /*
                 if (_environment.IsDevelopment())
                 {
                     user.EmailConfirmed = true;
@@ -164,19 +200,37 @@ namespace AdDiin.Controllers
                     TempData["SuccessMessage"] = "Registration successful! Welcome to Ad-Diin.";
                     return RedirectToAction("Index", "Home");
                 }
+                */
 
                 try
                 {
-                    await _emailService.GenerateAndSendCodeAsync(user.Email, user.FullName);
+                    await _emailService.GenerateAndSendCodeAsync(
+                        user.Email,
+                        user.FullName);
                 }
                 catch (SmtpException)
                 {
-                    ModelState.AddModelError(string.Empty, "Your account was created, but the verification email could not be sent. Please configure email delivery and request a new code.");
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Your account was created, but the verification email could not be sent. Please configure email delivery and request a new code.");
+
+                    return View(model);
+                }
+                catch (InvalidOperationException)
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Your account was created, but email delivery is not configured. Please configure it and request a new verification code.");
+
                     return View(model);
                 }
 
-                TempData["SuccessMessage"] = "Registration successful! A verification code has been sent to your email.";
-                return RedirectToAction(nameof(VerifyEmail), new { email = user.Email });
+                TempData["SuccessMessage"] =
+                    "Registration successful! A verification code has been sent to your email.";
+
+                return RedirectToAction(
+                    nameof(VerifyEmail),
+                    new { email = user.Email });
             }
 
             foreach (var error in result.Errors)
@@ -190,9 +244,14 @@ namespace AdDiin.Controllers
         [HttpGet]
         public IActionResult VerifyEmail(string email, string? returnUrl = null)
         {
-            if (string.IsNullOrEmpty(email)) return RedirectToAction(nameof(Login));
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction(nameof(Login));
 
-            return View(new VerifyEmailViewModel { Email = email, ReturnUrl = returnUrl });
+            return View(new VerifyEmailViewModel
+            {
+                Email = email,
+                ReturnUrl = returnUrl
+            });
         }
 
         [HttpPost]
@@ -204,27 +263,41 @@ namespace AdDiin.Controllers
                 return View(model);
             }
 
-            var verified = await _emailService.VerifyCodeAsync(model.Email, model.Code.Trim());
+            var verified = await _emailService.VerifyCodeAsync(
+                model.Email,
+                model.Code.Trim());
+
             if (!verified)
             {
-                ModelState.AddModelError(nameof(model.Code), "Invalid or expired verification code.");
+                ModelState.AddModelError(
+                    nameof(model.Code),
+                    "Invalid or expired verification code.");
+
                 return View(model);
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
+
             if (user != null)
             {
                 user.EmailConfirmed = true;
                 await _userManager.UpdateAsync(user);
-                await _signInManager.SignInAsync(user, isPersistent: false);
 
-                TempData["SuccessMessage"] = "Email verified successfully! Welcome to Ad-Diin.";
+                await _signInManager.SignInAsync(
+                    user,
+                    isPersistent: false);
+
+                TempData["SuccessMessage"] =
+                    "Email verified successfully! Welcome to Ad-Diin.";
 
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                     return RedirectToAction("Dashboard", "Admin");
 
-                if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                if (!string.IsNullOrEmpty(model.ReturnUrl) &&
+                    Url.IsLocalUrl(model.ReturnUrl))
+                {
                     return Redirect(model.ReturnUrl);
+                }
 
                 return RedirectToAction("Index", "Home");
             }
@@ -237,20 +310,28 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> ResendCode(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+
             if (user != null)
             {
                 try
                 {
-                    await _emailService.GenerateAndSendCodeAsync(user.Email!, user.FullName);
-                    TempData["InfoMessage"] = "A new verification code has been sent to your email.";
+                    await _emailService.GenerateAndSendCodeAsync(
+                        user.Email!,
+                        user.FullName);
+
+                    TempData["InfoMessage"] =
+                        "A new verification code has been sent to your email.";
                 }
                 catch (SmtpException)
                 {
-                    TempData["ErrorMessage"] = "We could not send the verification email. Please try again later.";
+                    TempData["ErrorMessage"] =
+                        "We could not send the verification email. Please try again later.";
                 }
             }
 
-            return RedirectToAction(nameof(VerifyEmail), new { email });
+            return RedirectToAction(
+                nameof(VerifyEmail),
+                new { email });
         }
 
         [HttpPost]
@@ -259,7 +340,10 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            TempData["InfoMessage"] = "You have been logged out successfully.";
+
+            TempData["InfoMessage"] =
+                "You have been logged out successfully.";
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -268,9 +352,12 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> Profile()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction(nameof(Login));
+
+            if (user == null)
+                return RedirectToAction(nameof(Login));
 
             var vm = await _myDeenService.GetProfileDashboardAsync(user);
+
             return View(vm);
         }
 
@@ -280,12 +367,15 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> UpdateInfo(ProfileViewModel model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction(nameof(Login));
+
+            if (user == null)
+                return RedirectToAction(nameof(Login));
 
             if (!ModelState.IsValid)
             {
                 var vm = await _myDeenService.GetProfileDashboardAsync(user);
                 vm.ProfileForm = model;
+
                 return View("Profile", vm);
             }
 
@@ -299,19 +389,27 @@ namespace AdDiin.Controllers
             user.UpdatedAt = DateTime.UtcNow;
 
             var result = await _userManager.UpdateAsync(user);
+
             if (result.Succeeded)
             {
-                TempData["SuccessMessage"] = "Profile updated successfully!";
+                TempData["SuccessMessage"] =
+                    "Profile updated successfully!";
+
                 return RedirectToAction(nameof(Profile));
             }
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(
+                    string.Empty,
+                    error.Description);
             }
 
-            var fullVm = await _myDeenService.GetProfileDashboardAsync(user);
+            var fullVm =
+                await _myDeenService.GetProfileDashboardAsync(user);
+
             fullVm.ProfileForm = model;
+
             return View("Profile", fullVm);
         }
 
@@ -325,24 +423,37 @@ namespace AdDiin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<IActionResult> ChangePassword(
+            ChangePasswordViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+                return View(model);
 
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction(nameof(Login));
 
-            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (user == null)
+                return RedirectToAction(nameof(Login));
+
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                model.CurrentPassword,
+                model.NewPassword);
+
             if (result.Succeeded)
             {
                 await _signInManager.RefreshSignInAsync(user);
-                TempData["SuccessMessage"] = "Your password has been changed successfully!";
+
+                TempData["SuccessMessage"] =
+                    "Your password has been changed successfully!";
+
                 return RedirectToAction(nameof(Profile));
             }
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(
+                    string.Empty,
+                    error.Description);
             }
 
             return View(model);

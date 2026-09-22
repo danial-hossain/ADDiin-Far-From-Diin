@@ -3,6 +3,9 @@ using AdDiin.Models;
 
 namespace AdDiin.Models.ViewModels
 {
+    /// <summary>
+    /// Aggregates the daily, weekly, and monthly data shown on the My Deen hub.
+    /// </summary>
     public class MyDeenHubViewModel
     {
         public UserDeenSettings Settings { get; set; } = new();
@@ -23,8 +26,12 @@ namespace AdDiin.Models.ViewModels
         public int CurrentStreak { get; set; }
         public int LongestStreak { get; set; }
         public int OverallGoalCompletionRate { get; set; }
+        public ScheduledHadith? CurrentHadith { get; set; }
     }
 
+    /// <summary>
+    /// Describes a preset dhikr entry together with today's progress.
+    /// </summary>
     public class DhikrPresetItem
     {
         public string Name { get; set; } = string.Empty;
@@ -35,6 +42,9 @@ namespace AdDiin.Models.ViewModels
         public bool IsCompleted { get; set; } = false;
     }
 
+    /// <summary>
+    /// Represents one morning or evening adhkar item for the checklist UI.
+    /// </summary>
     public class AdhkarItemViewModel
     {
         public string Key { get; set; } = string.Empty;
@@ -47,6 +57,9 @@ namespace AdDiin.Models.ViewModels
         public bool IsCompleted { get; set; }
     }
 
+    /// <summary>
+    /// Represents one ruqyah routine and its recommended recitation count.
+    /// </summary>
     public class RuqyahItemViewModel
     {
         public string Key { get; set; } = string.Empty;
@@ -60,6 +73,9 @@ namespace AdDiin.Models.ViewModels
         public bool IsCompleted { get; set; }
     }
 
+    /// <summary>
+    /// Contains the completion metrics displayed for one calendar day.
+    /// </summary>
     public class DailyProgressSummary
     {
         public DateTime Date { get; set; }
@@ -72,6 +88,9 @@ namespace AdDiin.Models.ViewModels
         public bool RuqyahDone { get; set; }
     }
 
+    /// <summary>
+    /// Supplies filtered notifications and the unread count to the page.
+    /// </summary>
     public class NotificationsPageViewModel
     {
         public List<UserNotification> Notifications { get; set; } = new();
@@ -80,6 +99,9 @@ namespace AdDiin.Models.ViewModels
         public UserDeenSettings Settings { get; set; } = new();
     }
 
+    /// <summary>
+    /// Captures the user-entered fields required to join a program.
+    /// </summary>
     public class ProgramRegistrationInputModel
     {
         public int ActivityId { get; set; }
@@ -90,6 +112,9 @@ namespace AdDiin.Models.ViewModels
         public string? Notes { get; set; }
     }
 
+    /// <summary>
+    /// Combines formatted date labels, calendar days, and upcoming occasions.
+    /// </summary>
     public class IslamicCalendarPageViewModel
     {
         public string CurrentHijriDateString { get; set; } = string.Empty;
@@ -100,6 +125,9 @@ namespace AdDiin.Models.ViewModels
         public List<HijriCalendarDay> CalendarDays { get; set; } = new();
     }
 
+    /// <summary>
+    /// Provides display flags for a single day in the Islamic calendar grid.
+    /// </summary>
     public class HijriCalendarDay
     {
         public int DayNumber { get; set; }
@@ -112,6 +140,9 @@ namespace AdDiin.Models.ViewModels
         public bool IsSunnahFasting { get; set; } // Mon / Thu
     }
 
+    /// <summary>
+    /// Aggregates profile, worship, activity, charity, and achievement summaries.
+    /// </summary>
     public class UserProfileDashboardViewModel
     {
         public ApplicationUser User { get; set; } = null!;
@@ -144,6 +175,9 @@ namespace AdDiin.Models.ViewModels
         public List<UserAchievementBadge> Badges { get; set; } = new();
     }
 
+    /// <summary>
+    /// Describes an achievement badge and the progress needed to unlock it.
+    /// </summary>
     public class UserAchievementBadge
     {
         public string Id { get; set; } = string.Empty;

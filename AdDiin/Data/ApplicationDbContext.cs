@@ -5,9 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
+    /// <summary>
+    /// EF Core database context for Identity data and the platform's domain entities.
+    /// </summary>
+    public class ApplicationDbContext
+        : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        /// <summary>
+        /// Creates the context with the provider options configured by the host.
+        /// </summary>
+        public ApplicationDbContext(
+            DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
@@ -32,6 +40,14 @@ namespace AdDiin.Data
         public DbSet<DiinAIConversation> DiinAIConversations => Set<DiinAIConversation>();
         public DbSet<DiinAIMessage> DiinAIMessages => Set<DiinAIMessage>();
 
+        // Feature branch code — kept for reference only.
+        // It is intentionally inactive.
+        // public DbSet<ScheduledHadith> ScheduledHadiths => Set<ScheduledHadith>();
+
+        /// <summary>
+        /// Configures relationship delete behavior and indexes that are not
+        /// expressible through entity annotations alone.
+        /// </summary>
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -131,6 +147,12 @@ namespace AdDiin.Data
 
             builder.Entity<DiinAIConversation>()
                 .HasIndex(c => new { c.UserId, c.UpdatedAt });
+
+            // Feature branch configuration — kept for reference only.
+            // It is intentionally inactive.
+            // builder.Entity<ScheduledHadith>()
+            //     .HasIndex(h => new { h.SlotDate, h.SlotTime })
+            //     .IsUnique();
         }
     }
 }

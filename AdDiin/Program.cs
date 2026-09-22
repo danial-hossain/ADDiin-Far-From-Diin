@@ -7,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Database Context with SQL Server
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+// The fallback keeps local development usable when no connection string has
+// been supplied through appsettings, user secrets, or environment variables.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=(localdb)\\mssqllocaldb;Database=AdDiinDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -42,9 +43,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Add MVC Services
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
-builder.Services.AddMemoryCache();
 
-// Register Application Services for Dependency Injection
+// Feature branch code — kept for reference only.
+// It is intentionally inactive.
+// builder.Services.AddMemoryCache();
+
+// Keep domain services scoped so each request receives a consistent unit of
+// work while HTTP clients remain managed by IHttpClientFactory.
 builder.Services.AddScoped<IPrayerTimeService, PrayerTimeService>();
 builder.Services.AddScoped<IDonationService, DonationService>();
 builder.Services.AddScoped<IMiladService, MiladService>();
@@ -63,21 +68,28 @@ builder.Services.AddHttpClient<IHalalDetectorService, HalalDetectorService>((ser
     var timeoutSeconds = config.GetValue<int>("AISettings:TimeoutSeconds", 120);
     client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 });
-builder.Services.AddHttpClient<IHadithService, HadithService>(client =>
-{
-    client.BaseAddress = new Uri("https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/");
-    client.Timeout = TimeSpan.FromSeconds(15);
-});
+
+// Feature branch Hadith HTTP client configuration — kept for reference only.
+// It is intentionally inactive.
+// builder.Services.AddHttpClient<IHadithService, HadithService>(client =>
+// {
+//     client.BaseAddress = new Uri("https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/");
+//     client.Timeout = TimeSpan.FromSeconds(15);
+// });
+
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMyDeenService, MyDeenService>();
+builder.Services.AddHttpClient<IHadithService, HadithService>();
+builder.Services.AddHostedService<HadithSchedulerService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<ISslCommerzService, SslCommerzService>();
 builder.Services.AddSingleton<IAboutService, AboutService>();
 
 var app = builder.Build();
 
-// Seed Database automatically on startup
+// Initialization is deliberately performed before the request pipeline starts
+// so roles, migrations, and baseline data are available to the first request.
 try
 {
     await DbInitializer.SeedDatabaseAsync(app.Services);
@@ -88,7 +100,7 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred during database seeding.");
 }
 
-// Configure HTTP Pipeline
+// Configure middleware before mapping routes and the SignalR hub.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -103,7 +115,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Route Aliases matching user-centric structure
+// These aliases preserve the public, user-facing URLs while controllers retain
+// conventional action names internally.
 app.MapControllerRoute(name: "about", pattern: "about", defaults: new { controller = "Home", action = "About" });
 app.MapControllerRoute(name: "contact", pattern: "contact", defaults: new { controller = "Messages", action = "Index" });
 app.MapControllerRoute(name: "sdg9", pattern: "sdg9", defaults: new { controller = "Home", action = "SDG9" });

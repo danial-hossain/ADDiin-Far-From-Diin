@@ -113,6 +113,9 @@ namespace AdDiin.Models.Entities
         public DateTime CompletedAt { get; set; } = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Stores the daily worship checklist and its calculated completion percentage.
+    /// </summary>
     public class DailyDeenGoal
     {
         public int Id { get; set; }
@@ -142,6 +145,9 @@ namespace AdDiin.Models.Entities
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Represents a user-scoped notification and optional destination link.
+    /// </summary>
     public class UserNotification
     {
         public int Id { get; set; }

@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines authorized conversation and message operations for user support.
+    /// </summary>
     public interface IMessagingService
     {
         Task<List<Conversation>> GetUserConversationsAsync(int userId, bool isAdmin);
@@ -15,6 +18,9 @@ namespace AdDiin.Services
         Task<int> GetUnreadCountAsync(int userId, bool isAdmin);
     }
 
+    /// <summary>
+    /// Applies conversation ownership rules while loading and updating messages.
+    /// </summary>
     public class MessagingService : IMessagingService
     {
         public const int MaxMessageLength = 4000;
@@ -25,6 +31,9 @@ namespace AdDiin.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Returns all conversations visible to the caller's role.
+        /// </summary>
         public async Task<List<Conversation>> GetUserConversationsAsync(int userId, bool isAdmin)
         {
             if (isAdmin)
@@ -70,6 +79,10 @@ namespace AdDiin.Services
             return conversation;
         }
 
+        /// <summary>
+        /// Loads a conversation after checking ownership and marks incoming
+        /// unread messages as read for the current participant.
+        /// </summary>
         public async Task<Conversation?> GetConversationWithMessagesAsync(int conversationId, int currentUserId, bool isAdmin)
         {
             var conversation = await _context.Conversations
@@ -81,6 +94,8 @@ namespace AdDiin.Services
 
             if (conversation == null) return null;
 
+            // Administrators can inspect support conversations; regular users
+            // may only access conversations that belong to their own account.
             if (!isAdmin && conversation.UserId != currentUserId)
             {
                 return null; // unauthorized
@@ -104,6 +119,9 @@ namespace AdDiin.Services
             return conversation;
         }
 
+        /// <summary>
+        /// Validates message size and participant access before persisting a message.
+        /// </summary>
         public async Task<Message?> SendMessageAsync(int conversationId, int senderId, string content, bool isAdmin)
         {
             if (string.IsNullOrWhiteSpace(content) || content.Trim().Length > MaxMessageLength)
@@ -129,6 +147,7 @@ namespace AdDiin.Services
                 conversation.AdminId = senderId;
             }
 
+            conversation.Status = "active";
             var message = new Message
             {
                 ConversationId = conversationId,
