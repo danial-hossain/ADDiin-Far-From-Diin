@@ -550,3 +550,34 @@ Uploaded files must not be trusted by extension alone. The server should validat
 ### Identity
 
 - **Route**: `/user-login`
+- **Alternative route**: `/Account/Login`
+- **Controller**: `AccountController.Login`
+- **View**: `AdDiin/Views/Account/Login.cshtml`
+- **Model**: `LoginViewModel`
+- **Access**: Anonymous users; authenticated users may be redirected
+
+### Purpose
+
+The login page authenticates a user with email and password and optionally preserves the session with Remember Me.
+
+### Input fields
+
+- Email address.
+- Password.
+- Remember Me checkbox.
+- Optional local return URL.
+
+### Login flow
+
+1. Visitor opens `/user-login`.
+2. The GET action renders the form.
+3. The visitor submits credentials.
+4. Model validation runs.
+5. Identity checks the credentials.
+6. A successful user is redirected to the safe return location or home.
+7. An administrator may be redirected to the admin dashboard.
+8. A failed attempt returns validation or authentication feedback.
+
+### Security rules
+
+Return URLs must be validated as local URLs before redirecting. Passwords must never be logged. Authentication cookies must remain HttpOnly and use the configured expiration policy. Login forms require antiforgery protection on POST.
