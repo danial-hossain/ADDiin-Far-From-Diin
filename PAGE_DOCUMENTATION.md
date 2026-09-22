@@ -458,3 +458,34 @@ Negative values should be rejected or normalized according to the view model con
 ---
 
 ## Page 10: Focus and Digital Shield
+
+### Identity
+
+- **Routes**: `/focus` and `/focus/shield`
+- **Controller**: `FocusController.Index` and `FocusController.Shield`
+- **Views**: `AdDiin/Views/Focus/Index.cshtml`, `AdDiin/Views/Focus/Shield.cshtml`
+- **Access**: Public
+
+### Purpose
+
+The Focus page provides a digital fasting or concentration timer, blocked-platform controls, extension guidance, and local browser settings. The Shield page displays the state associated with a blocked domain.
+
+### Focus page behavior
+
+- Starts and stops a focus timer.
+- Stores selected settings in browser-local state where supported.
+- Toggles blocked-platform options.
+- Provides extension setup or download information.
+- Redirects blocked navigation to the Shield page.
+
+### Shield page behavior
+
+The Shield page reads a `domain` query parameter and shows the visitor which domain was blocked or redirected. The value must be displayed safely and encoded as text.
+
+### QA checklist
+
+- Timer survives normal UI interactions.
+- Refresh behavior is intentional.
+- Local settings do not expose sensitive data.
+- A missing `domain` parameter has a useful fallback.
+- Domain text is safely encoded.
