@@ -1286,3 +1286,34 @@ Shows personal reminders, unread notification counts, categories, and notificati
 - Empty notifications have a clear empty state.
 - Unread count matches database state after refresh.
 
+---
+
+# Part Seven: AI and Communication
+
+## Page 33: Diin AI
+
+### Identity
+
+- **Route**: `/diin-ai`
+- **Controller**: `DiinAIController.Index`
+- **View**: `AdDiin/Views/DiinAI/Index.cshtml`
+- **Access**: Public interface; authenticated history
+- **API endpoints**: `/api/ai/ask`, `/api/ai/history`, `/api/ai/conversations`, `/api/ai/new-chat`
+
+### Purpose
+
+Provides an Islamic learning assistant for questions, explanations, and guided exploration.
+
+### Guest behavior
+
+Guests may ask questions without having a saved conversation history. The page should clearly distinguish temporary guest context from account-persisted history.
+
+### Authenticated behavior
+
+Authenticated users can load conversation history, view conversation lists, and start a new chat. User-owned conversation records must be filtered by the authenticated user.
+
+### Request flow
+
+1. Browser loads the page.
+2. Browser optionally loads the authenticated user’s conversation list.
+3. User enters a question.
