@@ -979,3 +979,34 @@ The controller must allow the request owner and authorized administrators only. 
 ---
 
 ## Page 24: Milad Edit
+
+### Identity
+
+- **Route**: `/Milad/Edit/{id}`
+- **Controller**: `MiladController.Edit`
+- **View**: `AdDiin/Views/Milad/Edit.cshtml`
+- **Model**: `MiladCreateViewModel`
+- **Access**: Authenticated owner with a pending request
+
+### Purpose
+
+Allows an owner to correct or update a pending request before administrator processing.
+
+### Rules
+
+1. The request must exist.
+2. The current user must own it unless an explicit admin rule applies.
+3. The request must still be pending.
+4. The posted values must pass validation.
+5. The owner identity and workflow status must not be overwritten by form values.
+
+### QA checklist
+
+- Processed requests cannot be edited.
+- Owner checks happen on both GET and POST.
+- Hidden IDs are validated against route and database values.
+- Successful edits return to a meaningful page.
+
+### Routing note
+
+The named `/milad` route currently points to `ActivitiesController.Index`, not `MiladController.Index`. The named `/my-milad-requests` route currently points to `ActivitiesController.MyActivities`. These aliases should be reviewed before presenting them as Milad shortcuts.
