@@ -1899,3 +1899,34 @@ Suggested commit message:
 ## Commit group E: Programs and Milad
 
 Suggested files:
+
+- `Views/Activities/Index.cshtml`
+- `Views/Activities/Details.cshtml`
+- `Views/Activities/MyActivities.cshtml`
+- `Views/Milad/Create.cshtml`
+- `Views/Milad/MyRequests.cshtml`
+- `Views/Milad/Details.cshtml`
+- `Views/Milad/Edit.cshtml`
+
+Suggested commit message:
+
+`feat: add community program and Milad request workflows`
+
+## Commit group F: Zakat and donations
+
+Suggested files:
+
+- `Views/Zakat/Index.cshtml`
+- `Views/Donate/Index.cshtml`
+- `Views/Donate/Success.cshtml`
+- `Views/Donate/Fail.cshtml`
+- `Views/Donate/Cancel.cshtml`
+- `Views/Donate/MyDonations.cshtml`
+- `Views/Donate/Receipt.cshtml`
+
+Suggested commit message:
+
+`feat: add Zakat and donation payment pages`
+
+## Commit group G: Personal worship tools
+
