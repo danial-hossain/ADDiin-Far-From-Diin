@@ -4,6 +4,10 @@ using System.Text.Json;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines the image, text, and health-check operations exposed by the
+    /// remote halal-analysis backend.
+    /// </summary>
     public interface IHalalDetectorService
     {
         Task<HalalDetectorResult> AnalyzeProductImageAsync(IFormFile? imageFile, string? rawText = null);
@@ -11,6 +15,10 @@ namespace AdDiin.Services
         Task<(bool IsHealthy, string Details)> CheckHealthAsync();
     }
 
+    /// <summary>
+    /// Validates analyzer input, forwards it to the AI backend, and normalizes
+    /// provider responses for the product-analyzer UI.
+    /// </summary>
     public class HalalDetectorService : IHalalDetectorService
     {
         private readonly HttpClient _httpClient;
@@ -19,6 +27,7 @@ namespace AdDiin.Services
 
         private static readonly string[] AllowedContentTypes = { "image/jpeg", "image/png", "image/webp", "image/jpg" };
         private static readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+        // This limit is enforced before reading the upload into memory.
         private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
 
         public HalalDetectorService(HttpClient httpClient, IConfiguration configuration, ILogger<HalalDetectorService> logger)
@@ -28,6 +37,9 @@ namespace AdDiin.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Checks whether the configured backend can answer its health endpoint.
+        /// </summary>
         public async Task<(bool IsHealthy, string Details)> CheckHealthAsync()
         {
             var backendUrl = _configuration["HalalDetector:BackendUrl"]
@@ -63,9 +75,13 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Validates an ingredient-label image and sends it as multipart form data.
+        /// The optional text parameter is retained for the existing API contract.
+        /// </summary>
         public async Task<HalalDetectorResult> AnalyzeProductImageAsync(IFormFile? imageFile, string? rawText = null)
         {
-            // 1. Resolve Backend URL
+            // 1. Resolve the backend URL from the supported configuration names.
             var backendUrl = _configuration["HalalDetector:BackendUrl"]
                              ?? _configuration["HALAL_DETECTOR_BACKEND_URL"]
                              ?? _configuration["AdDiinAI:BaseUrl"]
@@ -83,7 +99,7 @@ namespace AdDiin.Services
                 };
             }
 
-            // 2. Validate Image File (if provided)
+            // 2. Reject invalid uploads before any network request or byte copy.
             if (imageFile != null)
             {
                 if (imageFile.Length == 0)
@@ -131,7 +147,7 @@ namespace AdDiin.Services
                 };
             }
 
-            // 3. Prepare Multipart Form Data Request to Remote FastAPI AI Backend
+            // 3. Prepare the multipart request expected by the remote FastAPI service.
             try
             {
                 var endpoint = $"{backendUrl.TrimEnd('/')}/api/analyze-product";
@@ -228,6 +244,9 @@ namespace AdDiin.Services
             };
         }
 
+        /// <summary>
+        /// Validates manually entered ingredients and sends JSON to the backend.
+        /// </summary>
         public async Task<HalalDetectorResult> AnalyzeProductTextAsync(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
