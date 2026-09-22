@@ -2083,3 +2083,33 @@ Inspect provider callback verification, transaction lookup, status transition ru
 Check hub URL, authentication, connection start errors, group membership, conversation authorization, serialization shape, and reconnect handling. Confirm that the ordinary form fallback still works.
 
 ---
+
+# Part Fourteen: Documentation Change Rules
+
+1. Add a page section whenever a new Razor view is created.
+2. Update the route table whenever a named alias changes.
+3. Record authorization changes explicitly.
+4. Record new POST, AJAX, and SignalR actions.
+5. Record new model or service dependencies.
+6. Record user-owned data boundaries.
+7. Add a QA checklist for every state-changing workflow.
+8. Keep payment callbacks documented even when they have no Razor view.
+9. Keep shared layout changes separate from page-specific changes when possible.
+10. Do not add empty filler sections only to increase line count.
+
+---
+
+# Final Review Checklist
+
+- [ ] Every Razor view has a page or infrastructure section.
+- [ ] Every named public route is listed.
+- [ ] Conventional routes are not accidentally omitted.
+- [ ] Anonymous, user, and admin access are distinguished.
+- [ ] Forms and AJAX endpoints are recorded.
+- [ ] SignalR hub behavior is recorded.
+- [ ] User-owned data is identified.
+- [ ] Payment callback behavior is identified.
+- [ ] Known route mismatches are visible.
+- [ ] Each page has a practical QA checklist.
+- [ ] Each feature group has a suggested Git commit boundary.
+- [ ] Documentation is updated when page behavior changes.
