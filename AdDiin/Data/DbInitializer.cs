@@ -4,8 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Data
 {
+    /// <summary>
+    /// Applies the current schema and inserts the small baseline dataset used
+    /// by a new or demonstration installation.
+    /// </summary>
     public static class DbInitializer
     {
+        /// <summary>
+        /// Creates a scoped initialization operation so startup resolves the
+        /// database and Identity services with the same lifetime rules as a request.
+        /// </summary>
+        /// <param name="serviceProvider">The application's root service provider.</param>
         public static async Task SeedDatabaseAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
