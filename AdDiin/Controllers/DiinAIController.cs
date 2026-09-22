@@ -37,16 +37,27 @@ namespace AdDiin.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Message))
             {
-                return Json(new { success = false, message = "Question cannot be empty" });
+                return Json(new
+                {
+                    success = false,
+                    message = "Question cannot be empty"
+                });
             }
 
-            var (answer, sources) = await _aiService.AskIslamicQuestionAsync(request.Message, request.History);
+            var (answer, sources) =
+                await _aiService.AskIslamicQuestionAsync(
+                    request.Message,
+                    request.History);
 
             return Json(new
             {
                 success = true,
                 response = answer,
-                sources = sources.Select(s => new { source = s.Source, reference = s.Reference }),
+                sources = sources.Select(s => new
+                {
+                    source = s.Source,
+                    reference = s.Reference
+                }),
                 contactFallback = DiinAIService.IsContactFallback(answer),
                 timestamp = DateTime.UtcNow.ToString("o")
             });
@@ -62,7 +73,10 @@ namespace AdDiin.Controllers
         {
             if (string.IsNullOrWhiteSpace(request?.Query))
             {
-                return BadRequest(new { error = "Query cannot be empty" });
+                return BadRequest(new
+                {
+                    error = "Query cannot be empty"
+                });
             }
 
             var userId = GetCurrentUserId();
@@ -74,10 +88,18 @@ namespace AdDiin.Controllers
             if (userId.HasValue)
             {
                 conversation = request.ConversationId.HasValue
-                    ? await GetConversationAsync(userId.Value, request.ConversationId.Value)
+                    ? await GetConversationAsync(
+                        userId.Value,
+                        request.ConversationId.Value)
                     : null;
-                conversation ??= await GetOrCreateActiveConversationAsync(userId.Value);
-                await ActivateConversationAsync(userId.Value, conversation);
+
+                conversation ??=
+                    await GetOrCreateActiveConversationAsync(userId.Value);
+
+                await ActivateConversationAsync(
+                    userId.Value,
+                    conversation);
+
                 history = conversation.Messages
                     .OrderBy(message => message.CreatedAt)
                     .TakeLast(20)
@@ -96,7 +118,10 @@ namespace AdDiin.Controllers
                 });
             }
 
-            var (answer, sources) = await _aiService.AskIslamicQuestionAsync(request.Query, history);
+            var (answer, sources) =
+                await _aiService.AskIslamicQuestionAsync(
+                    request.Query,
+                    history);
 
             if (conversation != null)
             {
@@ -108,10 +133,14 @@ namespace AdDiin.Controllers
                     Content = answer,
                     SourcesJson = JsonSerializer.Serialize(sources)
                 });
+
                 conversation.Title = conversation.Title == "New Diin AI chat"
-                    ? request.Query.Trim()[..Math.Min(request.Query.Trim().Length, 255)]
+                    ? request.Query.Trim()[
+                        ..Math.Min(request.Query.Trim().Length, 255)]
                     : conversation.Title;
+
                 conversation.UpdatedAt = DateTime.UtcNow;
+
                 await _context.SaveChangesAsync();
             }
 
@@ -126,8 +155,11 @@ namespace AdDiin.Controllers
                     Text = source.Text
                 }).ToList()
             };
+
             apiResponse.ConversationId = conversation?.Id;
-            apiResponse.ContactFallback = DiinAIService.IsContactFallback(answer);
+            apiResponse.ContactFallback =
+                DiinAIService.IsContactFallback(answer);
+
             return Ok(apiResponse);
         }
 
@@ -136,17 +168,25 @@ namespace AdDiin.Controllers
         /// <summary>
         /// Returns the selected authenticated conversation or the active one.
         /// </summary>
-        public async Task<IActionResult> History([FromQuery] int? conversationId = null)
+        public async Task<IActionResult> History(
+            [FromQuery] int? conversationId = null)
         {
             var userId = GetCurrentUserId();
+
             if (!userId.HasValue)
             {
-                return Ok(new { authenticated = false, conversationId = (int?)null, messages = Array.Empty<object>() });
+                return Ok(new
+                {
+                    authenticated = false,
+                    conversationId = (int?)null,
+                    messages = Array.Empty<object>()
+                });
             }
 
             var conversation = await _context.DiinAIConversations
                 .Include(item => item.Messages)
-                .Where(item => item.UserId == userId.Value &&
+                .Where(item =>
+                    item.UserId == userId.Value &&
                     (!conversationId.HasValue
                         ? item.IsActive
                         : item.Id == conversationId.Value))
@@ -161,7 +201,8 @@ namespace AdDiin.Controllers
                     content = message.Content,
                     sources = string.IsNullOrWhiteSpace(message.SourcesJson)
                         ? Array.Empty<object>()
-                        : JsonSerializer.Deserialize<object[]>(message.SourcesJson) ?? Array.Empty<object>(),
+                        : JsonSerializer.Deserialize<object[]>(
+                            message.SourcesJson) ?? Array.Empty<object>(),
                     timestamp = message.CreatedAt
                 })
                 .Cast<object>()
@@ -183,9 +224,14 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> Conversations()
         {
             var userId = GetCurrentUserId();
+
             if (!userId.HasValue)
             {
-                return Ok(new { authenticated = false, conversations = Array.Empty<object>() });
+                return Ok(new
+                {
+                    authenticated = false,
+                    conversations = Array.Empty<object>()
+                });
             }
 
             var conversations = await _context.DiinAIConversations
@@ -200,7 +246,11 @@ namespace AdDiin.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(new { authenticated = true, conversations });
+            return Ok(new
+            {
+                authenticated = true,
+                conversations
+            });
         }
 
         [HttpPost]
@@ -211,11 +261,16 @@ namespace AdDiin.Controllers
         public async Task<IActionResult> NewChat()
         {
             var userId = GetCurrentUserId();
+
             if (userId.HasValue)
             {
-                var activeConversations = await _context.DiinAIConversations
-                    .Where(item => item.UserId == userId.Value && item.IsActive)
-                    .ToListAsync();
+                var activeConversations =
+                    await _context.DiinAIConversations
+                        .Where(item =>
+                            item.UserId == userId.Value &&
+                            item.IsActive)
+                        .ToListAsync();
+
                 foreach (var conversation in activeConversations)
                 {
                     conversation.IsActive = false;
@@ -225,22 +280,32 @@ namespace AdDiin.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Ok(new { success = true });
+            return Ok(new
+            {
+                success = true
+            });
         }
 
         private int? GetCurrentUserId()
         {
             // Identity stores the user key in the standard NameIdentifier claim.
-            var value = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.TryParse(value, out var userId) ? userId : null;
+            var value = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            return int.TryParse(value, out var userId)
+                ? userId
+                : null;
         }
 
-        private async Task<DiinAIConversation> GetOrCreateActiveConversationAsync(int userId)
+        private async Task<DiinAIConversation>
+            GetOrCreateActiveConversationAsync(int userId)
         {
             // Only one active conversation is selected for the chat composer.
             var conversation = await _context.DiinAIConversations
                 .Include(item => item.Messages)
-                .Where(item => item.UserId == userId && item.IsActive)
+                .Where(item =>
+                    item.UserId == userId &&
+                    item.IsActive)
                 .OrderByDescending(item => item.UpdatedAt)
                 .FirstOrDefaultAsync();
 
@@ -249,25 +314,41 @@ namespace AdDiin.Controllers
                 return conversation;
             }
 
-            conversation = new DiinAIConversation { UserId = userId };
+            conversation = new DiinAIConversation
+            {
+                UserId = userId
+            };
+
             _context.DiinAIConversations.Add(conversation);
+
             await _context.SaveChangesAsync();
+
             return conversation;
         }
 
-        private Task<DiinAIConversation?> GetConversationAsync(int userId, int conversationId)
+        private Task<DiinAIConversation?> GetConversationAsync(
+            int userId,
+            int conversationId)
         {
             return _context.DiinAIConversations
                 .Include(item => item.Messages)
-                .FirstOrDefaultAsync(item => item.UserId == userId && item.Id == conversationId);
+                .FirstOrDefaultAsync(item =>
+                    item.UserId == userId &&
+                    item.Id == conversationId);
         }
 
-        private async Task ActivateConversationAsync(int userId, DiinAIConversation selectedConversation)
+        private async Task ActivateConversationAsync(
+            int userId,
+            DiinAIConversation selectedConversation)
         {
             // Selecting a saved thread deactivates the other threads for this user.
-            var activeConversations = await _context.DiinAIConversations
-                .Where(item => item.UserId == userId && item.IsActive && item.Id != selectedConversation.Id)
-                .ToListAsync();
+            var activeConversations =
+                await _context.DiinAIConversations
+                    .Where(item =>
+                        item.UserId == userId &&
+                        item.IsActive &&
+                        item.Id != selectedConversation.Id)
+                    .ToListAsync();
 
             foreach (var conversation in activeConversations)
             {
@@ -284,7 +365,9 @@ namespace AdDiin.Controllers
         /// </summary>
         public async Task<IActionResult> Health()
         {
-            var (isHealthy, details) = await _aiService.CheckHealthAsync();
+            var (isHealthy, details) =
+                await _aiService.CheckHealthAsync();
+
             return Ok(new
             {
                 connected = isHealthy,

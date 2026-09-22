@@ -1,4 +1,5 @@
 ﻿using AdDiin.Models.Entities;
+using AdDiin.Models;
 
 namespace AdDiin.Models.ViewModels
 {
@@ -16,6 +17,7 @@ namespace AdDiin.Models.ViewModels
         public List<AdhkarItemViewModel> EveningAdhkar { get; set; } = new();
         public List<RuqyahItemViewModel> RuqyahRoutines { get; set; } = new();
         public List<DailyProgressSummary> WeeklyProgress { get; set; } = new();
+        public IReadOnlyList<Hadith> DailyHadiths { get; set; } = Array.Empty<Hadith>();
         
         public int TotalDhikrCountToday { get; set; }
         public int DailyProgressPercent { get; set; }
