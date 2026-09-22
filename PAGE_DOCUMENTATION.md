@@ -1500,3 +1500,34 @@ Provides administrative CRUD and visibility management for prayer schedules.
 Prayer names are unique in the EF model. Display order controls public presentation. Active visibility controls whether a record is exposed to visitors.
 
 ### QA checklist
+
+- Create validates required fields.
+- Duplicate prayer names are rejected.
+- Edit cannot silently update another record.
+- Delete behavior is intentional.
+- Toggle updates public visibility.
+- Admin form mutations have antiforgery protection.
+
+---
+
+## Page 38: Admin Events
+
+### Identity
+
+- **Route**: `/Admin/Events`
+- **Controller**: `AdminController.Events`
+- **View**: `AdDiin/Views/Admin/Events.cshtml`
+- **Model**: `List<IslamicEvent>`
+- **Access**: Admin role
+
+### Purpose
+
+Manages Islamic events displayed on public pages and the calendar.
+
+### Actions
+
+- `EventCreate` creates an event.
+- `EventEdit` updates an event.
+- `EventToggle` changes active state.
+- `EventDelete` deletes an event.
+- GET filters event records.
