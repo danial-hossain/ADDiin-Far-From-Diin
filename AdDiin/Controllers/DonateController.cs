@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdDiin.Controllers
 {
+    /// <summary>
+    /// Coordinates donation entry, payment callbacks, and donor-facing receipts.
+    /// </summary>
     public class DonateController : Controller
     {
         private readonly IDonationService _donationService;
@@ -56,6 +59,8 @@ namespace AdDiin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // The donation is persisted before redirecting so gateway callbacks can
+        // always resolve the transaction supplied by the provider.
         public async Task<IActionResult> Initiate(DonationInitiateViewModel model)
         {
             if (!ModelState.IsValid)
@@ -109,7 +114,8 @@ namespace AdDiin.Controllers
             return await Initiate(model);
         }
 
-        // ================= SSLCOMMERZ CALLBACKS =================
+        // Gateway callbacks intentionally bypass the browser form token because
+        // they are server-to-server posts from the payment provider.
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SslSuccess([FromForm] IFormCollection form)
