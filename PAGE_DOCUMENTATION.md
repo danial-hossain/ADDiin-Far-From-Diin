@@ -1378,3 +1378,33 @@ Provides a support inbox and live conversation interface between users and admin
 8. Browser updates the conversation and unread state.
 
 ### Security rules
+
+Conversation membership must be checked for every read and write. A user must not be able to select another user’s conversation by changing an ID in the browser. SignalR hub authorization and server-side membership checks must agree.
+
+### QA checklist
+
+- Anonymous users are redirected to login.
+- User A cannot read User B conversations.
+- Empty messages are rejected.
+- HTML is encoded to prevent message injection.
+- SignalR reconnect behavior is safe.
+- Fallback form works without a live connection.
+- Closed conversations cannot receive messages unless policy allows reopening.
+
+---
+
+# Part Eight: Admin Pages
+
+## Administrator access model
+
+`AdminController` is protected by `[Authorize(Roles = "Admin")]`. Every admin page and mutation must preserve this boundary. Admin layouts should never be treated as a security boundary by themselves; authorization belongs in the controller and service layer.
+
+## Page 35: Admin Dashboard
+
+### Identity
+
+- **Routes**: `/admin/panel`, `/admin-dashboard`
+- **Controller**: `AdminController.Dashboard`
+- **View**: `AdDiin/Views/Admin/Dashboard.cshtml`
+- **Model**: `AdminDashboardViewModel`
+- **Access**: Admin role
