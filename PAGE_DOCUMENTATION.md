@@ -274,3 +274,34 @@ The named `/events` route in `Program.cs` currently points to `IslamicCalendarCo
 
 ## Page 06: Event Details
 
+### Identity
+
+- **Route**: `/Events/Details/{id}`
+- **Controller**: `EventsController.Details`
+- **View**: `AdDiin/Views/Events/Details.cshtml`
+- **Model**: `IslamicEvent`
+- **Access**: Public
+
+### Purpose
+
+The details page gives a visitor complete information about one Islamic event and may direct the visitor to a Milad or Dua booking flow.
+
+### Data shown
+
+- Event name.
+- Event type.
+- Gregorian date.
+- Hijri date.
+- Description.
+- Related action links.
+
+### Failure behavior
+
+An unknown identifier should result in a not-found response or a controlled error page, not a blank page or an exception shown to the visitor.
+
+### QA checklist
+
+- Valid event identifiers render correctly.
+- Invalid identifiers return a safe not-found result.
+- Event details are escaped and safe.
+- Booking links preserve relevant context where needed.
