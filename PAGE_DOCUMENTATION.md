@@ -1133,3 +1133,33 @@ Explains that the visitor cancelled or abandoned the provider payment flow.
 
 ## Page 29: My Donations
 
+### Identity
+
+- **Route**: `/my-donations`
+- **Controller**: `DonateController.MyDonations`
+- **View**: `AdDiin/Views/Donate/MyDonations.cshtml`
+- **Model**: `List<Donation>`
+- **Access**: Authenticated users
+
+### Purpose
+
+Shows donation history for the signed-in user and links to receipts.
+
+### Data isolation
+
+The server must filter history by the current authenticated user. A transaction ID may locate a receipt, but it must not bypass ownership or receipt access policy.
+
+### QA checklist
+
+- Anonymous visitor is redirected to login.
+- Only the current user’s records appear.
+- Payment statuses are understandable.
+- Receipt links reference the correct transaction.
+- Empty history has a donation call-to-action.
+
+---
+
+## Page 30: Donation Receipt
+
+### Identity
+
