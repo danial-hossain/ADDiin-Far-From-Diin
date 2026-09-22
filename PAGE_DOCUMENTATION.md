@@ -1623,3 +1623,34 @@ Manual and provider donations should remain distinguishable. Payment status chan
 - **Access**: Admin role
 
 ### Purpose
+
+Manages community programs, program images, categories, schedules, capacity, visibility, and statistics.
+
+### Actions
+
+- `ActivityCreate` creates a program.
+- `ActivityEdit` updates a program.
+- `ActivityToggle` changes visibility.
+- `ActivityDelete` removes a program.
+- GET filters by search and category.
+- Image upload uses Cloudinary integration where configured.
+
+### Upload rules
+
+The server must validate image size and type. Cloudinary failures must not leave a public activity pointing to an invalid image. Existing images should be preserved or cleaned up according to an explicit policy.
+
+### QA checklist
+
+- Non-admin cannot upload or mutate activities.
+- Required title and date fields validate.
+- Image upload rejects invalid files.
+- Toggle updates public visibility.
+- Existing registrations are handled when an activity is deleted.
+- Category filters match stored data.
+
+---
+
+## Page 42: Admin Registrations
+
+### Identity
+
