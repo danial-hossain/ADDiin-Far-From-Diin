@@ -2052,3 +2052,34 @@ Suggested commit message:
 
 ## Page returns 404
 
+Check the named route in `Program.cs`, the controller action name, the route parameter type, and whether a matching Razor view exists. Confirm that a more specific route is not being shadowed by another route.
+
+## Page returns 500 during view rendering
+
+Check the model type, null collections, property names used by Razor, missing partial views, and incorrect layout paths. Inspect the development exception output only in a safe development environment.
+
+## Form posts but nothing changes
+
+Check the form action, HTTP method, antiforgery token, model binding names, controller validation, and whether the current user is authorized. Review the server response instead of assuming the browser submitted successfully.
+
+## AJAX button appears stuck
+
+Check loading-state cleanup in both success and error paths. Confirm the endpoint URL, HTTP method, JSON shape, antiforgery header strategy, and response status. A failed request must restore the button and explain the failure.
+
+## User sees another user’s data
+
+Treat this as a critical authorization defect. Verify that every read and write query filters by the current authenticated user and that route IDs are checked against ownership. Do not rely on hidden inputs or client-side filtering.
+
+## Admin page accessible to ordinary user
+
+Verify `[Authorize(Roles = "Admin")]` on the controller or action, inspect policy configuration, and test the direct URL rather than only the navigation menu. Hidden links are not authorization.
+
+## Payment result is wrong
+
+Inspect provider callback verification, transaction lookup, status transition rules, duplicate callback handling, and whether browser query parameters are being trusted. Payment state must come from the provider and server-side record.
+
+## SignalR messages do not appear
+
+Check hub URL, authentication, connection start errors, group membership, conversation authorization, serialization shape, and reconnect handling. Confirm that the ordinary form fallback still works.
+
+---
