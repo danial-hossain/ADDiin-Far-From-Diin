@@ -1041,3 +1041,33 @@ Begins a donation workflow by selecting a category, entering an amount, and supp
 ### Payment flow
 
 1. Visitor selects a donation category.
+2. Visitor enters an amount.
+3. Server validates currency and donor fields.
+4. Donation record is created with an initial state.
+5. SSLCommerz or the configured payment provider is initiated.
+6. Visitor is redirected to payment or simulated success behavior.
+7. Provider callback updates the final state.
+8. Visitor returns to success, failure, or cancellation page.
+
+### Security rules
+
+Payment status must be determined by verified provider callbacks, not by a browser-controlled success parameter. Transaction IDs must be unique and should be indexed. Secrets must remain in configuration or user secrets.
+
+### QA checklist
+
+- Zero and negative amounts are rejected.
+- Currency parsing is culture-safe.
+- Anonymous donations do not accidentally expose personal information.
+- Duplicate callback handling is idempotent.
+- Provider failure returns a usable failure page.
+- User return links do not expose internal payment data.
+
+---
+
+## Page 26: Donation Success
+
+### Identity
+
+- **Route**: `/donate/success`
+- **Controller**: `DonateController.Success`
+- **View**: `AdDiin/Views/Donate/Success.cshtml`
