@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdDiin.Controllers
 {
+    /// <summary>
+    /// Exposes the product analyzer page and its image, text, and health endpoints.
+    /// </summary>
     public class ProductAnalyzerController : Controller
     {
         private readonly IHalalDetectorService _halalDetectorService;
@@ -25,6 +28,9 @@ namespace AdDiin.Controllers
 
         [HttpPost]
         [Route("api/product-analyzer/analyze")]
+        /// <summary>
+        /// Accepts an ingredient-label image and returns the normalized AI result.
+        /// </summary>
         public async Task<IActionResult> AnalyzeProduct([FromForm] IFormFile? image, [FromForm] string? rawText)
         {
             try
@@ -60,6 +66,9 @@ namespace AdDiin.Controllers
 
         [HttpPost]
         [Route("api/product-analyzer/analyze-text")]
+        /// <summary>
+        /// Accepts a manually entered ingredient list as JSON.
+        /// </summary>
         public async Task<IActionResult> AnalyzeProductText([FromBody] ProductTextAnalysisRequest request)
         {
             try
@@ -104,6 +113,9 @@ namespace AdDiin.Controllers
 
         [HttpGet]
         [Route("api/product-analyzer/health")]
+        /// <summary>
+        /// Reports backend connectivity without starting an analysis request.
+        /// </summary>
         public async Task<IActionResult> Health()
         {
             var (isHealthy, details) = await _halalDetectorService.CheckHealthAsync();
