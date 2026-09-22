@@ -305,3 +305,34 @@ An unknown identifier should result in a not-found response or a controlled erro
 - Invalid identifiers return a safe not-found result.
 - Event details are escaped and safe.
 - Booking links preserve relevant context where needed.
+
+---
+
+## Page 07: Prayer Times
+
+### Identity
+
+- **Route**: `/prayer-times`
+- **Controller**: `PrayerTimesController.Index`
+- **View**: `AdDiin/Views/PrayerTimes/Index.cshtml`
+- **Model**: `IEnumerable<PrayerTime>` or page-specific data
+- **Access**: Public
+
+### Purpose
+
+The Prayer Times page displays daily prayer schedules and helps visitors identify the next prayer.
+
+### Main features
+
+1. Fard prayer group.
+2. Nafl prayer group.
+3. Bengali and English labels where provided.
+4. Division or location selector.
+5. Next-prayer countdown.
+6. Live time refresh.
+7. Location detection controls.
+8. Azan sound controls.
+9. Jamaat or display ordering information.
+
+### Request flow
+
