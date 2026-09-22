@@ -31,13 +31,13 @@
                         </div>
                         <div class="space-y-1">
                             <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md uppercase">
-                                @reg.Activity.Category
+                                @(reg.Activity?.Category ?? "Activity")
                             </span>
-                            <h3 class="font-bold text-slate-900 text-base">@reg.Activity.Title</h3>
+                            <h3 class="font-bold text-slate-900 text-base">@(reg.Activity?.Title ?? "Activity unavailable")</h3>
                             <div class="flex flex-wrap gap-4 text-xs text-slate-500 pt-1">
-                                <span><i class="bi bi-calendar-event text-emerald-600"></i> @(reg.Activity.ProgramDate?.ToString("MMM dd, yyyy") ?? "TBA")</span>
-                                <span><i class="bi bi-clock text-emerald-600"></i> @reg.Activity.StartTime</span>
-                                <span><i class="bi bi-geo-alt text-emerald-600"></i> @reg.Activity.Location</span>
+                                <span><i class="bi bi-calendar-event text-emerald-600"></i> @(reg.Activity?.ProgramDate?.ToString("MMM dd, yyyy") ?? "TBA")</span>
+                                <span><i class="bi bi-clock text-emerald-600"></i> @(reg.Activity?.StartTime ?? "TBA")</span>
+                                <span><i class="bi bi-geo-alt text-emerald-600"></i> @(reg.Activity?.Location ?? "Location unavailable")</span>
                             </div>
                         </div>
                     </div>
