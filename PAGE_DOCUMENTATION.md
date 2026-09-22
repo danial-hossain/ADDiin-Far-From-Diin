@@ -1746,3 +1746,33 @@ The ordinary layout is the shell for public and authenticated user pages.
 
 ## Admin Layout: `_AdminLayout.cshtml`
 
+### Purpose
+
+Provides navigation and shell behavior for administrator pages.
+
+### Responsibilities
+
+- Render administrator navigation.
+- Link to dashboard, users, prayer times, events, Milads, donations, activities, registrations, and messages.
+- Link back to the public platform.
+- Display admin feedback toasts.
+- Maintain contact inbox badge behavior.
+- Include admin-specific scripts and styles.
+
+### Security checklist
+
+The layout must never be the only authorization check. Direct URLs and POST endpoints must still be protected by controller or service authorization.
+
+## Notification Toast: `_NotificationToast.cshtml`
+
+Reads `SuccessMessage`, `ErrorMessage`, and `InfoMessage` from `TempData` and renders them for the next page response. Messages should be encoded and should not contain raw untrusted HTML.
+
+## Validation Scripts: `_ValidationScriptsPartial.cshtml`
+
+Loads client-side validation support. Client validation improves usability but does not replace server-side validation.
+
+## Error View: `Shared/Error.cshtml`
+
+Displays a controlled error page with a request ID and a safe link back to Home. Production users should not see stack traces or configuration values.
+
+## View Start: `_ViewStart.cshtml`
