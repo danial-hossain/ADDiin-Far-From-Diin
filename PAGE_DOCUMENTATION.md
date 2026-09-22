@@ -1470,3 +1470,33 @@ The last administrator safeguard must prevent removal of the final usable admin 
 - Blocked users cannot authenticate when policy requires it.
 - Deletion error is handled without partial corruption.
 - Role changes take effect on the correct user.
+
+---
+
+## Page 37: Admin Prayer Times
+
+### Identity
+
+- **Route**: `/Admin/PrayerTimes`
+- **Controller**: `AdminController.PrayerTimes`
+- **View**: `AdDiin/Views/Admin/PrayerTimes.cshtml`
+- **Model**: `List<PrayerTime>`
+- **Access**: Admin role
+
+### Purpose
+
+Provides administrative CRUD and visibility management for prayer schedules.
+
+### Actions
+
+- `PrayerTimeCreate` creates a record.
+- `PrayerTimeEdit` updates a record.
+- `PrayerTimeToggle` changes visibility.
+- `PrayerTimeDelete` removes a record.
+- GET filters records.
+
+### Data rules
+
+Prayer names are unique in the EF model. Display order controls public presentation. Active visibility controls whether a record is exposed to visitors.
+
+### QA checklist
