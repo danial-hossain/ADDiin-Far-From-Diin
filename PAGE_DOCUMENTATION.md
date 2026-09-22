@@ -1071,3 +1071,34 @@ Payment status must be determined by verified provider callbacks, not by a brows
 - **Route**: `/donate/success`
 - **Controller**: `DonateController.Success`
 - **View**: `AdDiin/Views/Donate/Success.cshtml`
+- **Model**: `DonationSuccessViewModel`
+- **Access**: Public result page, subject to transaction lookup rules
+
+### Purpose
+
+Confirms a completed donation and shows transaction, amount, category, donor, payment method, date, and status information.
+
+### QA checklist
+
+- Success is shown only after a verified status.
+- Transaction IDs are escaped.
+- Receipt links use the correct transaction.
+- Anonymous donation display follows privacy expectations.
+- Refreshing the page does not create another donation.
+
+---
+
+## Page 27: Donation Failure
+
+### Identity
+
+- **Route**: `/Donate/Fail?tranId=...`
+- **Controller**: `DonateController.Fail`
+- **View**: `AdDiin/Views/Donate/Fail.cshtml`
+- **Access**: Public result page
+
+### Purpose
+
+Explains that payment did not complete and gives the visitor a safe route back to donation.
+
+### QA checklist
