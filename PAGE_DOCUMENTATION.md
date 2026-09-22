@@ -1439,3 +1439,34 @@ Summarizes platform activity and gives administrators links to operational modul
 
 ## Page 36: Admin Users
 
+### Identity
+
+- **Route**: `/Admin/Users`
+- **Controller**: `AdminController.Users`
+- **View**: `AdDiin/Views/Admin/Users.cshtml`
+- **Model**: `AdminUsersViewModel`
+- **Access**: Admin role
+
+### Purpose
+
+Allows administrators to search users, inspect activity, toggle account state, remove users, and update roles.
+
+### Actions
+
+- `ToggleUser` blocks or unblocks a user.
+- `DeleteUser` removes a user where allowed.
+- `UpdateUserRole` changes the role.
+- GET filters search and status.
+
+### Safety rules
+
+The last administrator safeguard must prevent removal of the final usable admin account. Role changes must be audited where the application supports audit data. Deletion behavior must respect related donations, messages, registrations, and logs.
+
+### QA checklist
+
+- Non-admin cannot call mutation endpoints.
+- Search is safely parameterized.
+- Last-admin protection works.
+- Blocked users cannot authenticate when policy requires it.
+- Deletion error is handled without partial corruption.
+- Role changes take effect on the correct user.
