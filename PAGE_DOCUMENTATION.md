@@ -1930,3 +1930,33 @@ Suggested commit message:
 
 ## Commit group G: Personal worship tools
 
+Suggested files:
+
+- `Views/MyDeen/Index.cshtml`
+- `Views/Notifications/Index.cshtml`
+- `Views/Focus/Index.cshtml`
+- `Views/Focus/Shield.cshtml`
+
+Suggested commit message:
+
+`feat: add personal Deen tracking notifications and focus tools`
+
+## Commit group H: AI and product analysis
+
+Suggested files:
+
+- `Views/DiinAI/Index.cshtml`
+- `Views/ProductAnalyzer/Index.cshtml`
+- Related API controllers and services.
+
+Suggested commit message:
+
+`feat: add Islamic assistant and product analysis interfaces`
+
+## Commit group I: Messaging
+
+Suggested files:
+
+- `Views/Messages/Index.cshtml`
+- `Views/Admin/Messages.cshtml`
+- `Views/Shared/_AdminLayout.cshtml`
