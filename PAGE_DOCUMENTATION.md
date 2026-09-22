@@ -826,3 +826,34 @@ Displays active community programs and supports category and search filtering.
 ### Purpose
 
 Shows the full information for one program and lets a user register.
+
+### Data shown
+
+- Program title.
+- Image.
+- Description.
+- Date and time.
+- Location.
+- Organizer.
+- Capacity.
+- Registration status.
+
+### Registration flow
+
+1. Visitor opens an activity.
+2. Server loads the activity by integer ID.
+3. View displays the registration form.
+4. Authenticated users may have details prefilled.
+5. Visitor submits registration.
+6. Server checks activity availability and duplicate registration.
+7. Registration is created or a validation message is returned.
+
+### QA checklist
+
+- Nonexistent activity IDs return not found.
+- Inactive activities cannot receive new registrations.
+- Capacity limits are enforced server-side.
+- Duplicate registrations are blocked.
+- Guest behavior is consistent with the controller.
+- Registration POST has antiforgery protection.
+
