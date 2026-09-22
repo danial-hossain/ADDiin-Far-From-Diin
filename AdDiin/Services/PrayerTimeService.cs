@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines queries and administrative operations for prayer schedules.
+    /// </summary>
     public interface IPrayerTimeService
     {
         Task<List<PrayerTime>> GetAllAsync();
@@ -18,6 +21,9 @@ namespace AdDiin.Services
         Task<(PrayerTime? NextPrayer, TimeSpan TimeRemaining)> GetNextPrayerAsync();
     }
 
+    /// <summary>
+    /// Loads categorized prayer times and calculates the next active fard prayer.
+    /// </summary>
     public class PrayerTimeService : IPrayerTimeService
     {
         private readonly ApplicationDbContext _context;
@@ -34,6 +40,9 @@ namespace AdDiin.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Returns active congregation times in their configured display order.
+        /// </summary>
         public async Task<List<PrayerTime>> GetJamaatTimesAsync()
         {
             return await _context.PrayerTimes
@@ -42,6 +51,9 @@ namespace AdDiin.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Returns active azan entries in their configured display order.
+        /// </summary>
         public async Task<List<PrayerTime>> GetAzanTimesAsync()
         {
             return await _context.PrayerTimes
@@ -111,6 +123,10 @@ namespace AdDiin.Services
             return prayer.IsActive;
         }
 
+        /// <summary>
+        /// Finds the next active fard/azan entry and rolls over to tomorrow's
+        /// first prayer after the final entry of the day.
+        /// </summary>
         public async Task<(PrayerTime? NextPrayer, TimeSpan TimeRemaining)> GetNextPrayerAsync()
         {
             var nowTime = DateTime.Now.TimeOfDay;
