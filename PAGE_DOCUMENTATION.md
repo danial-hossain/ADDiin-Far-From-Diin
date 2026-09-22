@@ -1225,3 +1225,33 @@ My Deen is the personal worship and habit dashboard. It combines daily goals, st
 ### AJAX actions
 
 - `ToggleGoal` changes a daily goal completion state.
+- `SaveDhikr` records a Dhikr count.
+- `SaveQuran` records Quran progress.
+- `ToggleAdhkar` changes an Adhkar state.
+- `ToggleRuqyah` changes a Ruqyah state.
+- `UpdateSettings` saves personal preferences.
+
+### Data ownership
+
+Every write must use the current authenticated user and the current day or record identity validated on the server. A browser-supplied user ID must not define ownership.
+
+### QA checklist
+
+- Anonymous users cannot access the dashboard.
+- Daily state resets or rolls over correctly.
+- Repeated AJAX requests are handled intentionally.
+- Counters do not become negative.
+- Quran progress accepts only valid values.
+- Settings changes persist after reload.
+- Failure responses restore the correct UI state.
+
+---
+
+## Page 32: Notifications
+
+### Identity
+
+- **Route**: `/notifications`
+- **Controller**: `NotificationsController.Index`
+- **View**: `AdDiin/Views/Notifications/Index.cshtml`
+- **Model**: `NotificationsPageViewModel`
