@@ -612,3 +612,33 @@ The registration page creates a new user account, assigns the default User role,
 The form can include name, email, phone, password, password confirmation, and profile-related fields defined by `RegisterViewModel`.
 
 ### Registration flow
+
+1. Visitor enters registration information.
+2. Server validates model state.
+3. Identity checks email uniqueness and password policy.
+4. User record is created.
+5. Default User role is assigned.
+6. Verification code is generated and sent or recorded.
+7. Visitor is directed to email verification.
+
+### Failure behavior
+
+Duplicate email, weak password, invalid confirmation, invalid email, and service errors should return the form with useful messages. A partially created account must not leave an inconsistent verification state.
+
+### QA checklist
+
+- Duplicate emails are handled.
+- Password confirmation is enforced.
+- Password values are never returned to the view after a failed post.
+- Role assignment is correct.
+- Verification begins only after successful account creation.
+- Anti-forgery protection is active.
+
+---
+
+## Page 14: Email Verification
+
+### Identity
+
+- **Route**: `/verify-email`
+- **Controller**: `AccountController.VerifyEmail`
