@@ -1163,3 +1163,34 @@ The server must filter history by the current authenticated user. A transaction 
 
 ### Identity
 
+- **Route**: `/Donate/Receipt?tranId=...`
+- **Controller**: `DonateController.Receipt`
+- **View**: `AdDiin/Views/Donate/Receipt.cshtml`
+- **Layout**: Explicitly uses no ordinary layout
+- **Access**: Public route with transaction access requirements
+
+### Purpose
+
+Provides a standalone, printable donation receipt.
+
+### Displayed information
+
+- Transaction ID.
+- Date.
+- Donation category.
+- Amount.
+- Donor name or anonymous label.
+- Payment status.
+
+### QA checklist
+
+- The receipt prints cleanly.
+- There is no navigation duplication from the ordinary layout.
+- Unknown transaction IDs are safe.
+- Receipt data cannot be altered through query-string display values.
+- Personal data is not exposed to unauthorized users.
+
+---
+
+# Part Six: My Deen and Notifications
+
