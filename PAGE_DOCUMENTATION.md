@@ -1592,3 +1592,34 @@ Provides donation oversight, filtering, manual record creation, status managemen
 - Search by transaction or donor.
 - Filter by category.
 - Filter by payment status.
+- `DonationCreateManual` creates an offline/manual record.
+- `DonationUpdateStatus` changes state.
+- `DonationEdit` updates editable fields.
+- `DonationDelete` removes a record where permitted.
+
+### Safety rules
+
+Manual and provider donations should remain distinguishable. Payment status changes should be audited where possible. Transaction IDs should remain unique. Deletion should not erase required financial history without an explicit policy.
+
+### QA checklist
+
+- Totals use the intended successful status only.
+- Filters combine correctly.
+- Manual records require enough audit information.
+- Status update cannot fabricate a provider callback.
+- Receipt links reference the right transaction.
+- Delete confirmation prevents accidental removal.
+
+---
+
+## Page 41: Admin Activities
+
+### Identity
+
+- **Routes**: `/Admin/Activities`, `/admin/programs`
+- **Controller**: `AdminController.Activities`
+- **View**: `AdDiin/Views/Admin/Activities.cshtml`
+- **Model**: `List<Activity>`
+- **Access**: Admin role
+
+### Purpose
