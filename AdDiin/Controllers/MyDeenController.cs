@@ -13,18 +13,15 @@ namespace AdDiin.Controllers
         private readonly IMyDeenService _myDeenService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly INotificationService _notificationService;
-        private readonly IHadithService _hadithService;
 
         public MyDeenController(
             IMyDeenService myDeenService,
             UserManager<ApplicationUser> userManager,
-            INotificationService notificationService,
-            IHadithService hadithService)
+            INotificationService notificationService)
         {
             _myDeenService = myDeenService;
             _userManager = userManager;
             _notificationService = notificationService;
-            _hadithService = hadithService;
         }
 
         [HttpGet]
@@ -35,7 +32,6 @@ namespace AdDiin.Controllers
 
             await _notificationService.SeedDefaultRemindersAsync(user.Id);
             var hubData = await _myDeenService.GetHubDataAsync(user.Id);
-            hubData.DailyHadiths = await _hadithService.GetDailyHadithsAsync();
             return View(hubData);
         }
 
