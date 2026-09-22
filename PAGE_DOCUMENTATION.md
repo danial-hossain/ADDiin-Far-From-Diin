@@ -734,3 +734,34 @@ The user identifier should come from the authenticated principal, not from an ed
 - **View**: `AdDiin/Views/Account/ChangePassword.cshtml`
 - **Model**: `ChangePasswordViewModel`
 - **Access**: Authenticated users
+
+### Purpose
+
+Allows the current user to change the account password by submitting the current password and a new password confirmation.
+
+### Flow
+
+1. User opens the page.
+2. User enters current password.
+3. User enters new password and confirmation.
+4. Server checks identity and password policy.
+5. Password hash is replaced through Identity.
+6. The page redirects to profile or returns validation feedback.
+
+### QA checklist
+
+- Incorrect current password fails.
+- Weak new password fails according to policy.
+- Confirmation mismatch fails.
+- Password values are never displayed.
+- Successful change invalidates or refreshes sessions according to Identity policy.
+
+---
+
+## Page 17: Access Denied
+
+### Identity
+
+- **Route**: `/Account/AccessDenied`
+- **Controller**: Identity cookie configuration destination
+- **View**: `AdDiin/Views/Account/AccessDenied.cshtml`
