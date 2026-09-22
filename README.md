@@ -199,6 +199,7 @@ communication, and donation workflows more accessible and organized.
 - [Release checklist](docs/release-checklist.md)
 - [Maintainer guide](docs/maintainer-guide.md)
 - [Route map](docs/routes.md)
+- [Accessibility checklist](docs/accessibility.md)
 - [Deployment notes](docs/deployment.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
