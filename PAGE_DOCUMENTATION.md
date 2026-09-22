@@ -581,3 +581,34 @@ The login page authenticates a user with email and password and optionally prese
 ### Security rules
 
 Return URLs must be validated as local URLs before redirecting. Passwords must never be logged. Authentication cookies must remain HttpOnly and use the configured expiration policy. Login forms require antiforgery protection on POST.
+
+### QA checklist
+
+- Invalid credentials do not reveal whether an email exists.
+- Empty fields show validation messages.
+- Remember Me changes cookie persistence as intended.
+- Return URL cannot redirect to an external domain.
+- Admin and user destinations are correct.
+- Already authenticated users are handled consistently.
+
+---
+
+## Page 13: Registration
+
+### Identity
+
+- **Route**: `/user-registration`
+- **Controller**: `AccountController.Register`
+- **View**: `AdDiin/Views/Account/Register.cshtml`
+- **Model**: `RegisterViewModel`
+- **Access**: Anonymous users
+
+### Purpose
+
+The registration page creates a new user account, assigns the default User role, and begins email verification.
+
+### Input fields
+
+The form can include name, email, phone, password, password confirmation, and profile-related fields defined by `RegisterViewModel`.
+
+### Registration flow
