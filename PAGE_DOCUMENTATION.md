@@ -1776,3 +1776,34 @@ Loads client-side validation support. Client validation improves usability but d
 Displays a controlled error page with a request ID and a safe link back to Home. Production users should not see stack traces or configuration values.
 
 ## View Start: `_ViewStart.cshtml`
+
+Sets `_Layout` as the default layout for Razor views. Individual views can override the layout for standalone documents such as receipts.
+
+## View Imports: `_ViewImports.cshtml`
+
+Imports common namespaces, entity types, view models, and MVC tag helpers used throughout the view tree.
+
+---
+
+# Part Ten: Route Reference
+
+| Public route | Target | Access | Primary page |
+| --- | --- | --- | --- |
+| `/` | `Home/Index` | Public | Home dashboard |
+| `/about` | `Home/About` | Public | About |
+| `/sdg9` | `Home/SDG9` | Public | SDG9 information |
+| `/privacy` | `Home/Privacy` | Public | Privacy |
+| `/prayer-times` | `PrayerTimes/Index` | Public | Prayer times |
+| `/islamic-calendar` | `IslamicCalendar/Index` | Public | Islamic calendar |
+| `/events` | `IslamicCalendar/Index` | Public | Calendar alias |
+| `/activities` | `Activities/Index` | Public | Activities |
+| `/activities-and-programs` | `Activities/Index` | Public | Activities alias |
+| `/activities/{id}` | `Activities/Details` | Public | Activity details |
+| `/my-activities` | `Activities/MyActivities` | User | My activities |
+| `/zakat` | `Zakat/Index` | Public | Zakat |
+| `/zakat-and-donate` | `Zakat/Index` | Public | Zakat alias |
+| `/donate` | `Donate/Index` | Public | Donation start |
+| `/donate/success` | `Donate/Success` | Public result | Donation success |
+| `/my-donations` | `Donate/MyDonations` | User | Donation history |
+| `/my-deen` | `MyDeen/Index` | User | My Deen |
+| `/notifications` | `Notifications/Index` | User | Notifications |
