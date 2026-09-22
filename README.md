@@ -122,6 +122,17 @@ AdDiin/
 The application includes a LocalDB fallback connection for development. Database
 initialization and seed data are handled when the application starts.
 
+For environment-variable based setup, use the double-underscore form of nested
+configuration keys. The repository includes
+`render-environment-variables.example.txt` as a deployment-oriented template.
+Replace every placeholder with a value from the relevant provider and do not
+commit the completed file.
+
+Optional integrations can be configured independently. The core application
+can still be built without live credentials for Cloudinary, SSLCommerz, SMTP,
+or the external AI and halal-detector backends; those integrations require
+their own service configuration when their features are exercised.
+
 ### Run with the .NET CLI
 
 ```powershell
@@ -176,6 +187,13 @@ Ad-Diin supports the UN Sustainable Development Goal 9 by applying digital
 infrastructure and software innovation to Islamic community services. The
 platform helps make prayer information, learning resources, community programs,
 communication, and donation workflows more accessible and organized.
+
+## Additional documentation
+
+- [Contribution guide](CONTRIBUTING.md)
+- [Development guide](docs/development.md)
+- [Deployment notes](docs/deployment.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
 ## Team
 
