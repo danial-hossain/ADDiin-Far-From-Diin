@@ -949,3 +949,33 @@ Lists the current user’s requests and exposes edit, details, and pending-only 
 - Completed requests cannot be cancelled accidentally.
 - Empty state links to request creation.
 
+---
+
+## Page 23: Milad Details
+
+### Identity
+
+- **Route**: `/Milad/Details/{id}`
+- **Controller**: `MiladController.Details`
+- **View**: `AdDiin/Views/Milad/Details.cshtml`
+- **Model**: `MiladRequest`
+- **Access**: Authenticated owner or administrator
+
+### Purpose
+
+Displays one booking request, its status, requester information, date, description, and administrator remarks.
+
+### Authorization
+
+The controller must allow the request owner and authorized administrators only. A valid ID alone must never reveal another user’s request.
+
+### QA checklist
+
+- Non-owner receives not found or forbidden behavior according to policy.
+- Administrator can review requests.
+- Status and remarks are escaped.
+- Unknown IDs are handled safely.
+
+---
+
+## Page 24: Milad Edit
