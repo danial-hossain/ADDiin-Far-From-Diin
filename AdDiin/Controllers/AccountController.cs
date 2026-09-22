@@ -9,6 +9,9 @@ using System.Security.Claims;
 
 namespace AdDiin.Controllers
 {
+    /// <summary>
+    /// Handles registration, sign-in, and email verification for platform users.
+    /// </summary>
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -29,6 +32,9 @@ namespace AdDiin.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Displays the sign-in form or redirects an already authenticated user.
+        /// </summary>
         public IActionResult Login(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -106,6 +112,9 @@ namespace AdDiin.Controllers
         }
 
         [HttpGet]
+        /// <summary>
+        /// Displays the registration form for a new account.
+        /// </summary>
         public IActionResult Register()
         {
             if (User.Identity?.IsAuthenticated == true)
