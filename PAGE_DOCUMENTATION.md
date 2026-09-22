@@ -152,3 +152,33 @@ The About page explains the platform mission, vision, services, and the reason A
 1. `HomeController` requests the about content from `IAboutService`.
 2. `AboutService` reads the file-backed content.
 3. The controller supplies that content to the Razor view.
+4. The view presents the content using the public layout.
+
+### User actions
+
+- Read platform information.
+- Navigate to active services.
+- Return to the home page.
+- Open privacy or contact pages.
+
+### QA checklist
+
+- `/about` loads without authentication.
+- Missing content does not cause an unhandled null-reference failure.
+- Text from the JSON content is encoded safely.
+- The page works on mobile.
+- Navigation links remain valid after route changes.
+
+### Commit boundary
+
+About content changes and About page layout changes should be separate commits when possible. JSON content edits should not be mixed with unrelated controller changes.
+
+---
+
+## Page 03: SDG 9 Information
+
+### Identity
+
+- **Route**: `/sdg9`
+- **Controller**: `HomeController.SDG9`
+- **View**: `AdDiin/Views/Home/SDG9.cshtml`
