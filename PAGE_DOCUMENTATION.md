@@ -887,3 +887,34 @@ The action must obtain the current user ID from the authenticated identity and f
 
 ---
 
+# Part Four: Milad and Dua Booking
+
+## Page 21: Milad Create
+
+### Identity
+
+- **Route**: `/Milad/Create`
+- **Controller**: `MiladController.Create`
+- **View**: `AdDiin/Views/Milad/Create.cshtml`
+- **Model**: `MiladCreateViewModel`
+- **Access**: GET may be anonymous; POST requires the intended authenticated state
+
+### Purpose
+
+Allows a user to request a Milad, Mahfil, or Dua service by submitting date, contact, location, and description details.
+
+### Flow
+
+1. Visitor opens the create form.
+2. Signed-in information may be prefilled.
+3. Visitor enters request details.
+4. POST validates the current user and model.
+5. Request is stored with a pending status.
+6. User is redirected to request history or details.
+
+### QA checklist
+
+- Anonymous GET behavior matches the product expectation.
+- Anonymous POST cannot create an ownerless request when ownership is required.
+- Date validation prevents invalid or past dates when appropriate.
+- Request status begins as pending.
