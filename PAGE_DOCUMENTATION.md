@@ -520,3 +520,33 @@ The Product Analyzer accepts an uploaded product-label image or ingredient text 
 
 ### Text flow
 
+1. Visitor enters ingredient text.
+2. Browser sends JSON to `/api/product-analyzer/analyze-text`.
+3. Server validates the text length and content.
+4. Service returns the classification.
+5. Browser displays ingredients and reasoning.
+
+### Security rules
+
+Uploaded files must not be trusted by extension alone. The server should validate content type, length, and any downstream storage behavior. Error responses must not expose provider secrets or raw stack traces.
+
+### QA checklist
+
+- Empty upload is rejected clearly.
+- Oversized files are rejected.
+- Unsupported file types are rejected.
+- Empty ingredient text is rejected.
+- API failures produce readable UI feedback.
+- Loading state is removed after success or failure.
+- Results are escaped before rendering.
+- Health status does not expose credentials.
+
+---
+
+# Part Two: Account Pages
+
+## Page 12: Login
+
+### Identity
+
+- **Route**: `/user-login`
