@@ -188,6 +188,13 @@ infrastructure and software innovation to Islamic community services. The
 platform helps make prayer information, learning resources, community programs,
 communication, and donation workflows more accessible and organized.
 
+## Additional documentation
+
+- [Contribution guide](CONTRIBUTING.md)
+- [Development guide](docs/development.md)
+- [Deployment notes](docs/deployment.md)
+- [Troubleshooting](docs/troubleshooting.md)
+
 ## Team
 
 | Name | Responsibility |
