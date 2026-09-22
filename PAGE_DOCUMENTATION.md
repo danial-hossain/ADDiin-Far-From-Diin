@@ -1102,3 +1102,34 @@ Confirms a completed donation and shows transaction, amount, category, donor, pa
 Explains that payment did not complete and gives the visitor a safe route back to donation.
 
 ### QA checklist
+
+- Failure does not imply the donation was successful.
+- Transaction lookup is controlled and safe.
+- Sensitive gateway response fields are not exposed.
+- Retry action starts a new controlled attempt.
+
+---
+
+## Page 28: Donation Cancellation
+
+### Identity
+
+- **Route**: `/Donate/Cancel?tranId=...`
+- **Controller**: `DonateController.Cancel`
+- **View**: `AdDiin/Views/Donate/Cancel.cshtml`
+- **Access**: Public result page
+
+### Purpose
+
+Explains that the visitor cancelled or abandoned the provider payment flow.
+
+### QA checklist
+
+- Cancelled status is distinct from failed and successful status.
+- Existing transaction state is updated safely.
+- Visitor can return to donation without losing navigation context.
+
+---
+
+## Page 29: My Donations
+
