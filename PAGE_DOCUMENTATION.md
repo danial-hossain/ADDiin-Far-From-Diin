@@ -213,3 +213,34 @@ SDG9 content and design can be reviewed as a documentation or informational-page
 - **Route**: `/privacy`
 - **Controller**: `HomeController.Privacy`
 - **View**: `AdDiin/Views/Home/Privacy.cshtml`
+- **Access**: Public
+
+### Purpose
+
+The Privacy page explains data handling, account information, notifications, payments, communication, and external service usage.
+
+### QA checklist
+
+- The page is reachable before account creation.
+- Privacy language matches actual data flows.
+- Payment and third-party service wording is not contradictory.
+- The logout and login links work from this page.
+
+### Commit boundary
+
+Policy text should be committed separately from controller or database implementation work.
+
+---
+
+## Page 05: Public Event List
+
+### Identity
+
+- **Route**: Conventional `/Events/Index`
+- **Controller**: `EventsController.Index`
+- **View**: `AdDiin/Views/Events/Index.cshtml`
+- **Model**: `List<IslamicEvent>`
+- **Access**: Public
+
+### Purpose
+
