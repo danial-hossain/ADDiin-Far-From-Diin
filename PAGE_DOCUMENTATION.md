@@ -336,3 +336,33 @@ The Prayer Times page displays daily prayer schedules and helps visitors identif
 
 ### Request flow
 
+1. The initial page loads prayer records.
+2. Browser JavaScript calculates or displays countdown state.
+3. The page can call `PrayerTimes.LiveTimes` for refreshed timing data.
+4. A visitor can select a division or location.
+5. The UI updates without requiring a full page reload where supported.
+
+### Data rules
+
+Prayer records are configured in the database context. Prayer name uniqueness and display ordering are indexed by EF Core. The controller and view should treat missing times as unavailable rather than inventing a value.
+
+### QA checklist
+
+- `/prayer-times` is public.
+- Current time is calculated in the correct timezone.
+- Countdown handles midnight and next-day prayer transitions.
+- Hidden prayer records are not displayed.
+- Division selection does not break when the API returns no records.
+- Azan audio requires an explicit browser interaction where browser policy requires it.
+- Live refresh failures leave the last valid display intact.
+
+### Commit boundary
+
+Keep prayer database seed changes, admin prayer CRUD, public prayer display, and live JavaScript refresh in separate commits when possible.
+
+---
+
+## Page 08: Islamic Calendar
+
+### Identity
+
