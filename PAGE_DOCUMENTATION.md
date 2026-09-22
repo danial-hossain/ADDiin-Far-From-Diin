@@ -1531,3 +1531,34 @@ Manages Islamic events displayed on public pages and the calendar.
 - `EventToggle` changes active state.
 - `EventDelete` deletes an event.
 - GET filters event records.
+
+### QA checklist
+
+- Invalid dates are rejected.
+- Hidden events disappear from public views.
+- Editing preserves event identity.
+- Deletion behavior is safe when reminders reference an event.
+- Admin-only protection is enforced server-side.
+
+---
+
+## Page 39: Admin Milads
+
+### Identity
+
+- **Route**: `/Admin/Milads`
+- **Controller**: `AdminController.Milads`
+- **View**: `AdDiin/Views/Admin/Milads.cshtml`
+- **Model**: `AdminMiladsViewModel`
+- **Access**: Admin role
+
+### Purpose
+
+Reviews submitted Milad and Dua requests and changes their status with administrator remarks.
+
+### Actions
+
+- Filter by status.
+- Search requests.
+- `MiladUpdateStatus` changes workflow state.
+- Add or update admin remarks.
