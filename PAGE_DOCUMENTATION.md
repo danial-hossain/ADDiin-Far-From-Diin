@@ -2022,3 +2022,33 @@ Suggested commit message:
 9. Confirm user-owned pages show only the current user’s data.
 10. Test an administrator account separately.
 
+## Payment test sequence
+
+1. Open `/donate` as a guest.
+2. Enter an invalid amount and verify validation.
+3. Start a valid test transaction.
+4. Test provider success callback.
+5. Test provider failure callback.
+6. Test provider cancellation callback.
+7. Open success, failure, cancellation, and receipt pages.
+8. Confirm duplicate callbacks do not duplicate records.
+9. Confirm My Donations shows only the authenticated donor’s records.
+
+## Real-time test sequence
+
+1. Sign in as a user and open `/messaging`.
+2. Sign in as an administrator in another session.
+3. Send a message from the user session.
+4. Confirm the admin receives it through SignalR.
+5. Reply from the admin session.
+6. Confirm the user receives it.
+7. Disconnect a client and test fallback form behavior.
+8. Close the conversation as admin.
+9. Confirm closed-state behavior on the user page.
+
+---
+
+# Part Thirteen: Troubleshooting by Page
+
+## Page returns 404
+
