@@ -1960,3 +1960,34 @@ Suggested files:
 - `Views/Messages/Index.cshtml`
 - `Views/Admin/Messages.cshtml`
 - `Views/Shared/_AdminLayout.cshtml`
+- Related hub and messaging service changes.
+
+Suggested commit message:
+
+`feat: add real-time support messaging`
+
+## Commit group J: Administration
+
+Suggested files:
+
+- `Views/Admin/Dashboard.cshtml`
+- `Views/Admin/Users.cshtml`
+- `Views/Admin/PrayerTimes.cshtml`
+- `Views/Admin/Events.cshtml`
+- `Views/Admin/Milads.cshtml`
+- `Views/Admin/Donations.cshtml`
+- `Views/Admin/Activities.cshtml`
+- `Views/Admin/Registrations.cshtml`
+
+Suggested commit message:
+
+`feat: add administrator management pages`
+
+---
+
+# Part Twelve: Manual QA Matrix
+
+| Area | Anonymous | User | Admin | Expected result |
+| --- | --- | --- | --- | --- |
+| Home | Yes | Yes | Yes | Public home renders |
+| About | Yes | Yes | Yes | About content renders |
