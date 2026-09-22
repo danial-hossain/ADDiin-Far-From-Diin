@@ -428,3 +428,33 @@ The Zakat page lets a visitor enter eligible assets and debts, compare the resul
 
 ### Input categories
 
+The calculator can include cash, savings, gold, silver, investments, business assets, receivables, debts, and other configured categories. The exact fields are controlled by the view model and view.
+
+### Calculation flow
+
+1. Visitor opens the calculator.
+2. Visitor enters numeric asset values.
+3. Visitor enters deductible debts where supported.
+4. The form posts to `Zakat.Calculate`.
+5. The controller validates numeric ranges and model state.
+6. The service or controller computes net eligible wealth.
+7. The result compares net wealth with Nisab.
+8. The page returns eligibility and the payable amount.
+9. A donation call-to-action may send the visitor to `/donate`.
+
+### Validation rules
+
+Negative values should be rejected or normalized according to the view model contract. Currency formatting must not be confused with numeric parsing. The page should clearly distinguish total assets, deductions, net wealth, Nisab threshold, eligibility, and payable Zakat.
+
+### QA checklist
+
+- Empty form renders safely.
+- Zero values do not cause division or formatting errors.
+- Invalid text input produces validation feedback.
+- Decimal currency values are handled correctly.
+- Calculation result is reproducible for the same input.
+- Donation links preserve category context when intended.
+
+---
+
+## Page 10: Focus and Digital Shield
