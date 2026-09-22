@@ -1868,3 +1868,34 @@ Suggested files:
 Suggested commit message:
 
 `feat: add public information and event pages`
+
+## Commit group C: Prayer and calendar
+
+Suggested files:
+
+- `Views/PrayerTimes/Index.cshtml`
+- `Views/IslamicCalendar/Index.cshtml`
+- Related controller and service changes.
+
+Suggested commit message:
+
+`feat: add prayer schedule and Islamic calendar workflows`
+
+## Commit group D: Account lifecycle
+
+Suggested files:
+
+- `Views/Account/Login.cshtml`
+- `Views/Account/Register.cshtml`
+- `Views/Account/VerifyEmail.cshtml`
+- `Views/Account/Profile.cshtml`
+- `Views/Account/ChangePassword.cshtml`
+- `Views/Account/AccessDenied.cshtml`
+
+Suggested commit message:
+
+`feat: implement account registration verification and profile flows`
+
+## Commit group E: Programs and Milad
+
+Suggested files:
