@@ -1838,3 +1838,33 @@ These are documentation and QA concerns. They should be changed only after confi
 ---
 
 # Part Eleven: Page-by-Page Git Commit Plan
+
+## Commit group A: Public shell
+
+Suggested files:
+
+- `Views/_ViewStart.cshtml`
+- `Views/_ViewImports.cshtml`
+- `Views/Shared/_Layout.cshtml`
+- `Views/Shared/_NotificationToast.cshtml`
+- `Views/Shared/_ValidationScriptsPartial.cshtml`
+- `Views/Shared/Error.cshtml`
+
+Suggested commit message:
+
+`docs or feat: establish public page shell and shared feedback`
+
+## Commit group B: Public information pages
+
+Suggested files:
+
+- `Views/Home/Index.cshtml`
+- `Views/Home/About.cshtml`
+- `Views/Home/SDG9.cshtml`
+- `Views/Home/Privacy.cshtml`
+- `Views/Events/Index.cshtml`
+- `Views/Events/Details.cshtml`
+
+Suggested commit message:
+
+`feat: add public information and event pages`
