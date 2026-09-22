@@ -157,6 +157,7 @@
 
                 <form asp-controller="Account" asp-action="UpdateInfo" method="post" class="space-y-4">
                     @Html.AntiForgeryToken()
+                    <input type="hidden" name="Email" value="@Model.ProfileForm.Email" />
                     <div>
                         <label class="text-xs font-bold text-slate-700">Full Name</label>
                         <input type="text" name="FullName" value="@Model.ProfileForm.FullName" class="mt-1 w-full text-xs font-semibold px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl" required />
@@ -202,8 +203,8 @@
                         {
                             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
                                 <div class="space-y-0.5">
-                                    <h4 class="font-bold text-slate-900 text-xs truncate max-w-xs">@r.Activity.Title</h4>
-                                    <p class="text-[11px] text-slate-500">@r.Activity.Category • @(r.Activity.ProgramDate?.ToString("MMM dd, yyyy") ?? "TBA")</p>
+                                    <h4 class="font-bold text-slate-900 text-xs truncate max-w-xs">@(r.Activity?.Title ?? "Activity unavailable")</h4>
+                                    <p class="text-[11px] text-slate-500">@(r.Activity?.Category ?? "Activity") • @(r.Activity?.ProgramDate?.ToString("MMM dd, yyyy") ?? "TBA")</p>
                                 </div>
                                 <span class="px-2.5 py-1 text-[10px] font-bold rounded-full @(r.Status == "Approved" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800")">
                                     @r.Status

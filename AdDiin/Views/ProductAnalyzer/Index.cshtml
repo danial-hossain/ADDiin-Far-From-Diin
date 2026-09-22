@@ -4,6 +4,8 @@
 
 @section Styles {
     <style>
+/* The analyzer uses a dedicated visual system so OCR, pipeline, and
+   decision surfaces remain readable over the shared dark site theme. */
         .ai-analyzer-bg {
             background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.02) 50%, transparent 100%);
         }
@@ -1475,6 +1477,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
 
 @section Scripts {
     <script>
+// Demo presets exercise the same rendering path as a live backend
+// response, which makes the page useful for demonstrations offline.
         // Preset Sample Datasets for Demo / Exhibition
         const samplePresets = {
             halal: {
@@ -1533,8 +1537,9 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
         let currentActiveDataset = samplePresets.verify;
         let activeInputMode = 'image';
 
-        // Safe Element Getters
-        function getEl(id) { return document.getElementById(id); }
+// Safe element access keeps optional presentation elements from
+// interrupting the analysis flow when a view section is hidden.
+function getEl(id) { return document.getElementById(id); }
 
         // Mode Switcher - Exposed globally
         window.switchAnalysisMode = function(mode) {
@@ -1678,7 +1683,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             if (btnAnalyzeAI) btnAnalyzeAI.disabled = false;
         }
 
-        // Helper to convert text to high-contrast label image for OCR & AI analysis
+// Manual ingredients use the same image endpoint as uploaded labels.
+// This helper creates a readable temporary label for that shared path.
         function createTextLabelBlob(text) {
             return new Promise((resolve) => {
                 const canvas = document.createElement('canvas');
@@ -1902,7 +1908,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             }
         }
 
-        // Pipeline animation & AI execution
+// The pipeline animation is visual feedback only; the selected input
+// mode determines which server endpoint receives the request.
         async function startAIAnalysis() {
             const manualInput = getEl('manualIngredientsInput');
             const btnAnalyzeAI = getEl('btnAnalyzeAI');
@@ -1956,6 +1963,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
             try {
                 let res;
                 if (activeInputMode === 'image') {
+                    // Image mode uses multipart form data so the uploaded file
+                    // reaches ASP.NET Core as IFormFile.
                     const formData = new FormData();
                     if (selectedFile) {
                         formData.append('image', selectedFile);
@@ -1965,6 +1974,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                         body: formData
                     });
                 } else {
+// Text mode sends a small JSON payload to the dedicated
+// endpoint, avoiding an unnecessary file upload.
                     res = await fetch('/api/product-analyzer/analyze-text', {
                         method: 'POST',
                         headers: {
@@ -1981,6 +1992,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
                     console.warn("Could not parse backend json:", e);
                 }
 
+// The service normalizes provider output to a success flag and
+// status fields before the UI maps it to the report cards.
                 if (res.ok && json && json.success) {
                     completePipeline();
                     if (pipelineStatusBadge) {
@@ -2028,6 +2041,8 @@ Ingredients: potatoes, sunflower oil, sea salt, paprika, natural aroma.
         }
 
         function mapBackendResultToUi(apiData) {
+            // Provider responses can place status in the top-level result or
+            // inside decision; normalize both forms before selecting UI copy.
             const rawStatus = (apiData.status || (apiData.decision && apiData.decision.status) || '').toUpperCase();
             
             let status = 'NO_HARAM_MATCH';

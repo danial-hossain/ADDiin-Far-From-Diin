@@ -2,6 +2,9 @@
 
 namespace AdDiin.Models.Entities
 {
+    /// <summary>
+    /// Represents one displayed prayer schedule entry and its classification.
+    /// </summary>
     public class PrayerTime
     {
         public int Id { get; set; }

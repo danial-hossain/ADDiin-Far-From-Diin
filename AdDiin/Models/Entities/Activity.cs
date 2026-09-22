@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdDiin.Models.Entities
 {
+    /// <summary>
+    /// An Islamic program or community activity available for discovery.
+    /// </summary>
     public class Activity
     {
         public int Id { get; set; }
@@ -50,10 +53,14 @@ namespace AdDiin.Models.Entities
 
         public DateTime? UpdatedAt { get; set; }
 
-        // Navigation collections
+        // Registrations are kept on the activity so administrative pages can
+        // inspect participation without changing the activity's scalar fields.
         public virtual ICollection<ProgramRegistration> Registrations { get; set; } = new List<ProgramRegistration>();
     }
 
+    /// <summary>
+    /// Captures a user's request to attend an activity and its review state.
+    /// </summary>
     public class ProgramRegistration
     {
         public int Id { get; set; }

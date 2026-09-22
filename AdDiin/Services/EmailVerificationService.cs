@@ -7,12 +7,18 @@ using System.Security.Cryptography;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Generates short-lived email verification codes and records their use.
+    /// </summary>
     public interface IEmailVerificationService
     {
         Task<string> GenerateAndSendCodeAsync(string email, string name);
         Task<bool> VerifyCodeAsync(string email, string code);
     }
 
+    /// <summary>
+    /// Owns the persistence and SMTP delivery steps for registration verification.
+    /// </summary>
     public class EmailVerificationService : IEmailVerificationService
     {
         private readonly ApplicationDbContext _context;
@@ -29,6 +35,9 @@ namespace AdDiin.Services
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Invalidates previous unused codes before issuing and emailing a new one.
+        /// </summary>
         public async Task<string> GenerateAndSendCodeAsync(string email, string name)
         {
             // Generate 6-digit OTP
@@ -68,6 +77,9 @@ namespace AdDiin.Services
             return code;
         }
 
+        /// <summary>
+        /// Accepts the newest unexpired unused code and marks it as consumed.
+        /// </summary>
         public async Task<bool> VerifyCodeAsync(string email, string code)
         {
             var verification = await _context.VerificationCodes
@@ -191,6 +203,7 @@ namespace AdDiin.Services
             using var smtp = new SmtpClient(smtpHost, smtpPort);
 
             smtp.EnableSsl = true;
+            smtp.Timeout = 15000;
 
             smtp.UseDefaultCredentials = false;
 

@@ -28,7 +28,11 @@
 
             <div class="msgr-search-wrap">
                 <i class="bi bi-search msgr-search-icon"></i>
-                <input type="search" id="conversationSearch" class="msgr-search-input" placeholder="Search members…" autocomplete="off" />
+                <input type="search"
+                       id="conversationSearch"
+                       class="msgr-search-input"
+                       placeholder="Search members…"
+                       autocomplete="off" />
             </div>
 
             <div class="msgr-conv-list" id="adminConvList">
@@ -43,24 +47,46 @@
                         var isAct = active != null && active.Id == c.Id;
                         var initials = "";
                         var fullName = c.User?.FullName ?? "User";
-                        var parts = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        var parts = fullName.Trim().Split(
+                            ' ',
+                            StringSplitOptions.RemoveEmptyEntries);
+
                         initials = parts.Length >= 2
                             ? $"{parts[0][0]}{parts[^1][0]}".ToUpper()
-                            : fullName.Substring(0, Math.Min(2, fullName.Length)).ToUpper();
+                            : fullName.Substring(
+                                0,
+                                Math.Min(2, fullName.Length)).ToUpper();
 
-                        var lastMsg = c.Messages.LastOrDefault()?.MessageContent ?? "No messages";
-                        var updatedTime = c.UpdatedAt?.ToString("hh:mm tt") ?? "";
-                        <a asp-controller="Admin" asp-action="Messages" asp-route-id="@c.Id"
+                        var lastMsg =
+                            c.Messages.LastOrDefault()?.MessageContent
+                            ?? "No messages";
+
+                        var updatedTime =
+                            c.UpdatedAt?.ToString("hh:mm tt") ?? "";
+
+                        <a asp-controller="Admin"
+                           asp-action="Messages"
+                           asp-route-id="@c.Id"
                            class="msgr-conv-item@(isAct ? " active" : "") text-decoration-none"
                            data-conv-id="@c.Id">
                             <div class="msgr-conv-avatar">@initials</div>
+
                             <div class="msgr-conv-body min-w-0">
                                 <div class="d-flex justify-content-between align-items-baseline gap-1">
-                                    <span class="msgr-conv-name text-truncate">@(c.User?.FullName ?? "User")</span>
-                                    <span class="msgr-conv-time flex-shrink-0">@updatedTime</span>
+                                    <span class="msgr-conv-name text-truncate">
+                                        @(c.User?.FullName ?? "User")
+                                    </span>
+
+                                    <span class="msgr-conv-time flex-shrink-0">
+                                        @updatedTime
+                                    </span>
                                 </div>
-                                <div class="msgr-conv-preview text-truncate">@lastMsg</div>
+
+                                <div class="msgr-conv-preview text-truncate">
+                                    @lastMsg
+                                </div>
                             </div>
+
                             @if (c.Status == "closed")
                             {
                                 <span class="msgr-closed-pill">Closed</span>
@@ -86,91 +112,159 @@
                         <div class="msgr-contact-avatar">
                             @{
                                 var aFullName = active.User?.FullName ?? "U";
-                                var aParts = aFullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                var aParts = aFullName.Trim().Split(
+                                    ' ',
+                                    StringSplitOptions.RemoveEmptyEntries);
+
                                 var aInit = aParts.Length >= 2
                                     ? $"{aParts[0][0]}{aParts[^1][0]}".ToUpper()
-                                    : aFullName.Substring(0, Math.Min(2, aFullName.Length)).ToUpper();
+                                    : aFullName.Substring(
+                                        0,
+                                        Math.Min(2, aFullName.Length)).ToUpper();
                             }
+
                             @aInit
                         </div>
+
                         <div class="min-w-0">
-                            <h2 class="msgr-contact-name">@(active.User?.FullName ?? "User")</h2>
+                            <h2 class="msgr-contact-name">
+                                @(active.User?.FullName ?? "User")
+                            </h2>
+
                             <div class="d-flex align-items-center gap-2">
                                 <span class="msgr-contact-status">
                                     @if (active.User?.Email != null)
                                     {
-                                        <i class="bi bi-envelope me-1"></i>@active.User.Email
+                                        <i class="bi bi-envelope me-1"></i>
+                                        @active.User.Email
                                     }
+
                                     @if (active.User?.PhoneNumber != null)
                                     {
                                         <span class="mx-1 opacity-50">·</span>
-                                        <i class="bi bi-phone me-1"></i>@active.User.PhoneNumber
+                                        <i class="bi bi-phone me-1"></i>
+                                        @active.User.PhoneNumber
                                     }
                                 </span>
                             </div>
                         </div>
                     </div>
+
                     <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                        <span class="msgr-status-badge active">
+                            <i class="bi bi-circle-fill me-1"
+                               style="font-size:.45rem;"></i>
+                            Active
+                        </span>
+
+                        @*
+                        Feature branch code — intentionally inactive.
+
                         @if (active.Status == "active")
                         {
                             <span class="msgr-status-badge active">
-                                <i class="bi bi-circle-fill me-1" style="font-size:.45rem;"></i>Active
+                                <i class="bi bi-circle-fill me-1"
+                                   style="font-size:.45rem;"></i>
+                                Active
                             </span>
-                            <form asp-controller="Messages" asp-action="CloseConversation" asp-route-id="@active.Id" method="post" class="d-inline">
+
+                            <form asp-controller="Messages"
+                                  asp-action="CloseConversation"
+                                  asp-route-id="@active.Id"
+                                  method="post"
+                                  class="d-inline">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn msgr-header-btn">
-                                    <i class="bi bi-x-circle me-1"></i>Close Thread
+
+                                <button type="submit"
+                                        class="btn msgr-header-btn">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Close Thread
                                 </button>
                             </form>
                         }
                         else
                         {
                             <span class="msgr-status-badge closed">
-                                <i class="bi bi-lock-fill me-1"></i>Closed
+                                <i class="bi bi-lock-fill me-1"></i>
+                                Closed
                             </span>
                         }
+                        *@
                     </div>
                 </header>
 
-                <div class="msgr-message-area flex-grow-1" id="adminChatBox">
+                <div class="msgr-message-area flex-grow-1"
+                     id="adminChatBox">
+
                     @{
                         var lastDateStr = "";
                     }
+
                     @foreach (var msg in active.Messages.OrderBy(m => m.CreatedAt))
                     {
-                        var dateLabel = msg.CreatedAt.ToString("dddd, MMMM d");
-                        var dateStr = msg.CreatedAt.ToString("yyyy-MM-dd");
+                        var dateLabel =
+                            msg.CreatedAt.ToString("dddd, MMMM d");
+
+                        var dateStr =
+                            msg.CreatedAt.ToString("yyyy-MM-dd");
+
                         if (dateStr != lastDateStr)
                         {
-                            var isToday = msg.CreatedAt.Date == DateTime.Today;
-                            <div class="msgr-date-sep">@(isToday ? "Today" : dateLabel)</div>
+                            var isToday =
+                                msg.CreatedAt.Date == DateTime.Today;
+
+                            <div class="msgr-date-sep">
+                                @(isToday ? "Today" : dateLabel)
+                            </div>
+
                             lastDateStr = dateStr;
                         }
 
-                        var isAdminMsg = msg.SenderType == "admin";
+                        var isAdminMsg =
+                            msg.SenderType == "admin";
+
                         var senderInit = "";
+
                         if (!isAdminMsg)
                         {
-                            var sName = active.User?.FullName ?? "U";
-                            var sParts = sName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                            var sName =
+                                active.User?.FullName ?? "U";
+
+                            var sParts =
+                                sName.Trim().Split(
+                                    ' ',
+                                    StringSplitOptions.RemoveEmptyEntries);
+
                             senderInit = sParts.Length >= 2
                                 ? $"{sParts[0][0]}{sParts[^1][0]}".ToUpper()
-                                : sName.Substring(0, Math.Min(2, sName.Length)).ToUpper();
+                                : sName.Substring(
+                                    0,
+                                    Math.Min(2, sName.Length)).ToUpper();
                         }
 
                         <div class="msgr-msg-row @(isAdminMsg ? "mine" : "theirs")">
                             @if (!isAdminMsg)
                             {
-                                <div class="msgr-msg-avatar">@senderInit</div>
+                                <div class="msgr-msg-avatar">
+                                    @senderInit
+                                </div>
                             }
+
                             <div class="msgr-bubble @(isAdminMsg ? "mine" : "theirs")">
-                                <div class="msgr-bubble-content">@msg.MessageContent</div>
+                                <div class="msgr-bubble-content">
+                                    @msg.MessageContent
+                                </div>
+
                                 <div class="msgr-bubble-meta">
                                     @msg.CreatedAt.ToString("hh:mm tt")
+
                                     @if (isAdminMsg)
                                     {
-                                        <span class="msgr-read-status" title="@(msg.IsRead ? "Seen" : "Sent")">
-                                            <i class="bi @(msg.IsRead ? "bi-check2-all" : "bi-check") ms-1"></i>
+                                        <span class="msgr-read-status"
+                                              title="@(msg.IsRead ? "Seen" : "Sent")">
+                                            <i class="bi @(msg.IsRead
+                                                ? "bi-check2-all"
+                                                : "bi-check") ms-1"></i>
                                         </span>
                                     }
                                 </div>
@@ -179,34 +273,49 @@
                     }
                 </div>
 
-                @if (active.Status == "active")
-                {
-                    <div class="msgr-composer">
-                        <form asp-controller="Messages" asp-action="SendMessage" method="post" class="msgr-composer-form" id="adminMessageForm">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="conversationId" value="@active.Id" />
-                            <div class="msgr-input-wrap">
-                                <textarea name="messageContent"
-                                          class="msgr-input"
-                                          rows="1"
-                                          maxlength="4000"
-                                          placeholder="Type your reply…"
-                                          required
-                                          autocomplete="off"
-                                          aria-label="Reply to @(active.User?.FullName ?? "user")"
-                                          id="adminMessageInput"></textarea>
-                            </div>
-                            <button type="submit" class="msgr-send-btn" aria-label="Send reply">
-                                <i class="bi bi-send-fill"></i>
-                            </button>
-                        </form>
-                        <div class="msgr-composer-hint">
-                            <i class="bi bi-shield-lock-fill me-1"></i>
-                            Admin reply · Replying as Ad-Diin Support
+                <div class="msgr-composer">
+                    <form asp-controller="Messages"
+                          asp-action="SendMessage"
+                          method="post"
+                          class="msgr-composer-form"
+                          id="adminMessageForm">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="conversationId"
+                               value="@active.Id" />
+
+                        <div class="msgr-input-wrap">
+                            <textarea name="messageContent"
+                                      class="msgr-input"
+                                      rows="1"
+                                      maxlength="4000"
+                                      placeholder="Type your reply…"
+                                      required
+                                      autocomplete="off"
+                                      aria-label="Reply to @(active.User?.FullName ?? "user")"
+                                      id="adminMessageInput"></textarea>
                         </div>
+
+                        <button type="submit"
+                                class="msgr-send-btn"
+                                aria-label="Send reply">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </form>
+
+                    <div class="msgr-composer-hint">
+                        <i class="bi bi-shield-lock-fill me-1"></i>
+                        Admin reply · Replying as Ad-Diin Support
                     </div>
-                }
-                else
+                </div>
+
+                @*
+                Feature branch closed-conversation composer.
+                Intentionally inactive.
+
+                @if (active.Status != "active")
                 {
                     <div class="msgr-composer msgr-composer-closed">
                         <div class="msgr-closed-notice">
@@ -215,6 +324,7 @@
                         </div>
                     </div>
                 }
+                *@
             }
             else
             {
@@ -222,8 +332,14 @@
                     <div class="msgr-empty-icon">
                         <i class="bi bi-inbox"></i>
                     </div>
-                    <p class="msgr-empty-title">Select an inquiry to reply</p>
-                    <p class="msgr-empty-sub">All member messages appear in the sidebar on the left.</p>
+
+                    <p class="msgr-empty-title">
+                        Select an inquiry to reply
+                    </p>
+
+                    <p class="msgr-empty-sub">
+                        All member messages appear in the sidebar on the left.
+                    </p>
                 </div>
             }
         </section>
@@ -232,76 +348,131 @@
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
     <script>
         const activeAdminConversationId = @(active?.Id ?? 0);
+
         if (window.signalR && activeAdminConversationId) {
-            const adminConnection = new signalR.HubConnectionBuilder()
-                .withUrl('/hubs/support-chat')
-                .withAutomaticReconnect()
-                .build();
+            const adminConnection =
+                new signalR.HubConnectionBuilder()
+                    .withUrl('/hubs/support-chat')
+                    .withAutomaticReconnect()
+                    .build();
 
-            adminConnection.on('ReceiveSupportMessage', message => {
-                if (message?.conversationId === activeAdminConversationId &&
-                    message.senderType === 'user') {
-                    window.location.reload();
-                }
-            });
+            adminConnection.on(
+                'ReceiveSupportMessage',
+                message => {
+                    if (
+                        message?.conversationId ===
+                            activeAdminConversationId &&
+                        message.senderType === 'user'
+                    ) {
+                        window.location.reload();
+                    }
+                });
 
-            adminConnection.on('ConversationMessagesRead', receipt => {
-                if (receipt?.conversationId === activeAdminConversationId) {
-                    window.location.reload();
-                }
-            });
+            adminConnection.on(
+                'ConversationMessagesRead',
+                receipt => {
+                    if (
+                        receipt?.conversationId ===
+                        activeAdminConversationId
+                    ) {
+                        window.location.reload();
+                    }
+                });
 
             adminConnection.start().catch(() => {});
         }
 
         if (activeAdminConversationId) {
-            fetch(`/api/contact/conversations/${activeAdminConversationId}/read`, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json' }
-            }).catch(() => {});
+            fetch(
+                `/api/contact/conversations/${activeAdminConversationId}/read`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }
+            ).catch(() => {});
         }
 
         // Auto-scroll admin chat to bottom
-        const adminChatBox = document.getElementById('adminChatBox');
+        const adminChatBox =
+            document.getElementById('adminChatBox');
+
         if (adminChatBox) {
-            adminChatBox.scrollTop = adminChatBox.scrollHeight;
+            adminChatBox.scrollTop =
+                adminChatBox.scrollHeight;
         }
 
         // Auto-resize textarea
-        const adminInput = document.getElementById('adminMessageInput');
+        const adminInput =
+            document.getElementById('adminMessageInput');
+
         if (adminInput) {
-            adminInput.addEventListener('input', function () {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            });
-            adminInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    document.getElementById('adminMessageForm').submit();
-                }
-            });
+            adminInput.addEventListener(
+                'input',
+                function () {
+                    this.style.height = 'auto';
+                    this.style.height =
+                        Math.min(this.scrollHeight, 120) + 'px';
+                });
+
+            adminInput.addEventListener(
+                'keydown',
+                function (e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+
+                        document
+                            .getElementById('adminMessageForm')
+                            .submit();
+                    }
+                });
         }
 
         // Search filter for sidebar (admin static list)
-        const searchInput = document.getElementById('conversationSearch');
-        const convItems = document.querySelectorAll('.msgr-conv-item');
+        const searchInput =
+            document.getElementById('conversationSearch');
+
+        const convItems =
+            document.querySelectorAll('.msgr-conv-item');
+
         if (searchInput) {
-            searchInput.addEventListener('input', function () {
-                const q = this.value.trim().toLowerCase();
-                convItems.forEach(item => {
-                    const text = item.textContent.toLowerCase();
-                    item.style.display = q && !text.includes(q) ? 'none' : '';
+            searchInput.addEventListener(
+                'input',
+                function () {
+                    const q =
+                        this.value.trim().toLowerCase();
+
+                    convItems.forEach(item => {
+                        const text =
+                            item.textContent.toLowerCase();
+
+                        item.style.display =
+                            q && !text.includes(q)
+                                ? 'none'
+                                : '';
+                    });
                 });
-            });
         }
 
-        // Highlight active conv in sidebar
-        const activeConvId = @(active?.Id ?? 0);
+        // Highlight active conversation in sidebar
+        const activeConvId =
+            @(active?.Id ?? 0);
+
         if (activeConvId) {
-            const activeItem = document.querySelector(`.msgr-conv-item[data-conv-id="${activeConvId}"]`);
-            if (activeItem) activeItem.scrollIntoView({ block: 'nearest' });
+            const activeItem =
+                document.querySelector(
+                    `.msgr-conv-item[data-conv-id="${activeConvId}"]`
+                );
+
+            if (activeItem) {
+                activeItem.scrollIntoView({
+                    block: 'nearest'
+                });
+            }
         }
     </script>
 }

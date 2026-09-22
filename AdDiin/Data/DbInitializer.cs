@@ -4,8 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Data
 {
+    /// <summary>
+    /// Applies the current schema and inserts the small baseline dataset used
+    /// by a new or demonstration installation.
+    /// </summary>
     public static class DbInitializer
     {
+        /// <summary>
+        /// Creates a scoped initialization operation so startup resolves the
+        /// database and Identity services with the same lifetime rules as a request.
+        /// </summary>
+        /// <param name="serviceProvider">The application's root service provider.</param>
         public static async Task SeedDatabaseAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
@@ -20,7 +29,25 @@ namespace AdDiin.Data
             }
             catch
             {
-                await context.Database.EnsureCreatedAsync();
+                try
+                {
+                    await context.Database.EnsureCreatedAsync();
+                }
+                catch
+                {
+                    // The repair below may still succeed against an existing database.
+                }
+            }
+
+            // Repair databases where migration history is incomplete or the hadith
+            // migration could not run against an existing production schema.
+            try
+            {
+                await EnsureScheduledHadithTableAsync(context);
+            }
+            catch
+            {
+                // Startup logging in Program.cs reports the database error.
             }
 
             // 1. Seed Roles
@@ -445,6 +472,29 @@ namespace AdDiin.Data
 
                 await context.SaveChangesAsync();
             }
+        }
+
+        private static async Task EnsureScheduledHadithTableAsync(ApplicationDbContext context)
+        {
+            const string sql = """
+                IF OBJECT_ID(N'[dbo].[ScheduledHadiths]', N'U') IS NULL
+                BEGIN
+                    CREATE TABLE [dbo].[ScheduledHadiths] (
+                        [Id] int NOT NULL IDENTITY,
+                        [SlotDate] datetime2 NOT NULL,
+                        [SlotTime] time NOT NULL,
+                        [Text] nvarchar(max) NOT NULL,
+                        [Source] nvarchar(255) NULL,
+                        [CreatedAtUtc] datetime2 NOT NULL,
+                        CONSTRAINT [PK_ScheduledHadiths] PRIMARY KEY ([Id])
+                    );
+
+                    CREATE UNIQUE INDEX [IX_ScheduledHadiths_SlotDate_SlotTime]
+                        ON [dbo].[ScheduledHadiths] ([SlotDate], [SlotTime]);
+                END
+                """;
+
+            await context.Database.ExecuteSqlRawAsync(sql);
         }
     }
 }

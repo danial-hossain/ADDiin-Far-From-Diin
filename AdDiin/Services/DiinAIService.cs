@@ -4,6 +4,10 @@ using System.Text.Json;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Provides the application boundary for health checks and Islamic question
+    /// requests sent to the separately hosted AI backend.
+    /// </summary>
     public interface IDiinAIService
     {
         Task<(string Answer, List<DiinAISource> Sources)> AskIslamicQuestionAsync(
@@ -16,6 +20,9 @@ namespace AdDiin.Services
         bool IsOffTopic(string query);
     }
 
+    /// <summary>
+    /// Applies local request guards before translating calls to the remote AI API.
+    /// </summary>
     public class DiinAIService : IDiinAIService
     {
         public const string ContactFallbackMarker = "[CONTACT_ADMIN:/contact]";
@@ -47,6 +54,9 @@ namespace AdDiin.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Checks the lightweight local keyword guard used before remote requests.
+        /// </summary>
         public bool IsOffTopic(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -70,6 +80,9 @@ namespace AdDiin.Services
             return $"{message} সহায়তার জন্য আমাদের সাথে যোগাযোগ করুন: {ContactFallbackMarker}";
         }
 
+        /// <summary>
+        /// Queries the backend health endpoint without creating a chat request.
+        /// </summary>
         public async Task<(bool IsHealthy, string Details)> CheckHealthAsync()
         {
             var backendUrl =
@@ -106,6 +119,10 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Validates the question, sends recent history, and normalizes the
+        /// backend response into the view model shape used by the UI.
+        /// </summary>
         public async Task<(string Answer, List<DiinAISource> Sources)>
             AskIslamicQuestionAsync(
                 string question,
@@ -244,7 +261,12 @@ namespace AdDiin.Services
                 }
 
                 var property = element.EnumerateObject()
-                    .FirstOrDefault(property => string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(property =>
+                        string.Equals(
+                            property.Name,
+                            name,
+                            StringComparison.OrdinalIgnoreCase));
+
                 if (property.Value.ValueKind == JsonValueKind.String)
                 {
                     return property.Value.GetString();
@@ -264,11 +286,13 @@ namespace AdDiin.Services
             }
 
             var sources = new List<DiinAISource>();
+
             foreach (var item in sourceArray.EnumerateArray())
             {
                 if (item.ValueKind == JsonValueKind.String)
                 {
                     var reference = item.GetString();
+
                     if (!string.IsNullOrWhiteSpace(reference))
                     {
                         sources.Add(new DiinAISource
@@ -287,9 +311,32 @@ namespace AdDiin.Services
                 }
 
                 var id = ReadString(item, "id", "key");
-                var source = ReadString(item, "source", "name", "title", "document", "file", "filename");
-                var itemReference = ReadString(item, "reference", "citation", "url", "link", "page", "locator", "content");
-                var text = ReadString(item, "text", "content", "page_content", "pageContent", "excerpt");
+                var source = ReadString(
+                    item,
+                    "source",
+                    "name",
+                    "title",
+                    "document",
+                    "file",
+                    "filename");
+
+                var itemReference = ReadString(
+                    item,
+                    "reference",
+                    "citation",
+                    "url",
+                    "link",
+                    "page",
+                    "locator",
+                    "content");
+
+                var text = ReadString(
+                    item,
+                    "text",
+                    "content",
+                    "page_content",
+                    "pageContent",
+                    "excerpt");
 
                 if (!string.IsNullOrWhiteSpace(source) ||
                     !string.IsNullOrWhiteSpace(itemReference) ||
@@ -298,7 +345,9 @@ namespace AdDiin.Services
                     sources.Add(new DiinAISource
                     {
                         Id = id ?? string.Empty,
-                        Source = string.IsNullOrWhiteSpace(source) ? "Knowledge Base" : source,
+                        Source = string.IsNullOrWhiteSpace(source)
+                            ? "Knowledge Base"
+                            : source,
                         Reference = itemReference ?? string.Empty,
                         Text = text ?? string.Empty
                     });
@@ -321,7 +370,11 @@ namespace AdDiin.Services
 
                 foreach (var property in element.EnumerateObject())
                 {
-                    if (sourceNames.Any(name => string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) &&
+                    if (sourceNames.Any(name =>
+                            string.Equals(
+                                property.Name,
+                                name,
+                                StringComparison.OrdinalIgnoreCase)) &&
                         property.Value.ValueKind == JsonValueKind.Array)
                     {
                         return property.Value;
@@ -331,6 +384,7 @@ namespace AdDiin.Services
                 foreach (var property in element.EnumerateObject())
                 {
                     var nested = FindSourceArray(property.Value);
+
                     if (nested.ValueKind == JsonValueKind.Array)
                     {
                         return nested;
@@ -342,7 +396,12 @@ namespace AdDiin.Services
                 foreach (var item in element.EnumerateArray())
                 {
                     if (item.ValueKind == JsonValueKind.Object &&
-                        (ReadString(item, "source", "reference", "text", "page_content") != null))
+                        ReadString(
+                            item,
+                            "source",
+                            "reference",
+                            "text",
+                            "page_content") != null)
                     {
                         return element;
                     }

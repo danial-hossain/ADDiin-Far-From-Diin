@@ -3,12 +3,18 @@ using System.Text.Json;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines access to the file-backed About page content.
+    /// </summary>
     public interface IAboutService
     {
         Task<AboutContentModel> GetContentAsync();
         Task<AboutContentModel> UpdateContentAsync(AboutContentModel content);
     }
 
+    /// <summary>
+    /// Reads and writes editable About content under the application data folder.
+    /// </summary>
     public class AboutService : IAboutService
     {
         private readonly string _filePath;
@@ -24,6 +30,9 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Returns saved content or creates a default document when none exists.
+        /// </summary>
         public async Task<AboutContentModel> GetContentAsync()
         {
             if (!File.Exists(_filePath))
@@ -45,6 +54,9 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Persists the supplied About page model as formatted JSON.
+        /// </summary>
         public async Task<AboutContentModel> UpdateContentAsync(AboutContentModel content)
         {
             await SaveToFileAsync(content);

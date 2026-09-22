@@ -25,17 +25,25 @@
                         <h1 class="msgr-title">@(isAdmin ? "Inbox" : "Messages")</h1>
                     </div>
                 </div>
-                <button class="msgr-sidebar-close d-lg-none" id="msgrSidebarClose" aria-label="Close sidebar">
+                <button class="msgr-sidebar-close d-lg-none"
+                        id="msgrSidebarClose"
+                        aria-label="Close sidebar">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
 
             <div class="msgr-search-wrap">
                 <i class="bi bi-search msgr-search-icon"></i>
-                <input type="search" id="conversationSearch" class="msgr-search-input" placeholder="Search conversations…" autocomplete="off" />
+                <input type="search"
+                       id="conversationSearch"
+                       class="msgr-search-input"
+                       placeholder="Search conversations…"
+                       autocomplete="off" />
             </div>
 
-            <div id="conversationList" class="msgr-conv-list" aria-live="polite">
+            <div id="conversationList"
+                 class="msgr-conv-list"
+                 aria-live="polite">
                 <div class="msgr-loading-state">
                     <span class="spinner-border spinner-border-sm msgr-spinner me-2"></span>
                     Loading…
@@ -58,63 +66,118 @@
 
             <header class="msgr-chat-header" id="conversationHeader">
                 <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0">
-                    <button class="msgr-back-btn d-lg-none" id="msgrBackBtn" aria-label="Back">
+                    <button class="msgr-back-btn d-lg-none"
+                            id="msgrBackBtn"
+                            aria-label="Back">
                         <i class="bi bi-arrow-left"></i>
                     </button>
+
                     <div class="msgr-contact-avatar" id="headerAvatar">
                         <i class="bi bi-headset"></i>
                     </div>
+
                     <div class="min-w-0">
-                        <h2 id="conversationTitle" class="msgr-contact-name">
+                        <h2 id="conversationTitle"
+                            class="msgr-contact-name">
                             @(isAdmin ? "Select a conversation" : "Ad-Diin Support")
                         </h2>
+
                         <div class="d-flex align-items-center gap-2">
-                            <span id="connectionStatus" class="msgr-status-dot msgr-status-connecting"></span>
-                            <span id="conversationSubtitle" class="msgr-contact-status">
-                                @(isAdmin ? "Choose a thread to reply" : "Your messages are delivered securely.")
+                            <span id="connectionStatus"
+                                  class="msgr-status-dot msgr-status-connecting">
+                            </span>
+
+                            <span id="conversationSubtitle"
+                                  class="msgr-contact-status">
+                                @(isAdmin
+                                    ? "Choose a thread to reply"
+                                    : "Your messages are delivered securely.")
                             </span>
                         </div>
                     </div>
                 </div>
+
+                @*
+                Feature branch Close Thread functionality — intentionally inactive.
+
                 <div class="d-flex align-items-center gap-2 flex-shrink-0">
                     @if (isAdmin)
                     {
-                        <form id="closeConversationForm" asp-controller="Messages" asp-action="CloseConversation" method="post" class="d-none">
+                        <form id="closeConversationForm"
+                              asp-controller="Messages"
+                              asp-action="CloseConversation"
+                              method="post"
+                              class="d-none">
                             @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" id="closeConversationId" />
-                            <button type="submit" class="btn msgr-header-btn">
-                                <i class="bi bi-x-circle me-1"></i>Close Thread
+                            <input type="hidden"
+                                   name="id"
+                                   id="closeConversationId" />
+
+                            <button type="submit"
+                                    class="btn msgr-header-btn">
+                                <i class="bi bi-x-circle me-1"></i>
+                                Close Thread
                             </button>
                         </form>
                     }
                 </div>
+                *@
             </header>
 
-            <div id="chatBox" class="msgr-message-area flex-grow-1" aria-live="polite">
-                <div id="chatEmptyState" class="msgr-empty-state">
+            <div id="chatBox"
+                 class="msgr-message-area flex-grow-1"
+                 aria-live="polite">
+
+                <div id="chatEmptyState"
+                     class="msgr-empty-state">
+
                     <div class="msgr-empty-icon">
                         <i class="bi bi-chat-square-dots"></i>
                     </div>
+
                     <p class="msgr-empty-title">
-                        @(isAdmin ? "Select a conversation to start replying" : "Send us a message")
+                        @(isAdmin
+                            ? "Select a conversation to start replying"
+                            : "Send us a message")
                     </p>
+
                     <p class="msgr-empty-sub">
-                        @(isAdmin ? "All member inquiries appear on the left." : "Our team typically responds within a few hours.")
+                        @(isAdmin
+                            ? "All member inquiries appear on the left."
+                            : "Our team typically responds within a few hours.")
                     </p>
                 </div>
             </div>
 
-            <div id="typingIndicator" class="msgr-typing d-none" aria-hidden="true">
+            <div id="typingIndicator"
+                 class="msgr-typing d-none"
+                 aria-hidden="true">
+
                 <div class="msgr-typing-bubble">
                     <span></span><span></span><span></span>
                 </div>
-                <small class="ms-2 msgr-typing-label">Support is typing…</small>
+
+                <small class="ms-2 msgr-typing-label">
+                    Support is typing…
+                </small>
             </div>
 
-            <div id="composer" class="msgr-composer">
-                <div id="chatError" class="msgr-error-banner d-none" role="alert"></div>
-                <form id="messageForm" class="msgr-composer-form">
-                    <label class="visually-hidden" for="messageInput">Message</label>
+            <div id="composer"
+                 class="msgr-composer">
+
+                <div id="chatError"
+                     class="msgr-error-banner d-none"
+                     role="alert">
+                </div>
+
+                <form id="messageForm"
+                      class="msgr-composer-form">
+
+                    <label class="visually-hidden"
+                           for="messageInput">
+                        Message
+                    </label>
+
                     <div class="msgr-input-wrap">
                         <textarea id="messageInput"
                                   class="msgr-input"
@@ -123,18 +186,39 @@
                                   placeholder="@(isAdmin ? "Type your reply…" : "Write your message…")"
                                   disabled></textarea>
                     </div>
-                    <button id="sendButton" type="submit" class="msgr-send-btn" disabled aria-label="Send message">
-                        <span class="send-label"><i class="bi bi-send-fill"></i></span>
+
+                    <button id="sendButton"
+                            type="submit"
+                            class="msgr-send-btn"
+                            disabled
+                            aria-label="Send message">
+
+                        <span class="send-label">
+                            <i class="bi bi-send-fill"></i>
+                        </span>
+
                         <span class="send-loading d-none">
                             <span class="spinner-border spinner-border-sm"></span>
                         </span>
                     </button>
                 </form>
-                <form id="messageFallbackForm" method="post" action="/Messages/SendMessage" class="d-none">
+
+                <form id="messageFallbackForm"
+                      method="post"
+                      action="/Messages/SendMessage"
+                      class="d-none">
+
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="conversationId" id="fallbackConversationId" />
-                    <input type="hidden" name="messageContent" id="fallbackMessageContent" />
+
+                    <input type="hidden"
+                           name="conversationId"
+                           id="fallbackConversationId" />
+
+                    <input type="hidden"
+                           name="messageContent"
+                           id="fallbackMessageContent" />
                 </form>
+
                 <div class="msgr-composer-hint">
                     <i class="bi bi-lock-fill me-1"></i>
                     Private &amp; secure · Enter to send, Shift+Enter for new line
@@ -226,379 +310,990 @@
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
     <script>
         (() => {
             const page = document.querySelector('.msgr-page');
             const isAdmin = page.dataset.isAdmin === 'true';
-            const initialConversationId = Number(page.dataset.initialConversation || 0);
+            const initialConversationId =
+                Number(page.dataset.initialConversation || 0);
 
-            const list           = document.getElementById('conversationList');
-            const chatBox        = document.getElementById('chatBox');
-            const emptyState     = document.getElementById('chatEmptyState');
-            const title          = document.getElementById('conversationTitle');
-            const subtitle       = document.getElementById('conversationSubtitle');
-            const headerAvatar   = document.getElementById('headerAvatar');
-            const input          = document.getElementById('messageInput');
-            const form           = document.getElementById('messageForm');
-            const sendButton     = document.getElementById('sendButton');
-            const errorBox       = document.getElementById('chatError');
-            const statusDot      = document.getElementById('connectionStatus');
-            const closeForm      = document.getElementById('closeConversationForm');
-            const closeId        = document.getElementById('closeConversationId');
-            const searchInput    = document.getElementById('conversationSearch');
-            const sidebarEl      = document.getElementById('msgrSidebar');
-            const backdropEl     = document.getElementById('msgrBackdrop');
-            const backBtn        = document.getElementById('msgrBackBtn');
-            const sidebarClose   = document.getElementById('msgrSidebarClose');
-            const mainSection    = document.querySelector('.msgr-main');
+            const list =
+                document.getElementById('conversationList');
 
-            const conversations  = new Map();
+            const chatBox =
+                document.getElementById('chatBox');
+
+            const emptyState =
+                document.getElementById('chatEmptyState');
+
+            const title =
+                document.getElementById('conversationTitle');
+
+            const subtitle =
+                document.getElementById('conversationSubtitle');
+
+            const headerAvatar =
+                document.getElementById('headerAvatar');
+
+            const input =
+                document.getElementById('messageInput');
+
+            const form =
+                document.getElementById('messageForm');
+
+            const sendButton =
+                document.getElementById('sendButton');
+
+            const errorBox =
+                document.getElementById('chatError');
+
+            const statusDot =
+                document.getElementById('connectionStatus');
+
+            // Feature branch Close Thread elements — intentionally inactive.
+            /*
+            const closeForm =
+                document.getElementById('closeConversationForm');
+
+            const closeId =
+                document.getElementById('closeConversationId');
+            */
+
+            const searchInput =
+                document.getElementById('conversationSearch');
+
+            const sidebarEl =
+                document.getElementById('msgrSidebar');
+
+            const backdropEl =
+                document.getElementById('msgrBackdrop');
+
+            const backBtn =
+                document.getElementById('msgrBackBtn');
+
+            const sidebarClose =
+                document.getElementById('msgrSidebarClose');
+
+            const mainSection =
+                document.querySelector('.msgr-main');
+
+            const conversations = new Map();
             const seenMessageIds = new Set();
-            let selectedConversationId = initialConversationId || null;
+
+            let selectedConversationId =
+                initialConversationId || null;
+
             let connection;
             let searchQuery = '';
 
             // ── Helpers ───────────────────────────────────────────────────────────
-            const escapeHtml = v => String(v ?? '')
-                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-                .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+            const escapeHtml = v =>
+                String(v ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
 
             const formatTime = value => {
                 const d = new Date(value);
-                if (Number.isNaN(d.getTime())) return '';
+
+                if (Number.isNaN(d.getTime())) {
+                    return '';
+                }
+
                 const now = new Date();
+
                 return d.toDateString() === now.toDateString()
-                    ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                    ? d.toLocaleTimeString(
+                        [],
+                        {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                    : d.toLocaleDateString(
+                        [],
+                        {
+                            month: 'short',
+                            day: 'numeric'
+                        });
             };
 
             const getInitials = name => {
                 if (!name) return '?';
-                const parts = name.trim().split(/\s+/);
+
+                const parts =
+                    name.trim().split(/\s+/);
+
                 return parts.length >= 2
-                    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+                    ? (
+                        parts[0][0] +
+                        parts[parts.length - 1][0]
+                    ).toUpperCase()
                     : name.slice(0, 2).toUpperCase();
             };
 
             const showError = msg => {
-                errorBox.textContent = msg || 'Something went wrong. Please try again.';
-                errorBox.classList.toggle('d-none', !msg);
+                errorBox.textContent =
+                    msg ||
+                    'Something went wrong. Please try again.';
+
+                errorBox.classList.toggle(
+                    'd-none',
+                    !msg);
             };
 
             const setSending = sending => {
-                sendButton.disabled = sending || !selectedConversationId;
-                sendButton.querySelector('.send-label').classList.toggle('d-none', sending);
-                sendButton.querySelector('.send-loading').classList.toggle('d-none', !sending);
+                sendButton.disabled =
+                    sending ||
+                    !selectedConversationId;
+
+                sendButton
+                    .querySelector('.send-label')
+                    .classList.toggle(
+                        'd-none',
+                        sending);
+
+                sendButton
+                    .querySelector('.send-loading')
+                    .classList.toggle(
+                        'd-none',
+                        !sending);
             };
 
             // ── Status dot ────────────────────────────────────────────────────────
             function setStatus(state) {
-                statusDot.className = `msgr-status-dot msgr-status-${state}`;
-                const labels = { live:'Live', connecting:'Connecting…', reconnecting:'Reconnecting…', offline:'Offline' };
-                statusDot.title = labels[state] || state;
+                statusDot.className =
+                    `msgr-status-dot msgr-status-${state}`;
+
+                const labels = {
+                    live: 'Live',
+                    connecting: 'Connecting…',
+                    reconnecting: 'Reconnecting…',
+                    offline: 'Offline'
+                };
+
+                statusDot.title =
+                    labels[state] || state;
             }
 
             // ── Mobile helpers ────────────────────────────────────────────────────
             function showChatPanel() {
-                mainSection.classList.add('mobile-active');
+                mainSection.classList.add(
+                    'mobile-active');
             }
+
             function showSidebarPanel() {
-                mainSection.classList.remove('mobile-active');
+                mainSection.classList.remove(
+                    'mobile-active');
             }
-            backBtn?.addEventListener('click', () => { showSidebarPanel(); selectedConversationId = null; });
-            sidebarClose?.addEventListener('click', () => mainSection.classList.remove('mobile-active'));
-            backdropEl?.addEventListener('click', () => mainSection.classList.remove('mobile-active'));
+
+            backBtn?.addEventListener(
+                'click',
+                () => {
+                    showSidebarPanel();
+                    selectedConversationId = null;
+                });
+
+            sidebarClose?.addEventListener(
+                'click',
+                () =>
+                    mainSection.classList.remove(
+                        'mobile-active'));
+
+            backdropEl?.addEventListener(
+                'click',
+                () =>
+                    mainSection.classList.remove(
+                        'mobile-active'));
 
             // ── Conversation list renderer ─────────────────────────────────────────
             function renderConversationList() {
                 list.innerHTML = '';
-                const items = Array.from(conversations.values())
-                    .filter(c => {
-                        if (!searchQuery) return true;
-                        const name = isAdmin ? (c.userDisplayName || 'Member') : 'Ad-Diin Support';
-                        return (name + ' ' + (c.lastMessage?.content || '')).toLowerCase().includes(searchQuery);
-                    })
-                    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+
+                const items =
+                    Array.from(conversations.values())
+                        .filter(c => {
+                            if (!searchQuery) {
+                                return true;
+                            }
+
+                            const name =
+                                isAdmin
+                                    ? (c.userDisplayName || 'Member')
+                                    : 'Ad-Diin Support';
+
+                            return (
+                                name +
+                                ' ' +
+                                (c.lastMessage?.content || '')
+                            )
+                                .toLowerCase()
+                                .includes(searchQuery);
+                        })
+                        .sort(
+                            (a, b) =>
+                                new Date(b.updatedAt || 0) -
+                                new Date(a.updatedAt || 0));
 
                 if (!items.length) {
-                    list.innerHTML = `<div class="msgr-conv-empty">${escapeHtml(searchQuery ? 'No results found.' : 'No conversations yet.')}</div>`;
+                    list.innerHTML =
+                        `<div class="msgr-conv-empty">${
+                            escapeHtml(
+                                searchQuery
+                                    ? 'No results found.'
+                                    : 'No conversations yet.'
+                            )
+                        }</div>`;
+
                     return;
                 }
 
                 items.forEach(c => {
-                    const name    = isAdmin ? (c.userDisplayName || 'Member') : 'Ad-Diin Support';
-                    const preview = c.lastMessage?.content || 'No messages yet';
-                    const isAct   = c.id === selectedConversationId;
-                    const initials = isAdmin ? getInitials(name) : '🕌';
+                    const name =
+                        isAdmin
+                            ? (c.userDisplayName || 'Member')
+                            : 'Ad-Diin Support';
 
-                    const item = document.createElement('button');
+                    const preview =
+                        c.lastMessage?.content ||
+                        'No messages yet';
+
+                    const isAct =
+                        c.id === selectedConversationId;
+
+                    const initials =
+                        isAdmin
+                            ? getInitials(name)
+                            : '🕌';
+
+                    const item =
+                        document.createElement('button');
+
                     item.type = 'button';
-                    item.className = `msgr-conv-item${isAct ? ' active' : ''}`;
-                    item.dataset.conversationId = c.id;
+
+                    item.className =
+                        `msgr-conv-item${
+                            isAct ? ' active' : ''
+                        }`;
+
+                    item.dataset.conversationId =
+                        c.id;
 
                     item.innerHTML = `
-                        <div class="msgr-conv-avatar">${escapeHtml(initials)}</div>
+                        <div class="msgr-conv-avatar">
+                            ${escapeHtml(initials)}
+                        </div>
+
                         <div class="msgr-conv-body min-w-0">
                             <div class="d-flex justify-content-between align-items-baseline gap-1">
-                                <span class="msgr-conv-name text-truncate">${escapeHtml(name)}</span>
-                                <span class="msgr-conv-time flex-shrink-0">${escapeHtml(formatTime(c.updatedAt))}</span>
+                                <span class="msgr-conv-name text-truncate">
+                                    ${escapeHtml(name)}
+                                </span>
+
+                                <span class="msgr-conv-time flex-shrink-0">
+                                    ${escapeHtml(formatTime(c.updatedAt))}
+                                </span>
                             </div>
-                            <div class="msgr-conv-preview text-truncate">${escapeHtml(preview)}</div>
+
+                            <div class="msgr-conv-preview text-truncate">
+                                ${escapeHtml(preview)}
+                            </div>
                         </div>
-                        ${c.unreadCount > 0 ? `<span class="msgr-unread-badge">${c.unreadCount > 99 ? '99+' : c.unreadCount}</span>` : ''}
-                        ${c.status === 'closed' ? '<span class="msgr-closed-pill">Closed</span>' : ''}
+
+                        ${
+                            c.unreadCount > 0
+                                ? `<span class="msgr-unread-badge">${
+                                    c.unreadCount > 99
+                                        ? '99+'
+                                        : c.unreadCount
+                                }</span>`
+                                : ''
+                        }
+
+                        ${
+                            /*
+                             * Feature branch closed-status badge.
+                             * Intentionally inactive.
+                             */
+                            ''
+                        }
                     `;
-                    item.addEventListener('click', () => {
-                        selectConversation(c.id);
-                        showChatPanel();
-                    });
+
+                    item.addEventListener(
+                        'click',
+                        () => {
+                            selectConversation(c.id);
+                            showChatPanel();
+                        });
+
                     list.appendChild(item);
                 });
             }
 
             // ── Message renderer ──────────────────────────────────────────────────
-            function appendMessage(msg, animate = true) {
-                if (!msg || seenMessageIds.has(msg.id)) return;
+            function appendMessage(
+                msg,
+                animate = true)
+            {
+                if (!msg ||
+                    seenMessageIds.has(msg.id)) {
+                    return;
+                }
+
                 seenMessageIds.add(msg.id);
-                if (emptyState?.parentNode === chatBox) emptyState.remove();
 
-                const mine = isAdmin ? msg.senderType === 'admin' : msg.senderType === 'user';
-                const senderName = msg.senderDisplayName || (mine ? 'You' : 'Support');
+                if (emptyState?.parentNode === chatBox) {
+                    emptyState.remove();
+                }
 
-                const row = document.createElement('div');
-                row.className = `msgr-msg-row ${mine ? 'mine' : 'theirs'}${animate ? ' animate' : ''}`;
-                row.dataset.messageId = msg.id;
+                const mine =
+                    isAdmin
+                        ? msg.senderType === 'admin'
+                        : msg.senderType === 'user';
+
+                const senderName =
+                    msg.senderDisplayName ||
+                    (mine ? 'You' : 'Support');
+
+                const row =
+                    document.createElement('div');
+
+                row.className =
+                    `msgr-msg-row ${
+                        mine ? 'mine' : 'theirs'
+                    }${
+                        animate ? ' animate' : ''
+                    }`;
+
+                row.dataset.messageId =
+                    msg.id;
 
                 if (!mine) {
-                    const av = document.createElement('div');
-                    av.className = 'msgr-msg-avatar';
-                    av.textContent = isAdmin ? getInitials(senderName) : '🕌';
+                    const av =
+                        document.createElement('div');
+
+                    av.className =
+                        'msgr-msg-avatar';
+
+                    av.textContent =
+                        isAdmin
+                            ? getInitials(senderName)
+                            : '🕌';
+
                     row.appendChild(av);
                 }
 
-                const bubble = document.createElement('div');
-                bubble.className = `msgr-bubble ${mine ? 'mine' : 'theirs'}`;
+                const bubble =
+                    document.createElement('div');
 
-                const content = document.createElement('div');
-                content.className = 'msgr-bubble-content';
-                content.textContent = msg.content || '';
+                bubble.className =
+                    `msgr-bubble ${
+                        mine ? 'mine' : 'theirs'
+                    }`;
+
+                const content =
+                    document.createElement('div');
+
+                content.className =
+                    'msgr-bubble-content';
+
+                content.textContent =
+                    msg.content || '';
+
                 bubble.appendChild(content);
 
-                const meta = document.createElement('div');
-                meta.className = 'msgr-bubble-meta';
-                meta.innerHTML = `${escapeHtml(formatTime(msg.createdAt))}${mine
-                    ? ` <span class="msgr-read-status" title="${msg.isRead ? 'Seen' : 'Sent'}"><i class="bi ${msg.isRead ? 'bi-check2-all' : 'bi-check'}"></i></span>`
-                    : ''}`;
-                bubble.appendChild(meta);
+                const meta =
+                    document.createElement('div');
 
+                meta.className =
+                    'msgr-bubble-meta';
+
+                meta.innerHTML =
+                    `${escapeHtml(formatTime(msg.createdAt))}${
+                        mine
+                            ? ` <span class="msgr-read-status"
+                                    title="${msg.isRead ? 'Seen' : 'Sent'}">
+                                    <i class="bi ${
+                                        msg.isRead
+                                            ? 'bi-check2-all'
+                                            : 'bi-check'
+                                    }"></i>
+                                </span>`
+                            : ''
+                    }`;
+
+                bubble.appendChild(meta);
                 row.appendChild(bubble);
                 chatBox.appendChild(row);
-                requestAnimationFrame(() => chatBox.scrollTop = chatBox.scrollHeight);
+
+                requestAnimationFrame(
+                    () =>
+                        chatBox.scrollTop =
+                            chatBox.scrollHeight);
             }
 
             function renderMessages(messages) {
                 chatBox.innerHTML = '';
                 seenMessageIds.clear();
+
                 if (!messages?.length) {
-                    const s = document.createElement('div');
-                    s.className = 'msgr-empty-state';
-                    s.innerHTML = `<div class="msgr-empty-icon"><i class="bi bi-chat-dots"></i></div><p class="msgr-empty-title">Start the conversation!</p><p class="msgr-empty-sub">Type your first message below.</p>`;
+                    const s =
+                        document.createElement('div');
+
+                    s.className =
+                        'msgr-empty-state';
+
+                    s.innerHTML =
+                        `<div class="msgr-empty-icon">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <p class="msgr-empty-title">
+                            Start the conversation!
+                        </p>
+                        <p class="msgr-empty-sub">
+                            Type your first message below.
+                        </p>`;
+
                     chatBox.appendChild(s);
                     return;
                 }
+
                 let lastDate = null;
+
                 messages.forEach(msg => {
-                    const msgDate = new Date(msg.createdAt).toDateString();
+                    const msgDate =
+                        new Date(
+                            msg.createdAt)
+                            .toDateString();
+
                     if (msgDate !== lastDate) {
-                        const sep = document.createElement('div');
-                        sep.className = 'msgr-date-sep';
-                        const d = new Date(msg.createdAt);
-                        const now = new Date();
-                        sep.textContent = d.toDateString() === now.toDateString()
-                            ? 'Today'
-                            : d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+                        const sep =
+                            document.createElement('div');
+
+                        sep.className =
+                            'msgr-date-sep';
+
+                        const d =
+                            new Date(msg.createdAt);
+
+                        const now =
+                            new Date();
+
+                        sep.textContent =
+                            d.toDateString() ===
+                            now.toDateString()
+                                ? 'Today'
+                                : d.toLocaleDateString(
+                                    [],
+                                    {
+                                        weekday: 'long',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    });
+
                         chatBox.appendChild(sep);
                         lastDate = msgDate;
                     }
-                    appendMessage(msg, false);
+
+                    appendMessage(
+                        msg,
+                        false);
                 });
-                chatBox.scrollTop = chatBox.scrollHeight;
+
+                chatBox.scrollTop =
+                    chatBox.scrollHeight;
             }
 
             // ── API ───────────────────────────────────────────────────────────────
             async function loadConversations() {
-                const res = await fetch('/api/contact/conversations', { headers: { 'Accept': 'application/json' } });
-                if (!res.ok) throw new Error('Unable to load conversations.');
-                const data = await res.json();
-                conversations.clear();
-                (Array.isArray(data) ? data : []).forEach(c => conversations.set(c.id, c));
-                if (!selectedConversationId && conversations.size) {
-                    selectedConversationId = Array.from(conversations.keys())[0];
+                const res =
+                    await fetch(
+                        '/api/contact/conversations',
+                        {
+                            headers: {
+                                'Accept':
+                                    'application/json'
+                            }
+                        });
+
+                if (!res.ok) {
+                    throw new Error(
+                        'Unable to load conversations.');
                 }
+
+                const data =
+                    await res.json();
+
+                conversations.clear();
+
+                (
+                    Array.isArray(data)
+                        ? data
+                        : []
+                ).forEach(
+                    c =>
+                        conversations.set(
+                            c.id,
+                            c));
+
+                if (!selectedConversationId &&
+                    conversations.size) {
+                    selectedConversationId =
+                        Array.from(
+                            conversations.keys())[0];
+                }
+
                 renderConversationList();
-                if (selectedConversationId) await selectConversation(selectedConversationId);
+
+                if (selectedConversationId) {
+                    await selectConversation(
+                        selectedConversationId);
+                }
             }
 
             async function selectConversation(id) {
                 if (!id) return;
-                showError('');
-                const res = await fetch(`/api/contact/conversations/${id}/messages`, { headers: { 'Accept': 'application/json' } });
-                if (!res.ok) { showError('This conversation is no longer available.'); return; }
-                const data = await res.json();
-                selectedConversationId = id;
-                conversations.set(id, data.conversation);
 
-                title.textContent = isAdmin
-                    ? (data.conversation.userDisplayName || 'Member')
-                    : (data.conversation.subject || 'Support Request');
-                subtitle.textContent = isAdmin
-                    ? (data.conversation.userEmail || 'Member')
-                    : 'Ad-Diin Support Team · Usually responds in a few hours';
+                showError('');
+
+                const res =
+                    await fetch(
+                        `/api/contact/conversations/${id}/messages`,
+                        {
+                            headers: {
+                                'Accept':
+                                    'application/json'
+                            }
+                        });
+
+                if (!res.ok) {
+                    showError(
+                        'This conversation is no longer available.');
+                    return;
+                }
+
+                const data =
+                    await res.json();
+
+                selectedConversationId =
+                    id;
+
+                conversations.set(
+                    id,
+                    data.conversation);
+
+                title.textContent =
+                    isAdmin
+                        ? (
+                            data.conversation.userDisplayName ||
+                            'Member'
+                        )
+                        : (
+                            data.conversation.subject ||
+                            'Support Request'
+                        );
+
+                subtitle.textContent =
+                    isAdmin
+                        ? (
+                            data.conversation.userEmail ||
+                            'Member'
+                        )
+                        : 'Ad-Diin Support Team · Usually responds in a few hours';
 
                 if (isAdmin) {
                     headerAvatar.innerHTML = '';
-                    headerAvatar.textContent = getInitials(data.conversation.userDisplayName || 'M');
+
+                    headerAvatar.textContent =
+                        getInitials(
+                            data.conversation.userDisplayName ||
+                            'M');
                 }
 
-                input.disabled = data.conversation.status !== 'active';
-                input.placeholder = input.disabled ? 'This conversation is closed.' : (isAdmin ? 'Type your reply…' : 'Write your message…');
-                sendButton.disabled = input.disabled;
+                /*
+                Feature branch closed-conversation handling.
+                Intentionally inactive.
+
+                input.disabled =
+                    data.conversation.status !== 'active';
+
+                input.placeholder =
+                    input.disabled
+                        ? 'This conversation is closed.'
+                        : (
+                            isAdmin
+                                ? 'Type your reply…'
+                                : 'Write your message…'
+                        );
+
+                sendButton.disabled =
+                    input.disabled;
 
                 if (closeForm) {
-                    closeForm.classList.toggle('d-none', !isAdmin || data.conversation.status !== 'active');
+                    closeForm.classList.toggle(
+                        'd-none',
+                        !isAdmin ||
+                        data.conversation.status !== 'active');
+
                     closeId.value = id;
                 }
+                */
 
-                renderMessages(data.messages || []);
+                // Testing/main behavior:
+                // selected conversations remain writable.
+                input.disabled = false;
+
+                input.placeholder =
+                    isAdmin
+                        ? 'Type your reply…'
+                        : 'Write your message…';
+
+                sendButton.disabled =
+                    input.disabled;
+
+                renderMessages(
+                    data.messages || []);
+
                 renderConversationList();
+
                 await subscribeToSelectedConversation();
-                fetch(`/api/contact/conversations/${id}/read`, { method: 'POST' }).catch(() => {});
+
+                fetch(
+                    `/api/contact/conversations/${id}/read`,
+                    {
+                        method: 'POST'
+                    }).catch(() => {});
             }
 
             async function subscribeToSelectedConversation() {
-                if (connection?.state === signalR.HubConnectionState.Connected && selectedConversationId) {
-                    try { await connection.invoke('SubscribeToConversation', selectedConversationId); } catch (_) {}
+                if (
+                    connection?.state ===
+                        signalR.HubConnectionState.Connected &&
+                    selectedConversationId
+                ) {
+                    try {
+                        await connection.invoke(
+                            'SubscribeToConversation',
+                            selectedConversationId);
+                    }
+                    catch (_) {}
                 }
             }
 
             async function sendMessage(event) {
                 event.preventDefault();
-                const content = input.value.trim();
-                if (!content || !selectedConversationId || sendButton.disabled) return;
-                showError('');
-                if (isAdmin) {
-                    document.getElementById('fallbackConversationId').value = selectedConversationId;
-                    document.getElementById('fallbackMessageContent').value = content;
-                    document.getElementById('messageFallbackForm').submit();
+
+                const content =
+                    input.value.trim();
+
+                if (
+                    !content ||
+                    !selectedConversationId ||
+                    sendButton.disabled
+                ) {
                     return;
                 }
+
+                showError('');
+
+                if (isAdmin) {
+                    document
+                        .getElementById(
+                            'fallbackConversationId')
+                        .value =
+                        selectedConversationId;
+
+                    document
+                        .getElementById(
+                            'fallbackMessageContent')
+                        .value =
+                        content;
+
+                    document
+                        .getElementById(
+                            'messageFallbackForm')
+                        .submit();
+
+                    return;
+                }
+
                 setSending(true);
+
                 try {
-                    const res = await fetch(`/api/contact/conversations/${selectedConversationId}/messages`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                        body: JSON.stringify({ content })
-                    });
-                    const responseText = await res.text();
+                    const res =
+                        await fetch(
+                            `/api/contact/conversations/${selectedConversationId}/messages`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type':
+                                        'application/json',
+                                    'Accept':
+                                        'application/json'
+                                },
+                                body: JSON.stringify({
+                                    content
+                                })
+                            });
+
+                    const responseText =
+                        await res.text();
+
                     let data;
+
                     try {
-                        data = responseText ? JSON.parse(responseText) : {};
-                    } catch {
+                        data =
+                            responseText
+                                ? JSON.parse(responseText)
+                                : {};
+                    }
+                    catch {
                         if (isAdmin) {
-                            document.getElementById('fallbackConversationId').value = selectedConversationId;
-                            document.getElementById('fallbackMessageContent').value = content;
-                            document.getElementById('messageFallbackForm').submit();
+                            document
+                                .getElementById(
+                                    'fallbackConversationId')
+                                .value =
+                                selectedConversationId;
+
+                            document
+                                .getElementById(
+                                    'fallbackMessageContent')
+                                .value =
+                                content;
+
+                            document
+                                .getElementById(
+                                    'messageFallbackForm')
+                                .submit();
+
                             return;
                         }
-                        throw new Error(`Unable to send message (HTTP ${res.status}).`);
+
+                        throw new Error(
+                            `Unable to send message (HTTP ${res.status}).`);
                     }
+
                     if (!res.ok) {
-                        if (isAdmin && res.status !== 401 && res.status !== 403 && res.status !== 404) {
-                            document.getElementById('fallbackConversationId').value = selectedConversationId;
-                            document.getElementById('fallbackMessageContent').value = content;
-                            document.getElementById('messageFallbackForm').submit();
+                        if (
+                            isAdmin &&
+                            res.status !== 401 &&
+                            res.status !== 403 &&
+                            res.status !== 404
+                        ) {
+                            document
+                                .getElementById(
+                                    'fallbackConversationId')
+                                .value =
+                                selectedConversationId;
+
+                            document
+                                .getElementById(
+                                    'fallbackMessageContent')
+                                .value =
+                                content;
+
+                            document
+                                .getElementById(
+                                    'messageFallbackForm')
+                                .submit();
+
                             return;
                         }
-                        throw new Error(data.error || `Unable to send message (HTTP ${res.status}).`);
+
+                        throw new Error(
+                            data.error ||
+                            `Unable to send message (HTTP ${res.status}).`);
                     }
+
                     input.value = '';
                     input.style.height = 'auto';
+
                     appendMessage(data);
+
                     await loadConversations();
-                } catch (err) {
-                    showError(err.message);
-                } finally {
+                }
+                catch (err) {
+                    showError(
+                        err.message);
+                }
+                finally {
                     setSending(false);
                     input.focus();
                 }
             }
 
             async function connectSignalR() {
-                if (!window.signalR) { setStatus('offline'); return; }
-                connection = new signalR.HubConnectionBuilder()
-                    .withUrl('/hubs/support-chat')
-                    .withAutomaticReconnect()
-                    .build();
+                if (!window.signalR) {
+                    setStatus('offline');
+                    return;
+                }
 
-                connection.on('ReceiveSupportMessage', async msg => {
-                    if (!msg?.conversationId) return;
-                    const existing = conversations.get(msg.conversationId) || {
-                        id: msg.conversationId, subject: 'Support Request', status: 'active',
-                        userDisplayName: isAdmin ? 'Member' : 'Ad-Diin Support',
-                        updatedAt: msg.createdAt, unreadCount: 0
-                    };
-                    existing.lastMessage = msg;
-                    existing.updatedAt = msg.createdAt;
-                    if (msg.conversationId !== selectedConversationId && (!isAdmin || msg.senderType === 'user')) {
-                        existing.unreadCount = (existing.unreadCount || 0) + 1;
-                    }
-                    conversations.set(msg.conversationId, existing);
-                    renderConversationList();
-                    if (msg.conversationId === selectedConversationId) appendMessage(msg);
-                });
+                connection =
+                    new signalR.HubConnectionBuilder()
+                        .withUrl('/hubs/support-chat')
+                        .withAutomaticReconnect()
+                        .build();
 
-                connection.on('ConversationMessagesRead', receipt => {
-                    if (!receipt?.conversationId || receipt.conversationId !== selectedConversationId) return;
-                    document.querySelectorAll('[data-message-id] .msgr-read-status').forEach(status => {
-                        status.title = 'Seen';
-                        status.innerHTML = '<i class="bi bi-check2-all"></i>';
+                connection.on(
+                    'ReceiveSupportMessage',
+                    async msg => {
+                        if (!msg?.conversationId) {
+                            return;
+                        }
+
+                        const existing =
+                            conversations.get(
+                                msg.conversationId) || {
+                                    id:
+                                        msg.conversationId,
+                                    subject:
+                                        'Support Request',
+                                    status:
+                                        'active',
+                                    userDisplayName:
+                                        isAdmin
+                                            ? 'Member'
+                                            : 'Ad-Diin Support',
+                                    updatedAt:
+                                        msg.createdAt,
+                                    unreadCount:
+                                        0
+                                };
+
+                        existing.lastMessage =
+                            msg;
+
+                        existing.updatedAt =
+                            msg.createdAt;
+
+                        if (
+                            msg.conversationId !==
+                                selectedConversationId &&
+                            (
+                                !isAdmin ||
+                                msg.senderType === 'user'
+                            )
+                        ) {
+                            existing.unreadCount =
+                                (existing.unreadCount || 0) + 1;
+                        }
+
+                        conversations.set(
+                            msg.conversationId,
+                            existing);
+
+                        renderConversationList();
+
+                        if (
+                            msg.conversationId ===
+                            selectedConversationId
+                        ) {
+                            appendMessage(msg);
+                        }
                     });
-                });
 
-                connection.onreconnecting(() => setStatus('reconnecting'));
-                connection.onreconnected(async () => { setStatus('live'); await subscribeToSelectedConversation(); });
-                connection.onclose(() => setStatus('offline'));
+                connection.on(
+                    'ConversationMessagesRead',
+                    receipt => {
+                        if (
+                            !receipt?.conversationId ||
+                            receipt.conversationId !==
+                                selectedConversationId
+                        ) {
+                            return;
+                        }
+
+                        document
+                            .querySelectorAll(
+                                '[data-message-id] .msgr-read-status')
+                            .forEach(status => {
+                                status.title =
+                                    'Seen';
+
+                                status.innerHTML =
+                                    '<i class="bi bi-check2-all"></i>';
+                            });
+                    });
+
+                connection.onreconnecting(
+                    () =>
+                        setStatus(
+                            'reconnecting'));
+
+                connection.onreconnected(
+                    async () => {
+                        setStatus('live');
+                        await subscribeToSelectedConversation();
+                    });
+
+                connection.onclose(
+                    () =>
+                        setStatus('offline'));
 
                 try {
                     await connection.start();
+
                     setStatus('live');
+
                     await subscribeToSelectedConversation();
-                } catch (_) {
+                }
+                catch (_) {
                     setStatus('offline');
                 }
             }
 
             // Auto-resize textarea
-            input.addEventListener('input', () => {
-                input.style.height = 'auto';
-                input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-            });
+            input.addEventListener(
+                'input',
+                () => {
+                    input.style.height = 'auto';
+
+                    input.style.height =
+                        Math.min(
+                            input.scrollHeight,
+                            120) + 'px';
+                });
 
             // Search filter
-            searchInput?.addEventListener('input', e => {
-                searchQuery = e.target.value.trim().toLowerCase();
-                renderConversationList();
-            });
+            searchInput?.addEventListener(
+                'input',
+                e => {
+                    searchQuery =
+                        e.target.value
+                            .trim()
+                            .toLowerCase();
+
+                    renderConversationList();
+                });
 
             // Event bindings
-            form.addEventListener('submit', sendMessage);
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
-            });
+            form.addEventListener(
+                'submit',
+                sendMessage);
+
+            input.addEventListener(
+                'keydown',
+                e => {
+                    if (
+                        e.key === 'Enter' &&
+                        !e.shiftKey
+                    ) {
+                        e.preventDefault();
+                        form.requestSubmit();
+                    }
+                });
 
             // Init
             setStatus('connecting');
-            loadConversations().catch(err => showError(err.message));
+
+            loadConversations()
+                .catch(
+                    err =>
+                        showError(
+                            err.message));
+
             connectSignalR();
         })();
     </script>

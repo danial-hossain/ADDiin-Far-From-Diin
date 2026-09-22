@@ -134,6 +134,9 @@ namespace AdDiin.Models.ViewModels
         public List<DiinAIChatMessage> History { get; set; } = new();
     }
 
+    /// <summary>
+    /// Represents one message exchanged with Diin AI, including optional sources.
+    /// </summary>
     public class DiinAIChatMessage
     {
         public string Role { get; set; } = "user"; // user, assistant
@@ -142,6 +145,9 @@ namespace AdDiin.Models.ViewModels
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Carries the citation metadata returned with an AI answer.
+    /// </summary>
     public class DiinAISource
     {
         public string Id { get; set; } = string.Empty;
@@ -150,12 +156,18 @@ namespace AdDiin.Models.ViewModels
         public string Text { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Payload for the authenticated or guest AI question endpoint.
+    /// </summary>
     public class AIApiAskRequest
     {
         public string Query { get; set; } = string.Empty;
         public int? ConversationId { get; set; }
     }
 
+    /// <summary>
+    /// Normalized response returned to the Diin AI client.
+    /// </summary>
     public class AIApiAskResponse
     {
         public string Answer { get; set; } = string.Empty;
@@ -164,12 +176,18 @@ namespace AdDiin.Models.ViewModels
         public bool ContactFallback { get; set; }
     }
 
+    /// <summary>
+    /// JSON request containing the ingredient text to analyze.
+    /// </summary>
     public class ProductTextAnalysisRequest
     {
         [System.Text.Json.Serialization.JsonPropertyName("text")]
         public string Text { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Provider-independent product-analysis result used by the controller and UI.
+    /// </summary>
     public class HalalDetectorResult
     {
         [System.Text.Json.Serialization.JsonPropertyName("success")]
@@ -199,7 +217,8 @@ namespace AdDiin.Models.ViewModels
         [System.Text.Json.Serialization.JsonPropertyName("message")]
         public string? Message { get; set; }
 
-        // Backward compatibility / convenience properties
+        // These computed fields preserve the older response shape while exposing
+        // the richer OCR and decision objects to newer clients.
         [System.Text.Json.Serialization.JsonPropertyName("prediction")]
         public string? Prediction => Status;
 
@@ -218,6 +237,7 @@ namespace AdDiin.Models.ViewModels
             get
             {
                 var list = new List<DetectedIngredient>();
+
                 if (Decision?.HaramEvidence != null)
                 {
                     foreach (var h in Decision.HaramEvidence)
@@ -226,13 +246,16 @@ namespace AdDiin.Models.ViewModels
                         {
                             Name = h.Ingredient,
                             Status = "Haram",
-                            Reason = !string.IsNullOrWhiteSpace(h.Reference) ? $"{h.Description} ({h.Reference})" : h.Description,
+                            Reason = !string.IsNullOrWhiteSpace(h.Reference)
+                                ? $"{h.Description} ({h.Reference})"
+                                : h.Description,
                             MatchType = h.MatchType,
                             OcrIngredient = h.OcrIngredient,
                             Reference = h.Reference
                         });
                     }
                 }
+
                 if (Decision?.MushboohEvidence != null)
                 {
                     foreach (var m in Decision.MushboohEvidence)
@@ -241,13 +264,16 @@ namespace AdDiin.Models.ViewModels
                         {
                             Name = m.Ingredient,
                             Status = "Requires Verification",
-                            Reason = !string.IsNullOrWhiteSpace(m.Reference) ? $"{m.Description} ({m.Reference})" : m.Description,
+                            Reason = !string.IsNullOrWhiteSpace(m.Reference)
+                                ? $"{m.Description} ({m.Reference})"
+                                : m.Description,
                             MatchType = m.MatchType,
                             OcrIngredient = m.OcrIngredient,
                             Reference = m.Reference
                         });
                     }
                 }
+
                 return list.Count > 0 ? list : null;
             }
         }
