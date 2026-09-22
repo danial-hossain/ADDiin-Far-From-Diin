@@ -52,6 +52,8 @@
 
 @section Scripts {
     <script>
+        // The page supports both persisted account history and a local guest
+        // fallback, so rendering is kept independent from the storage source.
         const chatStream = document.getElementById('aiChatStream');
         const chatForm = document.getElementById('aiChatForm');
         const inputMsg = document.getElementById('aiMessageInput');
@@ -64,11 +66,15 @@
         let isAuthenticated = false;
 
         function escapeHtml(value) {
+            // AI text and citations are inserted into HTML templates below.
+            // Escape every user/provider value before inserting it.
             return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
 
         function normalizeSources(rawSources) {
+            // Backends may return source strings or objects with different
+            // casing; normalize both shapes for one consistent renderer.
             if (!Array.isArray(rawSources)) return [];
             return rawSources.map(source => {
                 if (typeof source === 'string') return { source: 'Knowledge Base', reference: source, text: '' };
@@ -87,6 +93,8 @@
         }
 
         function appendMessage(sender, text, sources = [], timestamp = null) {
+            // One renderer handles user bubbles, AI bubbles, source cards, and
+            // the contact-admin fallback marker.
             const row = document.createElement('div');
             row.className = sender === 'user'
                 ? 'diin-ai-message user d-flex justify-content-end mb-3'
@@ -129,6 +137,8 @@
         }
 
         async function loadHistory() {
+            // Prefer the server for signed-in users, then fall back to local
+            // storage so guest conversations remain usable in this browser.
             try {
                 const response = await fetch('/api/ai/history');
                 const data = await response.json();
@@ -161,6 +171,7 @@
         }
 
         async function loadConversationList() {
+            // Conversation summaries are only available for authenticated users.
             if (!isAuthenticated) return;
             const response = await fetch('/api/ai/conversations');
             const data = await response.json();
@@ -179,6 +190,8 @@
         }
 
         async function openConversation(conversationId) {
+            // The selected ID is sent back to the server, which also enforces
+            // ownership before returning the conversation.
             const response = await fetch(`/api/ai/history?conversationId=${conversationId}`);
             if (!response.ok) return;
             const data = await response.json();
@@ -190,6 +203,8 @@
         }
 
         async function startNewChat() {
+            // The server closes the active account thread; local guest history
+            // is cleared separately because it has no server-side record.
             await fetch('/api/ai/new-chat', { method: 'POST' });
             currentConversationId = null;
             chatHistory = [];
@@ -200,6 +215,8 @@
         }
 
         chatForm.addEventListener('submit', async function (event) {
+            // The UI appends the question immediately, then replaces the loading
+            // state with the normalized answer returned by /api/ai/ask.
             event.preventDefault();
             const text = inputMsg.value.trim();
             if (!text || btnSend.disabled) return;
