@@ -795,3 +795,34 @@ Explains that the current user does not have permission for the requested page a
 
 Displays active community programs and supports category and search filtering.
 
+### Query flow
+
+1. Visitor opens the activities route.
+2. Optional search and category values arrive as query parameters.
+3. Controller filters active records.
+4. View renders matching activities.
+5. Visitor opens details or the registered-activities page.
+
+### QA checklist
+
+- Search values are safely handled.
+- Category filters do not expose inactive records.
+- Empty results show an informative state.
+- Pagination or large result behavior remains usable where applicable.
+- Detail links contain the correct integer identifier.
+
+---
+
+## Page 19: Activity Details
+
+### Identity
+
+- **Route**: `/activities/{id}`
+- **Controller**: `ActivitiesController.Details` and `Register`
+- **View**: `AdDiin/Views/Activities/Details.cshtml`
+- **Model**: `Activity`
+- **Access**: Public details; registration requires the intended account state
+
+### Purpose
+
+Shows the full information for one program and lets a user register.
