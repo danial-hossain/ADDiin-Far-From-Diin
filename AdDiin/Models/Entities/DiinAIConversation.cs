@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AdDiin.Models.Entities
 {
+    /// <summary>
+    /// A saved AI conversation owned by one authenticated user.
+    /// </summary>
     public class DiinAIConversation
     {
         public int Id { get; set; }
@@ -16,6 +19,7 @@ namespace AdDiin.Models.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        // Messages are ordered by CreatedAt when history is returned to the client.
         public virtual ICollection<DiinAIMessage> Messages { get; set; } = new List<DiinAIMessage>();
     }
 }
