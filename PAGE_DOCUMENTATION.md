@@ -642,3 +642,34 @@ Duplicate email, weak password, invalid confirmation, invalid email, and service
 
 - **Route**: `/verify-email`
 - **Controller**: `AccountController.VerifyEmail`
+- **View**: `AdDiin/Views/Account/VerifyEmail.cshtml`
+- **Model**: `VerifyEmailViewModel`
+- **Access**: Public workflow page
+
+### Purpose
+
+The page accepts a six-digit verification code and can resend a code when the original expires or is not received.
+
+### Flow
+
+1. Visitor arrives after registration.
+2. Email and verification context are retained safely.
+3. Visitor enters the code.
+4. Server validates ownership, expiry, and code value.
+5. Account email-confirmed state is updated.
+6. Successful verification signs in the user or redirects to the intended destination.
+7. `ResendCode` creates a new code under rate and expiry rules.
+
+### Security rules
+
+Verification codes must be short-lived, single-use where possible, and rate-limited. Error messages should not expose unnecessary account information.
+
+### QA checklist
+
+- Correct code succeeds.
+- Wrong code fails safely.
+- Expired code fails clearly.
+- Resend does not create unlimited valid codes.
+- Verified account cannot be verified repeatedly as a new flow.
+- Successful verification sends the user to the expected page.
+
