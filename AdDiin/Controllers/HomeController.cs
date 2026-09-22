@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace AdDiin.Controllers
 {
+    /// <summary>
+    /// Provides public landing, informational, and error pages.
+    /// </summary>
     public class HomeController : Controller
     {
         private readonly IPrayerTimeService _prayerService;
@@ -27,6 +30,8 @@ namespace AdDiin.Controllers
 
         public async Task<IActionResult> Index()
         {
+            // The home page composes independent service results into one view
+            // model so the view does not need to know how each feature is stored.
             var jamaat = await _prayerService.GetJamaatTimesAsync();
             var azan = await _prayerService.GetAzanTimesAsync();
             var events = await _eventService.GetUpcomingEventsAsync();
@@ -48,6 +53,8 @@ namespace AdDiin.Controllers
 
         public async Task<IActionResult> About()
         {
+            // About content is file-backed so administrators can update it
+            // without adding a database migration for editorial text.
             var content = await _aboutService.GetContentAsync();
             return View(content);
         }

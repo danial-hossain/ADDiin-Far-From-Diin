@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines the daily worship tracking and personal progress operations.
+    /// </summary>
     public interface IMyDeenService
     {
         Task<MyDeenHubViewModel> GetHubDataAsync(int userId);
@@ -19,6 +22,9 @@ namespace AdDiin.Services
         Task<UserProfileDashboardViewModel> GetProfileDashboardAsync(ApplicationUser user);
     }
 
+    /// <summary>
+    /// Coordinates My Deen goals, progress calculations, reminders, and streaks.
+    /// </summary>
     public class MyDeenService : IMyDeenService
     {
         private readonly ApplicationDbContext _context;
@@ -35,6 +41,9 @@ namespace AdDiin.Services
             _hadithService = hadithService;
         }
 
+        /// <summary>
+        /// Loads a user's preferences or creates the documented default targets.
+        /// </summary>
         public async Task<UserDeenSettings> GetOrCreateSettingsAsync(int userId)
         {
             var settings = await _context.UserDeenSettings.FirstOrDefaultAsync(s => s.UserId == userId);
@@ -81,6 +90,9 @@ namespace AdDiin.Services
             return settings;
         }
 
+        /// <summary>
+        /// Loads today's checklist or creates an uncompleted checklist for the user.
+        /// </summary>
         public async Task<DailyDeenGoal> GetOrCreateTodayGoalsAsync(int userId)
         {
             var today = DateTime.Today;
@@ -114,6 +126,8 @@ namespace AdDiin.Services
             return goal;
         }
 
+        // The percentage is based on the ten tracked checklist items shown in
+        // the My Deen daily-goal experience.
         private static int CalculateGoalPercentage(DailyDeenGoal goal)
         {
             int total = 10;
@@ -132,6 +146,10 @@ namespace AdDiin.Services
             return (int)Math.Round((double)done / total * 100);
         }
 
+        /// <summary>
+        /// Updates one named checklist item, recalculates progress, and refreshes
+        /// the user's streak state.
+        /// </summary>
         public async Task<DailyDeenGoal> ToggleGoalItemAsync(int userId, string goalName, bool isCompleted)
         {
             var goal = await GetOrCreateTodayGoalsAsync(userId);
