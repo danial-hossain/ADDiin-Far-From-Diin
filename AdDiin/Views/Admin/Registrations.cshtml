@@ -61,8 +61,8 @@
                                     }
                                 </td>
                                 <td class="p-4">
-                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 font-bold rounded text-[10px] uppercase">@reg.Activity.Category</span>
-                                    <p class="font-semibold text-slate-800 mt-1">@reg.Activity.Title</p>
+                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 font-bold rounded text-[10px] uppercase">@(reg.Activity?.Category ?? "Activity")</span>
+                                    <p class="font-semibold text-slate-800 mt-1">@(reg.Activity?.Title ?? "Activity unavailable")</p>
                                 </td>
                                 <td class="p-4 text-slate-600">
                                     <p>@reg.Email</p>
