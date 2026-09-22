@@ -244,3 +244,33 @@ Policy text should be committed separately from controller or database implement
 
 ### Purpose
 
+The event list presents Islamic occasions and community events stored by the application.
+
+### Data shown
+
+Each event may expose a title, event type, Hijri date, Gregorian date, description, visibility state, and a link to details.
+
+### User flow
+
+1. Visitor opens the event list.
+2. Controller loads active events.
+3. View renders events in a scan-friendly list or card layout.
+4. Visitor selects an event.
+5. Browser opens the event details route.
+
+### Important route note
+
+The named `/events` route in `Program.cs` currently points to `IslamicCalendarController.Index`, while the conventional `EventsController.Index` route remains available as `/Events/Index`. These two pages should not be treated as identical until routing is intentionally consolidated.
+
+### QA checklist
+
+- Hidden events do not appear publicly.
+- Empty event results show a useful empty state.
+- Event links carry the correct identifier.
+- Dates are formatted consistently.
+- The list is usable with keyboard navigation.
+
+---
+
+## Page 06: Event Details
+
