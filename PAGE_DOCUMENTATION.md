@@ -1991,3 +1991,34 @@ Suggested commit message:
 | --- | --- | --- | --- | --- |
 | Home | Yes | Yes | Yes | Public home renders |
 | About | Yes | Yes | Yes | About content renders |
+| Prayer times | Yes | Yes | Yes | Public schedule renders |
+| Calendar | Yes | Yes | Yes | Calendar renders; reminders require user |
+| Activities | Yes | Yes | Yes | Active programs render |
+| Activity registration | Conditional | Yes | Yes | Registration follows controller policy |
+| My activities | No | Yes | Yes | Only current user records render |
+| Zakat | Yes | Yes | Yes | Calculation returns validated result |
+| Donate | Yes | Yes | Yes | Donation begins safely |
+| My donations | No | Yes | Yes | Only current user history renders |
+| My Deen | No | Yes | Yes | Personal dashboard renders |
+| Notifications | No | Yes | Yes | Personal notifications render |
+| Diin AI | Yes | Yes | Yes | Guest ask works; user history persists |
+| Product analyzer | Yes | Yes | Yes | Image/text analysis returns safe response |
+| Messaging | No | Yes | Yes | User sees authorized support conversations |
+| Admin dashboard | No | No | Yes | Dashboard renders for Admin only |
+| Admin users | No | No | Yes | User management works for Admin only |
+| Admin donations | No | No | Yes | Donation management works for Admin only |
+| Admin activities | No | No | Yes | Program management works for Admin only |
+
+## Authentication test sequence
+
+1. Open a public page as an anonymous visitor.
+2. Register a new account.
+3. Verify the email code.
+4. Confirm automatic sign-in behavior.
+5. Open profile and My Deen.
+6. Sign out through the POST logout form.
+7. Confirm protected routes redirect to login.
+8. Sign in again.
+9. Confirm user-owned pages show only the current user’s data.
+10. Test an administrator account separately.
+
