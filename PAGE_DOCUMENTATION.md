@@ -121,3 +121,34 @@ If a secondary data source is unavailable, the page should remain renderable wit
 - Anonymous visitors can open `/`.
 - The page renders when there are no upcoming events.
 - The page renders when there are no active programs.
+- Next-prayer data is not displayed as a misleading stale value.
+- Links point to the named public aliases.
+- Authenticated navigation changes correctly after login.
+- Mobile navigation does not cover page content.
+- Error handling sends unexpected failures to the shared error page.
+
+### Commit boundary
+
+A home-page commit should contain only home composition, home styles, home data loading, or home-specific client behavior. Shared layout changes should be committed separately because they affect every page.
+
+---
+
+## Page 02: About AdDiin
+
+### Identity
+
+- **Route**: `/about`
+- **Controller**: `HomeController.About`
+- **View**: `AdDiin/Views/Home/About.cshtml`
+- **Data source**: `AboutService` and `AdDiin/App_Data/about-content.json`
+- **Access**: Public
+
+### Purpose
+
+The About page explains the platform mission, vision, services, and the reason AdDiin exists. It is informational rather than transactional.
+
+### Data flow
+
+1. `HomeController` requests the about content from `IAboutService`.
+2. `AboutService` reads the file-backed content.
+3. The controller supplies that content to the Razor view.
