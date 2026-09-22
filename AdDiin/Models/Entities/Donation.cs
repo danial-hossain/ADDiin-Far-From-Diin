@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdDiin.Models.Entities
 {
+    /// <summary>
+    /// Records a donation from initiation through payment completion or failure.
+    /// </summary>
     public class Donation
     {
         public int Id { get; set; }
@@ -24,6 +27,8 @@ namespace AdDiin.Models.Entities
 
         [Required]
         [MaxLength(50)]
+        // Stored as a string because categories are displayed and managed as
+        // application-level labels rather than a database enum.
         public string Category { get; set; } = "general"; // zakat, iftar, durjog, sitarto, gachropon, kurbani, orphan, general
 
         [Required]
@@ -45,6 +50,8 @@ namespace AdDiin.Models.Entities
 
         [Required]
         [MaxLength(50)]
+        // Gateway callbacks update this lifecycle value after the initial record
+        // has been created in the pending state.
         public string PaymentStatus { get; set; } = "pending"; // pending, completed, failed, cancelled
 
         [MaxLength(50)]

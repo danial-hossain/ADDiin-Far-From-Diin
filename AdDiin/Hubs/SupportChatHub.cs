@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.SignalR;
 namespace AdDiin.Hubs;
 
 [Authorize]
+/// <summary>
+/// Exposes authenticated support-chat presence without allowing client-selected
+/// SignalR groups to bypass conversation authorization.
+/// </summary>
 public class SupportChatHub : Hub
 {
     private readonly IMessagingService _messagingService;
@@ -20,8 +24,9 @@ public class SupportChatHub : Hub
         _userManager = userManager;
     }
 
-    // No client-controlled groups are used. The server addresses recipients by
-    // their authenticated user IDs when a message is saved by the controller.
+    /// <summary>
+    /// Confirms that the caller may access the requested conversation.
+    /// </summary>
     public async Task<bool> SubscribeToConversation(int conversationId)
     {
         var userId = GetUserId();
