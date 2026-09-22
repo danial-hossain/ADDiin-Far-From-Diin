@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines persistence and reporting operations for donation workflows.
+    /// </summary>
     public interface IDonationService
     {
         Task<Donation> InitiateDonationAsync(DonationInitiateViewModel model, int? userId = null);
@@ -21,6 +24,10 @@ namespace AdDiin.Services
         Task<bool> DeleteDonationAsync(int id);
     }
 
+    /// <summary>
+    /// Stores donation records and translates gateway outcomes into statuses
+    /// used by public and administrative views.
+    /// </summary>
     public class DonationService : IDonationService
     {
         private readonly ApplicationDbContext _context;
@@ -30,6 +37,9 @@ namespace AdDiin.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Creates a pending donation before an external payment session begins.
+        /// </summary>
         public async Task<Donation> InitiateDonationAsync(DonationInitiateViewModel model, int? userId = null)
         {
             var tranId = $"DON_{DateTime.UtcNow.Ticks}_{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
@@ -56,6 +66,9 @@ namespace AdDiin.Services
             return donation;
         }
 
+        /// <summary>
+        /// Marks a known transaction as completed and records gateway identifiers.
+        /// </summary>
         public async Task<Donation?> ProcessPaymentSuccessAsync(string tranId, string? valId = null, string? bankTranId = null, string? method = null)
         {
             var donation = await _context.Donations.FirstOrDefaultAsync(d => d.TranId == tranId);
@@ -108,6 +121,9 @@ namespace AdDiin.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Builds the filtered administrative list together with aggregate totals.
+        /// </summary>
         public async Task<AdminDonationsViewModel> GetAdminDonationsAsync(string? category = null, string? status = null, string? search = null)
         {
             var query = _context.Donations.Include(d => d.User).AsQueryable();

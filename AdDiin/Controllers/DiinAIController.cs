@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdDiin.Controllers
 {
+    /// <summary>
+    /// Handles Diin AI requests, optional account-backed conversation history,
+    /// and the health endpoint used by the client.
+    /// </summary>
     public class DiinAIController : Controller
     {
         private readonly IDiinAIService _aiService;
@@ -26,6 +30,9 @@ namespace AdDiin.Controllers
         }
 
         [HttpPost]
+        /// <summary>
+        /// Serves the lightweight chat endpoint used by the initial chat client.
+        /// </summary>
         public async Task<IActionResult> Chat([FromBody] ChatRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Message))
@@ -47,6 +54,10 @@ namespace AdDiin.Controllers
 
         [HttpPost]
         [Route("api/ai/ask")]
+        /// <summary>
+        /// Loads the user's active conversation, sends the last 20 messages to
+        /// the AI service, and persists both sides of the exchange.
+        /// </summary>
         public async Task<IActionResult> Ask([FromBody] AIApiAskRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Query))
@@ -58,6 +69,8 @@ namespace AdDiin.Controllers
             DiinAIConversation? conversation = null;
             List<DiinAIChatMessage>? history = null;
 
+            // Guests can ask questions without persistence; authenticated users
+            // receive conversation history and a saved assistant response.
             if (userId.HasValue)
             {
                 conversation = request.ConversationId.HasValue
@@ -87,6 +100,8 @@ namespace AdDiin.Controllers
 
             if (conversation != null)
             {
+                // Store the serialized citations with the assistant message so
+                // history can render the same source cards later.
                 conversation.Messages.Add(new DiinAIMessage
                 {
                     Role = "assistant",
@@ -118,6 +133,9 @@ namespace AdDiin.Controllers
 
         [HttpGet]
         [Route("api/ai/history")]
+        /// <summary>
+        /// Returns the selected authenticated conversation or the active one.
+        /// </summary>
         public async Task<IActionResult> History([FromQuery] int? conversationId = null)
         {
             var userId = GetCurrentUserId();
@@ -159,6 +177,9 @@ namespace AdDiin.Controllers
 
         [HttpGet]
         [Route("api/ai/conversations")]
+        /// <summary>
+        /// Returns conversation summaries for the signed-in user's history list.
+        /// </summary>
         public async Task<IActionResult> Conversations()
         {
             var userId = GetCurrentUserId();
@@ -184,6 +205,9 @@ namespace AdDiin.Controllers
 
         [HttpPost]
         [Route("api/ai/new-chat")]
+        /// <summary>
+        /// Closes active conversations so the next question starts a new thread.
+        /// </summary>
         public async Task<IActionResult> NewChat()
         {
             var userId = GetCurrentUserId();
@@ -206,12 +230,14 @@ namespace AdDiin.Controllers
 
         private int? GetCurrentUserId()
         {
+            // Identity stores the user key in the standard NameIdentifier claim.
             var value = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(value, out var userId) ? userId : null;
         }
 
         private async Task<DiinAIConversation> GetOrCreateActiveConversationAsync(int userId)
         {
+            // Only one active conversation is selected for the chat composer.
             var conversation = await _context.DiinAIConversations
                 .Include(item => item.Messages)
                 .Where(item => item.UserId == userId && item.IsActive)
@@ -238,6 +264,7 @@ namespace AdDiin.Controllers
 
         private async Task ActivateConversationAsync(int userId, DiinAIConversation selectedConversation)
         {
+            // Selecting a saved thread deactivates the other threads for this user.
             var activeConversations = await _context.DiinAIConversations
                 .Where(item => item.UserId == userId && item.IsActive && item.Id != selectedConversation.Id)
                 .ToListAsync();
@@ -252,6 +279,9 @@ namespace AdDiin.Controllers
 
         [HttpGet]
         [Route("api/ai/health")]
+        /// <summary>
+        /// Reports whether the configured AI backend is reachable.
+        /// </summary>
         public async Task<IActionResult> Health()
         {
             var (isHealthy, details) = await _aiService.CheckHealthAsync();

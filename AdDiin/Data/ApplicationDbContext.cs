@@ -5,8 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Data
 {
+    /// <summary>
+    /// EF Core database context for Identity data and the platform's domain entities.
+    /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
+        /// <summary>
+        /// Creates the context with the provider options configured by the host.
+        /// </summary>
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -33,6 +39,10 @@ namespace AdDiin.Data
         public DbSet<DiinAIMessage> DiinAIMessages => Set<DiinAIMessage>();
         public DbSet<ScheduledHadith> ScheduledHadiths => Set<ScheduledHadith>();
 
+        /// <summary>
+        /// Configures relationship delete behavior and indexes that are not
+        /// expressible through entity annotations alone.
+        /// </summary>
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
