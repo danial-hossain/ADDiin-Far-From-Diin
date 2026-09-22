@@ -7,12 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Provides the hadith scheduled for the current Bangladesh time slot and
+    /// creates a missing slot through the configured AI provider.
+    /// </summary>
     public interface IHadithService
     {
         Task<ScheduledHadith?> GetCurrentHadithAsync(CancellationToken cancellationToken = default);
         Task EnsureCurrentHadithAsync(CancellationToken cancellationToken = default);
     }
 
+    /// <summary>
+    /// Coordinates scheduled-hadith persistence, slot selection, and generation.
+    /// </summary>
     public sealed class HadithService : IHadithService
     {
         private static readonly TimeSpan[] SlotTimes =
@@ -39,6 +46,9 @@ namespace AdDiin.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Reads the current slot without tracking the entity for an update.
+        /// </summary>
         public async Task<ScheduledHadith?> GetCurrentHadithAsync(CancellationToken cancellationToken = default)
         {
             var now = GetBangladeshNow();
@@ -62,6 +72,10 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Ensures the current slot has one record while tolerating concurrent
+        /// application instances attempting the same first-write operation.
+        /// </summary>
         public async Task EnsureCurrentHadithAsync(CancellationToken cancellationToken = default)
         {
             var now = GetBangladeshNow();
@@ -103,6 +117,8 @@ namespace AdDiin.Services
             }
         }
 
+        // Keep provider parsing here so storage and scheduling code do not depend
+        // on the external response shape.
         private async Task<(string Text, string? Source)?> GenerateHadithAsync(CancellationToken cancellationToken)
         {
             var apiKey = _configuration["GEMINI_API_KEY"]
@@ -186,6 +202,8 @@ namespace AdDiin.Services
             }
         }
 
+        // Slots are evaluated in ascending order; the latest elapsed slot is the
+        // one displayed until the next scheduled slot becomes active.
         private static TimeSpan? GetCurrentSlot(DateTime now)
         {
             return SlotTimes.LastOrDefault(slot => now.TimeOfDay >= slot) is var slot && slot != default
