@@ -200,6 +200,7 @@ communication, and donation workflows more accessible and organized.
 - [Maintainer guide](docs/maintainer-guide.md)
 - [Route map](docs/routes.md)
 - [Accessibility checklist](docs/accessibility.md)
+- [Data lifecycle](docs/data-lifecycle.md)
 - [Deployment notes](docs/deployment.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
