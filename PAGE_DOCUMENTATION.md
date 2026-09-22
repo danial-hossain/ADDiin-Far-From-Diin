@@ -703,3 +703,34 @@ The profile dashboard combines personal information, progress statistics, streak
 ### Update flow
 
 1. Authenticated user opens profile.
+2. Controller loads only the current user’s data.
+3. User edits allowed profile fields.
+4. Form posts to `UpdateInfo`.
+5. Server validates ownership and model state.
+6. User record is updated.
+7. Redirect returns to profile with a feedback message.
+
+### Security rules
+
+The user identifier should come from the authenticated principal, not from an editable hidden field. Sensitive fields should not be mass-assigned. Email changes may require re-verification.
+
+### QA checklist
+
+- Anonymous visitor is redirected to login.
+- User A cannot see User B statistics.
+- Valid profile update persists.
+- Invalid profile update preserves useful form values.
+- Progress statistics handle zero activity.
+- Badge display is stable when there are no badges.
+
+---
+
+## Page 16: Change Password
+
+### Identity
+
+- **Route**: `/Account/ChangePassword`
+- **Controller**: `AccountController.ChangePassword`
+- **View**: `AdDiin/Views/Account/ChangePassword.cshtml`
+- **Model**: `ChangePasswordViewModel`
+- **Access**: Authenticated users
