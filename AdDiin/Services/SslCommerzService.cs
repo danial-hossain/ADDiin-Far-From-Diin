@@ -4,6 +4,8 @@ using AdDiin.Models.Entities;
 
 namespace AdDiin.Services
 {
+    // These DTOs intentionally mirror the gateway field names so JSON mapping
+    // remains explicit even when the provider uses a different naming style.
     public class SslCommerzInitResponse
     {
         [JsonPropertyName("status")]
@@ -40,12 +42,19 @@ namespace AdDiin.Services
         public string? BankTranId { get; set; }
     }
 
+    /// <summary>
+    /// Defines the payment initiation and gateway validation operations used by
+    /// the donation workflow.
+    /// </summary>
     public interface ISslCommerzService
     {
         Task<SslCommerzInitResponse?> InitiatePaymentAsync(Donation donation, string hostUrl);
         Task<bool> ValidatePaymentAsync(string valId);
     }
 
+    /// <summary>
+    /// Encapsulates SSLCommerz request construction and response interpretation.
+    /// </summary>
     public class SslCommerzService : ISslCommerzService
     {
         private readonly IConfiguration _config;
@@ -72,6 +81,9 @@ namespace AdDiin.Services
             _baseUrl = _isTestMode ? sandboxUrl : liveUrl;
         }
 
+        /// <summary>
+        /// Starts a gateway session using the donation data and callback host.
+        /// </summary>
         public async Task<SslCommerzInitResponse?> InitiatePaymentAsync(Donation donation, string hostUrl)
         {
             try
@@ -140,6 +152,9 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Confirms the gateway validation identifier before a payment is accepted.
+        /// </summary>
         public async Task<bool> ValidatePaymentAsync(string valId)
         {
             if (string.IsNullOrEmpty(valId)) return false;
