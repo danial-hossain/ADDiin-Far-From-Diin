@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // The fallback keeps local development usable when no connection string has
 // been supplied through appsettings, user secrets, or environment variables.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=(localdb)\\mssqllocaldb;Database=AdDiinDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -44,6 +44,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
+// Feature branch code — kept for reference only.
+// It is intentionally inactive.
+// builder.Services.AddMemoryCache();
+
 // Keep domain services scoped so each request receives a consistent unit of
 // work while HTTP clients remain managed by IHttpClientFactory.
 builder.Services.AddScoped<IPrayerTimeService, PrayerTimeService>();
@@ -64,6 +68,15 @@ builder.Services.AddHttpClient<IHalalDetectorService, HalalDetectorService>((ser
     var timeoutSeconds = config.GetValue<int>("AISettings:TimeoutSeconds", 120);
     client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 });
+
+// Feature branch Hadith HTTP client configuration — kept for reference only.
+// It is intentionally inactive.
+// builder.Services.AddHttpClient<IHadithService, HadithService>(client =>
+// {
+//     client.BaseAddress = new Uri("https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/");
+//     client.Timeout = TimeSpan.FromSeconds(15);
+// });
+
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IMyDeenService, MyDeenService>();

@@ -12,7 +12,9 @@ namespace AdDiin.Controllers
         private readonly IHalalDetectorService _halalDetectorService;
         private readonly ILogger<ProductAnalyzerController> _logger;
 
-        public ProductAnalyzerController(IHalalDetectorService halalDetectorService, ILogger<ProductAnalyzerController> logger)
+        public ProductAnalyzerController(
+            IHalalDetectorService halalDetectorService,
+            ILogger<ProductAnalyzerController> logger)
         {
             _halalDetectorService = halalDetectorService;
             _logger = logger;
@@ -31,16 +33,24 @@ namespace AdDiin.Controllers
         /// <summary>
         /// Accepts an ingredient-label image and returns the normalized AI result.
         /// </summary>
-        public async Task<IActionResult> AnalyzeProduct([FromForm] IFormFile? image, [FromForm] string? rawText)
+        public async Task<IActionResult> AnalyzeProduct(
+            [FromForm] IFormFile? image,
+            [FromForm] string? rawText)
         {
             try
             {
-                _logger.LogInformation("Product analyzer request received. HasImage: {HasImage}, RawTextLength: {TextLength}", 
-                    image != null, rawText?.Length ?? 0);
+                _logger.LogInformation(
+                    "Product analyzer request received. HasImage: {HasImage}, RawTextLength: {TextLength}",
+                    image != null,
+                    rawText?.Length ?? 0);
 
-                var result = await _halalDetectorService.AnalyzeProductImageAsync(image, rawText);
+                var result =
+                    await _halalDetectorService.AnalyzeProductImageAsync(
+                        image,
+                        rawText);
 
-                if (!result.Success && !string.IsNullOrWhiteSpace(result.ErrorMessage))
+                if (!result.Success &&
+                    !string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
                     return BadRequest(new
                     {
@@ -54,7 +64,10 @@ namespace AdDiin.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred during product analysis.");
+                _logger.LogError(
+                    ex,
+                    "Error occurred during product analysis.");
+
                 return StatusCode(500, new
                 {
                     status = "error",
@@ -69,11 +82,13 @@ namespace AdDiin.Controllers
         /// <summary>
         /// Accepts a manually entered ingredient list as JSON.
         /// </summary>
-        public async Task<IActionResult> AnalyzeProductText([FromBody] ProductTextAnalysisRequest request)
+        public async Task<IActionResult> AnalyzeProductText(
+            [FromBody] ProductTextAnalysisRequest request)
         {
             try
             {
-                if (request == null || string.IsNullOrWhiteSpace(request.Text))
+                if (request == null ||
+                    string.IsNullOrWhiteSpace(request.Text))
                 {
                     return BadRequest(new
                     {
@@ -83,11 +98,16 @@ namespace AdDiin.Controllers
                     });
                 }
 
-                _logger.LogInformation("Product analyzer text request received. TextLength: {Length}", request.Text.Length);
+                _logger.LogInformation(
+                    "Product analyzer text request received. TextLength: {Length}",
+                    request.Text.Length);
 
-                var result = await _halalDetectorService.AnalyzeProductTextAsync(request.Text);
+                var result =
+                    await _halalDetectorService.AnalyzeProductTextAsync(
+                        request.Text);
 
-                if (!result.Success && !string.IsNullOrWhiteSpace(result.ErrorMessage))
+                if (!result.Success &&
+                    !string.IsNullOrWhiteSpace(result.ErrorMessage))
                 {
                     return BadRequest(new
                     {
@@ -101,7 +121,10 @@ namespace AdDiin.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred during manual text product analysis.");
+                _logger.LogError(
+                    ex,
+                    "Error occurred during manual text product analysis.");
+
                 return StatusCode(500, new
                 {
                     status = "error",
@@ -118,7 +141,9 @@ namespace AdDiin.Controllers
         /// </summary>
         public async Task<IActionResult> Health()
         {
-            var (isHealthy, details) = await _halalDetectorService.CheckHealthAsync();
+            var (isHealthy, details) =
+                await _halalDetectorService.CheckHealthAsync();
+
             return Ok(new
             {
                 connected = isHealthy,
