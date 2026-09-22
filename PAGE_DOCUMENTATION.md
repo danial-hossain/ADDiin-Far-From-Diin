@@ -1194,3 +1194,34 @@ Provides a standalone, printable donation receipt.
 
 # Part Six: My Deen and Notifications
 
+## Page 31: My Deen Dashboard
+
+### Identity
+
+- **Route**: `/my-deen`
+- **Controller**: `MyDeenController.Index`
+- **View**: `AdDiin/Views/MyDeen/Index.cshtml`
+- **Model**: `MyDeenHubViewModel`
+- **Access**: Authenticated users
+
+### Purpose
+
+My Deen is the personal worship and habit dashboard. It combines daily goals, streaks, weekly consistency, Hadith, Dhikr, Quran progress, Adhkar, Ruqyah, donation goals, and user preferences.
+
+### Dashboard areas
+
+1. Daily Deen goals.
+2. Goal completion state.
+3. Streak summary.
+4. Weekly progress.
+5. Hadith display.
+6. Dhikr/Tasbih counter.
+7. Quran reading progress.
+8. Adhkar checklist.
+9. Ruqyah checklist.
+10. Donation goal.
+11. Personal settings.
+
+### AJAX actions
+
+- `ToggleGoal` changes a daily goal completion state.
