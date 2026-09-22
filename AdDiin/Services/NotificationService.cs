@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Defines user notification creation, filtering, and read-state operations.
+    /// </summary>
     public interface INotificationService
     {
         Task<UserNotification> CreateNotificationAsync(int userId, string title, string message, string category = "general", string? linkUrl = null);
@@ -15,6 +18,9 @@ namespace AdDiin.Services
         Task<bool> DeleteNotificationAsync(int notificationId, int userId);
     }
 
+    /// <summary>
+    /// Persists notifications while keeping duplicate unread reminders compact.
+    /// </summary>
     public class NotificationService : INotificationService
     {
         private readonly ApplicationDbContext _context;
@@ -24,6 +30,10 @@ namespace AdDiin.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Updates an existing unread notification with the same title or creates
+        /// a new notification when no unread duplicate exists.
+        /// </summary>
         public async Task<UserNotification> CreateNotificationAsync(int userId, string title, string message, string category = "general", string? linkUrl = null)
         {
             // Avoid creating identical duplicate unread notifications
@@ -54,6 +64,9 @@ namespace AdDiin.Services
             return notification;
         }
 
+        /// <summary>
+        /// Returns the newest notifications for the user, optionally filtered by category.
+        /// </summary>
         public async Task<List<UserNotification>> GetUserNotificationsAsync(int userId, string category = "all", int limit = 50)
         {
             var query = _context.UserNotifications
