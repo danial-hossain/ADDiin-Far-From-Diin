@@ -1807,3 +1807,34 @@ Imports common namespaces, entity types, view models, and MVC tag helpers used t
 | `/my-donations` | `Donate/MyDonations` | User | Donation history |
 | `/my-deen` | `MyDeen/Index` | User | My Deen |
 | `/notifications` | `Notifications/Index` | User | Notifications |
+| `/diin-ai` | `DiinAI/Index` | Public | Diin AI |
+| `/product-analyzer` | `ProductAnalyzer/Index` | Public | Product analyzer |
+| `/contact` | `Messages/Index` | User | Support contact |
+| `/messaging` | `Messages/Index` | User | Messaging |
+| `/user-login` | `Account/Login` | Anonymous | Login |
+| `/user-registration` | `Account/Register` | Anonymous | Registration |
+| `/user-profile` | `Account/Profile` | User | Profile |
+| `/verify-email` | `Account/VerifyEmail` | Public workflow | Email verification |
+| `/admin-dashboard` | `Admin/Dashboard` | Admin | Admin dashboard |
+| `/admin/panel` | `Admin/Dashboard` | Admin | Admin dashboard alias |
+| `/admin/programs` | `Admin/Activities` | Admin | Admin activities |
+| `/admin/registrations` | `Admin/Registrations` | Admin | Registrations |
+| `/admin/messages` | `Admin/Messages` | Admin | Admin messages |
+
+## Conventional routes
+
+The application also supports the conventional pattern `{controller=Home}/{action=Index}/{id?}`. This means controller and action URLs may remain available even when a named alias exists. When adding a new alias, confirm that it does not accidentally point to a different controller action with a similar name.
+
+## Known route mismatches to review
+
+1. `/events` maps to the Islamic Calendar action, while `EventsController.Index` remains conventionally available.
+2. `/milad` maps to `ActivitiesController.Index`, not the Milad create page.
+3. `/my-milad-requests` maps to `ActivitiesController.MyActivities`, not `MiladController.MyRequests`.
+4. The Milad controller has a public-looking `Index` concept but no matching `Views/Milad/Index.cshtml` was found during inventory.
+5. `/contact` and `/messaging` use the same controller surface but may present different product expectations.
+
+These are documentation and QA concerns. They should be changed only after confirming the intended public URL contract.
+
+---
+
+# Part Eleven: Page-by-Page Git Commit Plan
