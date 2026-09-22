@@ -918,3 +918,34 @@ Allows a user to request a Milad, Mahfil, or Dua service by submitting date, con
 - Anonymous POST cannot create an ownerless request when ownership is required.
 - Date validation prevents invalid or past dates when appropriate.
 - Request status begins as pending.
+- Antiforgery validation is present.
+
+---
+
+## Page 22: My Milad Requests
+
+### Identity
+
+- **Route**: `/Milad/MyRequests`
+- **Controller**: `MiladController.MyRequests`
+- **View**: `AdDiin/Views/Milad/MyRequests.cshtml`
+- **Model**: `List<MiladRequest>`
+- **Access**: Authenticated users
+
+### Purpose
+
+Lists the current user’s requests and exposes edit, details, and pending-only cancellation actions.
+
+### Status behavior
+
+- Pending requests may be edited or cancelled.
+- Processed requests should be read-only unless the controller explicitly allows another state.
+- Administrator remarks should be visible where appropriate.
+
+### QA checklist
+
+- Owner filtering is server-side.
+- Cancel action is POST and antiforgery-protected.
+- Completed requests cannot be cancelled accidentally.
+- Empty state links to request creation.
+
