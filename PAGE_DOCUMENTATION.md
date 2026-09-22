@@ -1654,3 +1654,33 @@ The server must validate image size and type. Cloudinary failures must not leave
 
 ### Identity
 
+- **Route**: `/admin/registrations`
+- **Controller**: `AdminController.Registrations`
+- **View**: `AdDiin/Views/Admin/Registrations.cshtml`
+- **Model**: `AdminRegistrationsViewModel`
+- **Access**: Admin role
+
+### Purpose
+
+Reviews program registrations and approves or rejects them with optional remarks.
+
+### Actions
+
+- Search or filter registrations.
+- `RegistrationReview` changes approval state.
+- Store optional administrator remarks.
+- Notify the user where notification integration is enabled.
+
+### QA checklist
+
+- Admin can see the registration’s activity and user context.
+- A registration cannot be approved for an inactive or deleted activity without policy support.
+- Status changes are server-side validated.
+- User’s My Activities page reflects the result.
+
+---
+
+## Page 43: Admin Messages
+
+### Identity
+
