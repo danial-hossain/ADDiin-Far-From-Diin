@@ -4,6 +4,10 @@ using System.Text.Json;
 
 namespace AdDiin.Services
 {
+    /// <summary>
+    /// Provides the application boundary for health checks and Islamic question
+    /// requests sent to the separately hosted AI backend.
+    /// </summary>
     public interface IDiinAIService
     {
         Task<(string Answer, List<DiinAISource> Sources)> AskIslamicQuestionAsync(
@@ -16,6 +20,9 @@ namespace AdDiin.Services
         bool IsOffTopic(string query);
     }
 
+    /// <summary>
+    /// Applies local request guards before translating calls to the remote AI API.
+    /// </summary>
     public class DiinAIService : IDiinAIService
     {
         public const string ContactFallbackMarker = "[CONTACT_ADMIN:/contact]";
@@ -47,6 +54,9 @@ namespace AdDiin.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Checks the lightweight local keyword guard used before remote requests.
+        /// </summary>
         public bool IsOffTopic(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -70,6 +80,9 @@ namespace AdDiin.Services
             return $"{message} সহায়তার জন্য আমাদের সাথে যোগাযোগ করুন: {ContactFallbackMarker}";
         }
 
+        /// <summary>
+        /// Queries the backend health endpoint without creating a chat request.
+        /// </summary>
         public async Task<(bool IsHealthy, string Details)> CheckHealthAsync()
         {
             var backendUrl =
@@ -106,6 +119,10 @@ namespace AdDiin.Services
             }
         }
 
+        /// <summary>
+        /// Validates the question, sends recent history, and normalizes the
+        /// backend response into the view model shape used by the UI.
+        /// </summary>
         public async Task<(string Answer, List<DiinAISource> Sources)>
             AskIslamicQuestionAsync(
                 string question,
