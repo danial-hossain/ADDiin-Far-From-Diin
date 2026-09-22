@@ -1347,3 +1347,34 @@ The assistant should not invent citations. Service errors should produce a contr
 - **Routes**: `/contact`, `/messaging`
 - **Controller**: `MessagesController.Index`
 - **View**: `AdDiin/Views/Messages/Index.cshtml`
+- **Model**: `List<Conversation>`
+- **Access**: Authenticated users
+- **Real-time hub**: `/hubs/support-chat`
+
+### Purpose
+
+Provides a support inbox and live conversation interface between users and administrators.
+
+### Main behavior
+
+- Lists conversations.
+- Selects a conversation.
+- Sends a message.
+- Loads unread counts.
+- Receives live SignalR messages.
+- Shows read receipts or read state.
+- Provides fallback form submission when real-time behavior is unavailable.
+- Allows administrators to close conversations.
+
+### Message flow
+
+1. Authenticated user opens contact or messaging.
+2. Controller loads authorized conversations.
+3. Browser connects to the support chat hub.
+4. User submits a message.
+5. Server validates conversation membership and message content.
+6. Message is stored.
+7. SignalR broadcasts the message to permitted participants.
+8. Browser updates the conversation and unread state.
+
+### Security rules
