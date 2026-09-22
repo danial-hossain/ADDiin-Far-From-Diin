@@ -765,3 +765,33 @@ Allows the current user to change the account password by submitting the current
 - **Route**: `/Account/AccessDenied`
 - **Controller**: Identity cookie configuration destination
 - **View**: `AdDiin/Views/Account/AccessDenied.cshtml`
+- **Access**: Public error destination
+
+### Purpose
+
+Explains that the current user does not have permission for the requested page and provides a safe navigation path.
+
+### QA checklist
+
+- Unauthorized users reach this page instead of seeing a server exception.
+- The page does not reveal protected resource details.
+- Home and login links are valid.
+
+---
+
+# Part Three: Activities and Community Programs
+
+## Page 18: Activity List
+
+### Identity
+
+- **Routes**: `/activities`, `/activities-and-programs`
+- **Controller**: `ActivitiesController.Index`
+- **View**: `AdDiin/Views/Activities/Index.cshtml`
+- **Model**: `IEnumerable<Activity>`
+- **Access**: Public
+
+### Purpose
+
+Displays active community programs and supports category and search filtering.
+
