@@ -1010,3 +1010,34 @@ Allows an owner to correct or update a pending request before administrator proc
 ### Routing note
 
 The named `/milad` route currently points to `ActivitiesController.Index`, not `MiladController.Index`. The named `/my-milad-requests` route currently points to `ActivitiesController.MyActivities`. These aliases should be reviewed before presenting them as Milad shortcuts.
+
+---
+
+# Part Five: Donation and Payment Pages
+
+## Page 25: Donation Start
+
+### Identity
+
+- **Route**: `/donate`
+- **Controller**: `DonateController.Index` and `Initiate`
+- **View**: `AdDiin/Views/Donate/Index.cshtml`
+- **Model**: `DonationInitiateViewModel`
+- **Access**: Public
+
+### Purpose
+
+Begins a donation workflow by selecting a category, entering an amount, and supplying donor information.
+
+### Main fields
+
+- Donation category.
+- Amount.
+- Donor name.
+- Email or contact details.
+- Anonymous donation option.
+- Optional message or context.
+
+### Payment flow
+
+1. Visitor selects a donation category.
