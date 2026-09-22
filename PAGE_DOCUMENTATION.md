@@ -489,3 +489,34 @@ The Shield page reads a `domain` query parameter and shows the visitor which dom
 - Local settings do not expose sensitive data.
 - A missing `domain` parameter has a useful fallback.
 - Domain text is safely encoded.
+- The extension link points to the correct artifact.
+
+---
+
+## Page 11: Halal Product Analyzer
+
+### Identity
+
+- **Route**: `/product-analyzer`
+- **Controller**: `ProductAnalyzerController.Index`
+- **View**: `AdDiin/Views/ProductAnalyzer/Index.cshtml`
+- **Access**: Public
+- **API endpoints**: `/api/product-analyzer/analyze`, `/api/product-analyzer/analyze-text`, health endpoint
+
+### Purpose
+
+The Product Analyzer accepts an uploaded product-label image or ingredient text and returns a Halal/Haram analysis with supporting explanations.
+
+### Image flow
+
+1. Visitor selects an image.
+2. Browser validates basic file metadata.
+3. Browser sends multipart form data to the analysis endpoint.
+4. Server validates file type and size.
+5. OCR or image analysis extracts product text.
+6. The detector service analyzes ingredients.
+7. JSON response returns classification, confidence, warnings, and explanation.
+8. The browser renders a result panel.
+
+### Text flow
+
