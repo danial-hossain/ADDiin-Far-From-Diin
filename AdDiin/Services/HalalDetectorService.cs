@@ -1,556 +1,390 @@
-using System.Net.Http.Json;
+using AdDiin.Models.ViewModels;
+using System.Net.Http.Headers;
 using System.Text.Json;
-using AdDiin.Data;
-using AdDiin.Models.Entities;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace AdDiin.Services
 {
     /// <summary>
-    /// Provides the hadith scheduled for the current Bangladesh time slot and
-    /// creates a missing slot through the configured AI provider.
+    /// Defines the image, text, and health-check operations exposed by the
+    /// remote halal-analysis backend.
     /// </summary>
-    public interface IHadithService
+    public interface IHalalDetectorService
     {
-        Task<ScheduledHadith?> GetCurrentHadithAsync(CancellationToken cancellationToken = default);
-        Task EnsureCurrentHadithAsync(CancellationToken cancellationToken = default);
+        Task<HalalDetectorResult> AnalyzeProductImageAsync(IFormFile? imageFile, string? rawText = null);
+        Task<HalalDetectorResult> AnalyzeProductTextAsync(string text);
+        Task<(bool IsHealthy, string Details)> CheckHealthAsync();
     }
 
     /// <summary>
-    /// Coordinates scheduled-hadith persistence, slot selection, and generation.
+    /// Validates analyzer input, forwards it to the AI backend, and normalizes
+    /// provider responses for the product-analyzer UI.
     /// </summary>
-    public sealed class HadithService : IHadithService
+    public class HalalDetectorService : IHalalDetectorService
     {
-        private static readonly TimeSpan[] SlotTimes =
-        {
-            new(8, 0, 0),
-            new(14, 0, 0),
-            new(20, 0, 0)
-        };
-
-        private readonly ApplicationDbContext _context;
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<HadithService> _logger;
+        private readonly ILogger<HalalDetectorService> _logger;
 
-        public HadithService(
-            ApplicationDbContext context,
-            HttpClient httpClient,
-            IConfiguration configuration,
-            ILogger<HadithService> logger)
+        private static readonly string[] AllowedContentTypes = { "image/jpeg", "image/png", "image/webp", "image/jpg" };
+        private static readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+        // This limit is enforced before reading the upload into memory.
+        private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+
+        public HalalDetectorService(HttpClient httpClient, IConfiguration configuration, ILogger<HalalDetectorService> logger)
         {
-            _context = context;
             _httpClient = httpClient;
             _configuration = configuration;
             _logger = logger;
         }
 
         /// <summary>
-        /// Reads the current slot without tracking the entity for an update.
+        /// Checks whether the configured backend can answer its health endpoint.
         /// </summary>
-        public async Task<ScheduledHadith?> GetCurrentHadithAsync(
-            CancellationToken cancellationToken = default)
+        public async Task<(bool IsHealthy, string Details)> CheckHealthAsync()
         {
-            var now = GetBangladeshNow();
-            var slot = GetCurrentSlot(now);
+            var backendUrl = _configuration["HalalDetector:BackendUrl"]
+                             ?? _configuration["HALAL_DETECTOR_BACKEND_URL"]
+                             ?? _configuration["AdDiinAI:BaseUrl"]
+                             ?? _configuration["DiinAI:BackendUrl"];
 
-            if (slot == null)
+            if (string.IsNullOrWhiteSpace(backendUrl))
             {
-                return null;
+                return (false, "Halal Detector Backend URL is not configured in appsettings.json.");
             }
 
             try
             {
-                return await _context.ScheduledHadiths
-                    .AsNoTracking()
-                    .Where(h =>
-                        h.SlotDate == now.Date &&
-                        h.SlotTime == slot.Value)
-                    .FirstOrDefaultAsync(cancellationToken);
-            }
-            catch (SqlException ex) when (ex.Number == 208)
-            {
-                _logger.LogWarning(
-                    ex,
-                    "ScheduledHadiths table is not available yet.");
+                var endpoint = $"{backendUrl.TrimEnd('/')}/health";
+                using var requestMessage = new HttpRequestMessage(HttpMethod.Get, endpoint);
+                requestMessage.Headers.Add("ngrok-skip-browser-warning", "true");
+                requestMessage.Headers.Add("User-Agent", "AdDiin-NetCore-Client");
 
-                return null;
+                using var response = await _httpClient.SendAsync(requestMessage);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, content);
+                }
+
+                return (false, $"HTTP {(int)response.StatusCode} {response.StatusCode}: {content}");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Connection Exception: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// Ensures the current slot has one record while tolerating concurrent
-        /// application instances attempting the same first-write operation.
+        /// Validates an ingredient-label image and sends it as multipart form data.
+        /// The optional text parameter is retained for the existing API contract.
         /// </summary>
-        public async Task EnsureCurrentHadithAsync(
-            CancellationToken cancellationToken = default)
+        public async Task<HalalDetectorResult> AnalyzeProductImageAsync(IFormFile? imageFile, string? rawText = null)
         {
-            var now = GetBangladeshNow();
-            var slot = GetCurrentSlot(now);
+            // 1. Resolve the backend URL from the supported configuration names.
+            var backendUrl = _configuration["HalalDetector:BackendUrl"]
+                             ?? _configuration["HALAL_DETECTOR_BACKEND_URL"]
+                             ?? _configuration["AdDiinAI:BaseUrl"]
+                             ?? _configuration["DiinAI:BackendUrl"];
 
-            if (slot == null)
+            if (string.IsNullOrWhiteSpace(backendUrl))
             {
-                return;
-            }
-
-            var exists = await _context.ScheduledHadiths
-                .AnyAsync(
-                    h =>
-                        h.SlotDate == now.Date &&
-                        h.SlotTime == slot.Value,
-                    cancellationToken);
-
-            if (exists)
-            {
-                return;
-            }
-
-            var hadith = await GenerateHadithAsync(cancellationToken);
-
-            if (hadith == null)
-            {
-                return;
-            }
-
-            _context.ScheduledHadiths.Add(new ScheduledHadith
-            {
-                SlotDate = now.Date,
-                SlotTime = slot.Value,
-                Text = hadith.Value.Text,
-                Source = hadith.Value.Source
-            });
-
-            try
-            {
-                await _context.SaveChangesAsync(cancellationToken);
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogWarning(
-                    ex,
-                    "Hadith slot was created by another application instance.");
-
-                _context.ChangeTracker.Clear();
-            }
-        }
-
-        // Keep provider parsing here so storage and scheduling code do not depend
-        // on the external response shape.
-        private async Task<(string Text, string? Source)?> GenerateHadithAsync(
-            CancellationToken cancellationToken)
-        {
-            var apiKey =
-                _configuration["GEMINI_API_KEY"]
-                ?? _configuration["Gemini:ApiKey"];
-
-            if (string.IsNullOrWhiteSpace(apiKey))
-            {
-                _logger.LogWarning(
-                    "Gemini API key is not configured. Set GEMINI_API_KEY.");
-
-                return null;
-            }
-
-            var model =
-                _configuration["Gemini:Model"]
-                ?? "gemini-3.6-flash";
-
-            var endpoint =
-                $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={Uri.EscapeDataString(apiKey)}";
-
-            var payload = new
-            {
-                contents = new[]
+                _logger.LogWarning("Halal Detector Backend URL is not configured. Set HalalDetector:BackendUrl in appsettings.json.");
+                return new HalalDetectorResult
                 {
-                    new
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "AI analysis service is temporarily unavailable. Please try again.",
+                    Message = "AI analysis service is temporarily unavailable. Please try again."
+                };
+            }
+
+            // 2. Reject invalid uploads before any network request or byte copy.
+            if (imageFile != null)
+            {
+                if (imageFile.Length == 0)
+                {
+                    return new HalalDetectorResult
                     {
-                        parts = new[]
-                        {
-                            new
-                            {
-                                text =
-                                    "Return one authentic hadith only as JSON with exactly these fields: text and source. " +
-                                    "Use a well-known Sahih al-Bukhari or Sahih Muslim hadith, do not invent wording or attribution, " +
-                                    "and do not include markdown. The text may be in English."
-                            }
-                        }
-                    }
-                },
-                generationConfig = new
-                {
-                    responseMimeType = "application/json",
-                    temperature = 0.2
+                        Success = false,
+                        Status = "error",
+                        ErrorMessage = "Uploaded image file is empty. Please upload a valid ingredient label image.",
+                        Message = "Uploaded image file is empty. Please upload a valid ingredient label image."
+                    };
                 }
-            };
 
+                if (imageFile.Length > MaxFileSizeBytes)
+                {
+                    return new HalalDetectorResult
+                    {
+                        Success = false,
+                        Status = "error",
+                        ErrorMessage = "Image file size exceeds the 10 MB limit.",
+                        Message = "Image file size exceeds the 10 MB limit."
+                    };
+                }
+
+                var ext = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+                if (!AllowedExtensions.Contains(ext) || (!string.IsNullOrEmpty(imageFile.ContentType) && !AllowedContentTypes.Contains(imageFile.ContentType.ToLowerInvariant())))
+                {
+                    return new HalalDetectorResult
+                    {
+                        Success = false,
+                        Status = "error",
+                        ErrorMessage = "Only JPG, PNG, or WEBP image formats are supported.",
+                        Message = "Only JPG, PNG, or WEBP image formats are supported."
+                    };
+                }
+            }
+            else
+            {
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "Please upload an image of the product ingredients label.",
+                    Message = "Please upload an image of the product ingredients label."
+                };
+            }
+
+            // 3. Prepare the multipart request expected by the remote FastAPI service.
             try
             {
-                using var response =
-                    await _httpClient.PostAsJsonAsync(
-                        endpoint,
-                        payload,
-                        cancellationToken);
+                var endpoint = $"{backendUrl.TrimEnd('/')}/api/analyze-product";
+                _logger.LogInformation("Forwarding product image to Halal Detector Backend: {Endpoint}", endpoint);
 
-                var body =
-                    await response.Content.ReadAsStringAsync(
-                        cancellationToken);
+                using var content = new MultipartFormDataContent();
+                var fileBytes = await ToByteArrayAsync(imageFile);
+                var fileContent = new ByteArrayContent(fileBytes);
+                
+                var contentType = !string.IsNullOrWhiteSpace(imageFile.ContentType) ? imageFile.ContentType : "image/jpeg";
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                content.Add(fileContent, "image", imageFile.FileName);
 
-                if (!response.IsSuccessStatusCode)
+                using var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint)
                 {
-                    _logger.LogError(
-                        "Gemini hadith request failed with HTTP {StatusCode}: {Body}",
-                        response.StatusCode,
-                        body);
+                    Content = content
+                };
 
-                    return null;
-                }
+                requestMessage.Headers.Add("ngrok-skip-browser-warning", "true");
+                requestMessage.Headers.Add("User-Agent", "AdDiin-NetCore-Client");
 
-                using var document = JsonDocument.Parse(body);
+                using var response = await _httpClient.SendAsync(requestMessage);
+                _logger.LogInformation("Halal Detector Backend responded with status: {StatusCode}", response.StatusCode);
 
-                var text = document.RootElement
-                    .GetProperty("candidates")[0]
-                    .GetProperty("content")
-                    .GetProperty("parts")[0]
-                    .GetProperty("text")
-                    .GetString();
-
-                if (string.IsNullOrWhiteSpace(text))
+                if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogError(
-                        "Gemini returned an empty hadith response.");
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var jsonOptions = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
 
-                    return null;
+                    var parsedResult = JsonSerializer.Deserialize<HalalDetectorResult>(jsonResponse, jsonOptions);
+                    if (parsedResult != null)
+                    {
+                        parsedResult.Success = true;
+                        if (string.IsNullOrWhiteSpace(parsedResult.Status))
+                        {
+                            parsedResult.Status = parsedResult.Decision?.Status ?? "NO_HARAM_MATCH";
+                        }
+                        return parsedResult;
+                    }
                 }
-
-                using var hadithDocument =
-                    JsonDocument.Parse(text);
-
-                var hadithText =
-                    hadithDocument.RootElement
-                        .GetProperty("text")
-                        .GetString();
-
-                var source =
-                    hadithDocument.RootElement
-                        .GetProperty("source")
-                        .GetString();
-
-                if (string.IsNullOrWhiteSpace(hadithText) ||
-                    string.IsNullOrWhiteSpace(source))
+                else
                 {
-                    _logger.LogError(
-                        "Gemini returned an incomplete hadith payload.");
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Halal detector API returned failure status code {StatusCode}: {Body}", response.StatusCode, errorBody);
 
-                    return null;
+                    if ((int)response.StatusCode == 400)
+                    {
+                        return new HalalDetectorResult
+                        {
+                            Success = false,
+                            Status = "error",
+                            ErrorMessage = "Invalid image submitted for analysis. Please upload a clear ingredient label.",
+                            Message = "Invalid image submitted for analysis. Please upload a clear ingredient label."
+                        };
+                    }
                 }
-
-                return (
-                    hadithText.Trim(),
-                    source.Trim()
-                );
             }
-            catch (JsonException ex)
+            catch (TaskCanceledException ex)
             {
-                _logger.LogError(
-                    ex,
-                    "Gemini returned invalid JSON for the hadith.");
-
-                return null;
+                _logger.LogError(ex, "Timeout occurred while connecting to Halal Detector Backend at {BackendUrl}", backendUrl);
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "The analysis is taking longer than expected. Please try again.",
+                    Message = "The analysis is taking longer than expected. Please try again."
+                };
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(
-                    ex,
-                    "Could not connect to Gemini for the scheduled hadith.");
-
-                return null;
+                _logger.LogError(ex, "Failed to connect to Halal Detector Backend at {BackendUrl}", backendUrl);
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "AI analysis service is temporarily unavailable. Please try again.",
+                    Message = "AI analysis service is temporarily unavailable. Please try again."
+                };
             }
-        }
-
-        // Slots are evaluated in ascending order; the latest elapsed slot is the
-        // one displayed until the next scheduled slot becomes active.
-        private static TimeSpan? GetCurrentSlot(DateTime now)
-        {
-            return SlotTimes.LastOrDefault(
-                slot => now.TimeOfDay >= slot) is var slot &&
-                slot != default
-                    ? slot
-                    : null;
-        }
-
-        private static DateTime GetBangladeshNow()
-        {
-            var timeZone =
-                TimeZoneInfo.FindSystemTimeZoneById(
-                    OperatingSystem.IsWindows()
-                        ? "Bangladesh Standard Time"
-                        : "Asia/Dhaka");
-
-            return TimeZoneInfo.ConvertTimeFromUtc(
-                DateTime.UtcNow,
-                timeZone);
-        }
-
-        /*
-         * ================================================================
-         * FEATURE BRANCH CODE — INACTIVE / REFERENCE ONLY
-         * ================================================================
-         *
-         * The feature/daily-hadith-rotation implementation is intentionally
-         * disabled because the testing/main implementation above uses the
-         * ScheduledHadith database table and Gemini-based generation.
-         *
-         * The old implementation fetched random Bukhari hadiths directly
-         * from the external Hadith API and used IMemoryCache.
-         *
-         * It is preserved below only as commented reference code.
-         *
-         * ----------------------------------------------------------------
-         *
-         * using System.Security.Cryptography;
-         * using System.Text;
-         * using System.Text.Json.Serialization;
-         * using AdDiin.Models;
-         * using Microsoft.Extensions.Caching.Memory;
-         *
-         * public interface IHadithService
-         * {
-         *     Task<IReadOnlyList<Hadith>> GetDailyHadithsAsync(
-         *         CancellationToken cancellationToken = default);
-         * }
-         *
-         * public class HadithService : IHadithService
-         * {
-         *     private const string EditionName = "eng-bukhari";
-         *     private const int EditionHadithCount = 7563;
-         *
-         *     private readonly HttpClient _httpClient;
-         *     private readonly IMemoryCache _cache;
-         *     private readonly ILogger<HadithService> _logger;
-         *
-         *     public HadithService(
-         *         HttpClient httpClient,
-         *         IMemoryCache cache,
-         *         ILogger<HadithService> logger)
-         *     {
-         *         _httpClient = httpClient;
-         *         _cache = cache;
-         *         _logger = logger;
-         *     }
-         *
-         *     public async Task<IReadOnlyList<Hadith>>
-         *         GetDailyHadithsAsync(
-         *             CancellationToken cancellationToken = default)
-         *     {
-         *         var now = DateTime.UtcNow;
-         *         var date = now.Date;
-         *         var slotIndex = now.Hour / 6;
-         *         var nextBoundary =
-         *             date.AddHours((slotIndex + 1) * 6);
-         *         var cacheKey =
-         *             $"DailyHadith_{date:yyyyMMdd}_{slotIndex}";
-         *
-         *         if (_cache.TryGetValue(
-         *                 cacheKey,
-         *                 out IReadOnlyList<Hadith>? cachedHadiths) &&
-         *             cachedHadiths is not null)
-         *         {
-         *             return cachedHadiths;
-         *         }
-         *
-         *         var dailyHadiths =
-         *             await FetchDailyHadithsAsync(
-         *                 date,
-         *                 slotIndex,
-         *                 cancellationToken);
-         *
-         *         if (dailyHadiths.Count > 0)
-         *         {
-         *             _cache.Set(
-         *                 cacheKey,
-         *                 dailyHadiths,
-         *                 new MemoryCacheEntryOptions
-         *                 {
-         *                     AbsoluteExpiration = nextBoundary
-         *                 });
-         *         }
-         *
-         *         return dailyHadiths;
-         *     }
-         *
-         *     private async Task<IReadOnlyList<Hadith>>
-         *         FetchDailyHadithsAsync(
-         *             DateTime date,
-         *             int slotIndex,
-         *             CancellationToken cancellationToken)
-         *     {
-         *         var dailySeed = $"{date:yyyyMMdd}";
-         *         var hadithNumbers = new List<int>();
-         *         var seedIndex = 0;
-         *
-         *         while (hadithNumbers.Count < 3)
-         *         {
-         *             var hadithNumber =
-         *                 GetHadithNumber(
-         *                     $"{dailySeed}-base-{seedIndex++}");
-         *
-         *             if (!hadithNumbers.Contains(hadithNumber))
-         *             {
-         *                 hadithNumbers.Add(hadithNumber);
-         *             }
-         *         }
-         *
-         *         var replacementIndex = slotIndex % 3;
-         *         var replacementNumber =
-         *             GetHadithNumber(
-         *                 $"{dailySeed}-slot-{slotIndex}");
-         *
-         *         while (
-         *             hadithNumbers
-         *                 .Where((_, index) => index != replacementIndex)
-         *                 .Contains(replacementNumber))
-         *         {
-         *             replacementNumber =
-         *                 GetHadithNumber(
-         *                     $"{dailySeed}-slot-{slotIndex}-retry-{seedIndex++}");
-         *         }
-         *
-         *         hadithNumbers[replacementIndex] = replacementNumber;
-         *
-         *         var hadiths = new List<Hadith>();
-         *
-         *         foreach (var hadithNumber in hadithNumbers)
-         *         {
-         *             try
-         *             {
-         *                 var response =
-         *                     await _httpClient.GetFromJsonAsync<
-         *                         HadithApiResponse>(
-         *                         $"editions/{EditionName}/{hadithNumber}.min.json",
-         *                         cancellationToken);
-         *
-         *                 var apiHadith =
-         *                     response?.Hadiths?.FirstOrDefault();
-         *
-         *                 if (apiHadith == null ||
-         *                     string.IsNullOrWhiteSpace(apiHadith.Text))
-         *                 {
-         *                     continue;
-         *                 }
-         *
-         *                 hadiths.Add(new Hadith
-         *                 {
-         *                     HadithNumber =
-         *                         apiHadith.HadithNumber,
-         *                     Text = apiHadith.Text,
-         *                     Collection = EditionName,
-         *                     Reference =
-         *                         $"{EditionName} #{apiHadith.Reference?.Hadith ?? apiHadith.HadithNumber}"
-         *                 });
-         *             }
-         *             catch (Exception exception)
-         *                 when (
-         *                     exception is HttpRequestException or
-         *                     TaskCanceledException or
-         *                     JsonException)
-         *             {
-         *                 _logger.LogWarning(
-         *                     exception,
-         *                     "Could not fetch daily Hadith {HadithNumber}.",
-         *                     hadithNumber);
-         *             }
-         *         }
-         *
-         *         return hadiths;
-         *     }
-         *
-         *     private static int GetHadithNumber(string seedText)
-         *     {
-         *         var hash =
-         *             SHA256.HashData(
-         *                 Encoding.UTF8.GetBytes(seedText));
-         *
-         *         return new Random(
-         *             BitConverter.ToInt32(hash, 0))
-         *             .Next(1, EditionHadithCount + 1);
-         *     }
-         *
-         *     private sealed class HadithApiResponse
-         *     {
-         *         [JsonPropertyName("hadiths")]
-         *         public List<HadithApiItem> Hadiths { get; set; } = new();
-         *     }
-         *
-         *     private sealed class HadithApiItem
-         *     {
-         *         [JsonPropertyName("hadithnumber")]
-         *         public int HadithNumber { get; set; }
-         *
-         *         [JsonPropertyName("text")]
-         *         public string Text { get; set; } = string.Empty;
-         *
-         *         [JsonPropertyName("reference")]
-         *         public HadithReference? Reference { get; set; }
-         *     }
-         *
-         *     private sealed class HadithReference
-         *     {
-         *         [JsonPropertyName("hadith")]
-         *         public int Hadith { get; set; }
-         *     }
-         * }
-         *
-         * ================================================================
-         */
-    }
-
-    public sealed class HadithSchedulerService : BackgroundService
-    {
-        private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger<HadithSchedulerService> _logger;
-
-        public HadithSchedulerService(
-            IServiceScopeFactory scopeFactory,
-            ILogger<HadithSchedulerService> logger)
-        {
-            _scopeFactory = scopeFactory;
-            _logger = logger;
-        }
-
-        protected override async Task ExecuteAsync(
-            CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
+            catch (Exception ex)
             {
-                try
-                {
-                    using var scope =
-                        _scopeFactory.CreateScope();
-
-                    var service =
-                        scope.ServiceProvider
-                            .GetRequiredService<IHadithService>();
-
-                    await service.EnsureCurrentHadithAsync(
-                        stoppingToken);
-                }
-                catch (OperationCanceledException)
-                    when (stoppingToken.IsCancellationRequested)
-                {
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(
-                        ex,
-                        "Scheduled hadith generation failed.");
-                }
-
-                await Task.Delay(
-                    TimeSpan.FromMinutes(1),
-                    stoppingToken);
+                _logger.LogError(ex, "Unexpected error communicating with Halal Detector Backend at {BackendUrl}", backendUrl);
             }
+
+            return new HalalDetectorResult
+            {
+                Success = false,
+                Status = "error",
+                ErrorMessage = "AI analysis service is temporarily unavailable. Please try again.",
+                Message = "AI analysis service is temporarily unavailable. Please try again."
+            };
+        }
+
+        /// <summary>
+        /// Validates manually entered ingredients and sends JSON to the backend.
+        /// </summary>
+        public async Task<HalalDetectorResult> AnalyzeProductTextAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "Please enter a list of ingredients to analyze.",
+                    Message = "Please enter a list of ingredients to analyze."
+                };
+            }
+
+            var trimmedText = text.Trim();
+            if (trimmedText.Length < 3)
+            {
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "Please enter a meaningful list of ingredients.",
+                    Message = "Please enter a meaningful list of ingredients."
+                };
+            }
+
+            var backendUrl = _configuration["HalalDetector:BackendUrl"]
+                             ?? _configuration["HALAL_DETECTOR_BACKEND_URL"]
+                             ?? _configuration["AdDiinAI:BaseUrl"]
+                             ?? _configuration["DiinAI:BackendUrl"];
+
+            if (string.IsNullOrWhiteSpace(backendUrl))
+            {
+                _logger.LogWarning("Halal Detector Backend URL is not configured. Set HalalDetector:BackendUrl in appsettings.json.");
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "AI analysis service is temporarily unavailable. Please try again.",
+                    Message = "AI analysis service is temporarily unavailable. Please try again."
+                };
+            }
+
+            try
+            {
+                var endpoint = $"{backendUrl.TrimEnd('/')}/api/analyze-text";
+                _logger.LogInformation("Forwarding manual ingredients text to Halal Detector Backend: {Endpoint}", endpoint);
+
+                var payload = new { text = trimmedText };
+                var jsonContent = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
+
+                using var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint)
+                {
+                    Content = jsonContent
+                };
+
+                requestMessage.Headers.Add("ngrok-skip-browser-warning", "true");
+                requestMessage.Headers.Add("User-Agent", "AdDiin-NetCore-Client");
+
+                using var response = await _httpClient.SendAsync(requestMessage);
+                _logger.LogInformation("Halal Detector Backend /api/analyze-text responded with status: {StatusCode}", response.StatusCode);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var jsonOptions = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    var parsedResult = JsonSerializer.Deserialize<HalalDetectorResult>(jsonResponse, jsonOptions);
+                    if (parsedResult != null)
+                    {
+                        parsedResult.Success = true;
+                        if (string.IsNullOrWhiteSpace(parsedResult.Status))
+                        {
+                            parsedResult.Status = parsedResult.Decision?.Status ?? "NO_HARAM_MATCH";
+                        }
+                        return parsedResult;
+                    }
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    _logger.LogWarning("AI backend /api/analyze-text endpoint is not yet deployed on remote FastAPI. Falling back gracefully.");
+                    return new HalalDetectorResult
+                    {
+                        Success = false,
+                        Status = "error",
+                        ErrorMessage = "The external AI backend currently supports image analysis. The text-analysis endpoint (/api/analyze-text) is being deployed. Please use the Upload Image tab in the meantime.",
+                        Message = "The external AI backend currently supports image analysis. The text-analysis endpoint (/api/analyze-text) is being deployed. Please use the Upload Image tab in the meantime."
+                    };
+                }
+                else
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Halal detector text API returned failure status code {StatusCode}: {Body}", response.StatusCode, errorBody);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Timeout occurred while connecting to Halal Detector Backend at {BackendUrl}", backendUrl);
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "The analysis is taking longer than expected. Please try again.",
+                    Message = "The analysis is taking longer than expected. Please try again."
+                };
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Failed to connect to Halal Detector Backend at {BackendUrl}", backendUrl);
+                return new HalalDetectorResult
+                {
+                    Success = false,
+                    Status = "error",
+                    ErrorMessage = "AI analysis service is temporarily unavailable. Please try again.",
+                    Message = "AI analysis service is temporarily unavailable. Please try again."
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error communicating with Halal Detector Backend at {BackendUrl}", backendUrl);
+            }
+
+            return new HalalDetectorResult
+            {
+                Success = false,
+                Status = "error",
+                ErrorMessage = "AI analysis service is temporarily unavailable. Please try again.",
+                Message = "AI analysis service is temporarily unavailable. Please try again."
+            };
+        }
+
+        private static async Task<byte[]> ToByteArrayAsync(IFormFile file)
+        {
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+            return ms.ToArray();
         }
     }
 }
