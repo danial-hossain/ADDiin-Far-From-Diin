@@ -182,3 +182,34 @@ About content changes and About page layout changes should be separate commits w
 - **Route**: `/sdg9`
 - **Controller**: `HomeController.SDG9`
 - **View**: `AdDiin/Views/Home/SDG9.cshtml`
+- **Model**: None or view-local content
+- **Access**: Public
+
+### Purpose
+
+This page documents how the platform relates to Sustainable Development Goal 9, including innovation, infrastructure, and technology-enabled community services.
+
+### Expected behavior
+
+The page is a read-only informational page. It should not require a user account or database write. It should remain available even if user-specific services are unavailable.
+
+### QA checklist
+
+- `/sdg9` resolves through the named route.
+- No login is required.
+- Informational links use safe and valid URLs.
+- The page remains readable on narrow screens.
+
+### Commit boundary
+
+SDG9 content and design can be reviewed as a documentation or informational-page commit.
+
+---
+
+## Page 04: Privacy Policy
+
+### Identity
+
+- **Route**: `/privacy`
+- **Controller**: `HomeController.Privacy`
+- **View**: `AdDiin/Views/Home/Privacy.cshtml`
