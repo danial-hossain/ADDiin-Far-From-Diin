@@ -1715,3 +1715,34 @@ Provides the administrator support inbox and live response interface.
 
 ---
 
+# Part Nine: Shared Views and View Infrastructure
+
+## Shared Layout: `_Layout.cshtml`
+
+### Purpose
+
+The ordinary layout is the shell for public and authenticated user pages.
+
+### Responsibilities
+
+1. Render navigation.
+2. Show login, registration, profile, and logout controls according to authentication state.
+3. Show admin navigation for administrators.
+4. Display notification unread badge.
+5. Display contact or support unread badge.
+6. Render the logout POST form.
+7. Start or configure support-chat SignalR behavior.
+8. Render footer links.
+9. Include shared CSS and JavaScript.
+10. Render page-specific body content.
+
+### Security checklist
+
+- Logout uses POST and antiforgery protection.
+- User-controlled display names are encoded.
+- Admin links are hidden for ordinary users but still protected server-side.
+- Badges do not expose another user’s counts.
+- SignalR connection does not send secrets to the browser.
+
+## Admin Layout: `_AdminLayout.cshtml`
+
