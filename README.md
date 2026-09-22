@@ -196,6 +196,7 @@ communication, and donation workflows more accessible and organized.
 - [API reference](docs/api.md)
 - [Configuration reference](docs/configuration.md)
 - [Testing guide](docs/testing.md)
+- [Release checklist](docs/release-checklist.md)
 - [Deployment notes](docs/deployment.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
