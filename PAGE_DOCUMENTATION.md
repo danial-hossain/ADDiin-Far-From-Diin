@@ -1684,3 +1684,34 @@ Reviews program registrations and approves or rejects them with optional remarks
 
 ### Identity
 
+- **Route**: `/admin/messages`
+- **Controller**: `AdminController.Messages` or admin-mode `MessagesController.Index`
+- **View**: `AdDiin/Views/Admin/Messages.cshtml`
+- **Model**: `List<Conversation>`
+- **Access**: Admin role
+- **Layout**: `_AdminLayout.cshtml`
+
+### Purpose
+
+Provides the administrator support inbox and live response interface.
+
+### Features
+
+- Conversation list.
+- Unread contact badge.
+- Selected conversation state.
+- Live SignalR messages.
+- Fallback message form.
+- Close conversation action.
+- Read-state updates.
+
+### QA checklist
+
+- Admin role is enforced in the controller and hub.
+- Admin sees only valid conversations according to support policy.
+- Closing a conversation changes the user-facing state.
+- Live messages do not leak across conversations.
+- Badge count matches unread messages.
+
+---
+
