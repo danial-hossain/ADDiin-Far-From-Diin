@@ -261,7 +261,12 @@ namespace AdDiin.Services
                 }
 
                 var property = element.EnumerateObject()
-                    .FirstOrDefault(property => string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(property =>
+                        string.Equals(
+                            property.Name,
+                            name,
+                            StringComparison.OrdinalIgnoreCase));
+
                 if (property.Value.ValueKind == JsonValueKind.String)
                 {
                     return property.Value.GetString();
@@ -281,11 +286,13 @@ namespace AdDiin.Services
             }
 
             var sources = new List<DiinAISource>();
+
             foreach (var item in sourceArray.EnumerateArray())
             {
                 if (item.ValueKind == JsonValueKind.String)
                 {
                     var reference = item.GetString();
+
                     if (!string.IsNullOrWhiteSpace(reference))
                     {
                         sources.Add(new DiinAISource
@@ -304,9 +311,32 @@ namespace AdDiin.Services
                 }
 
                 var id = ReadString(item, "id", "key");
-                var source = ReadString(item, "source", "name", "title", "document", "file", "filename");
-                var itemReference = ReadString(item, "reference", "citation", "url", "link", "page", "locator", "content");
-                var text = ReadString(item, "text", "content", "page_content", "pageContent", "excerpt");
+                var source = ReadString(
+                    item,
+                    "source",
+                    "name",
+                    "title",
+                    "document",
+                    "file",
+                    "filename");
+
+                var itemReference = ReadString(
+                    item,
+                    "reference",
+                    "citation",
+                    "url",
+                    "link",
+                    "page",
+                    "locator",
+                    "content");
+
+                var text = ReadString(
+                    item,
+                    "text",
+                    "content",
+                    "page_content",
+                    "pageContent",
+                    "excerpt");
 
                 if (!string.IsNullOrWhiteSpace(source) ||
                     !string.IsNullOrWhiteSpace(itemReference) ||
@@ -315,7 +345,9 @@ namespace AdDiin.Services
                     sources.Add(new DiinAISource
                     {
                         Id = id ?? string.Empty,
-                        Source = string.IsNullOrWhiteSpace(source) ? "Knowledge Base" : source,
+                        Source = string.IsNullOrWhiteSpace(source)
+                            ? "Knowledge Base"
+                            : source,
                         Reference = itemReference ?? string.Empty,
                         Text = text ?? string.Empty
                     });
@@ -338,7 +370,11 @@ namespace AdDiin.Services
 
                 foreach (var property in element.EnumerateObject())
                 {
-                    if (sourceNames.Any(name => string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase)) &&
+                    if (sourceNames.Any(name =>
+                            string.Equals(
+                                property.Name,
+                                name,
+                                StringComparison.OrdinalIgnoreCase)) &&
                         property.Value.ValueKind == JsonValueKind.Array)
                     {
                         return property.Value;
@@ -348,6 +384,7 @@ namespace AdDiin.Services
                 foreach (var property in element.EnumerateObject())
                 {
                     var nested = FindSourceArray(property.Value);
+
                     if (nested.ValueKind == JsonValueKind.Array)
                     {
                         return nested;
@@ -359,7 +396,12 @@ namespace AdDiin.Services
                 foreach (var item in element.EnumerateArray())
                 {
                     if (item.ValueKind == JsonValueKind.Object &&
-                        (ReadString(item, "source", "reference", "text", "page_content") != null))
+                        ReadString(
+                            item,
+                            "source",
+                            "reference",
+                            "text",
+                            "page_content") != null)
                     {
                         return element;
                     }

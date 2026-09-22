@@ -6,46 +6,115 @@
     <div class="card diin-ai-shell border-0 shadow-lg rounded-4 overflow-hidden">
         <aside class="diin-ai-sidebar" id="aiHistorySidebar">
             <div class="diin-ai-sidebar-head">
-                <span class="diin-ai-sidebar-title"><i class="bi bi-clock-history me-2"></i>Chat history</span>
-                <button class="diin-ai-sidebar-close" id="btnCloseHistory" type="button" aria-label="Close history"><i class="bi bi-x-lg"></i></button>
+                <span class="diin-ai-sidebar-title">
+                    <i class="bi bi-clock-history me-2"></i>Chat history
+                </span>
+                <button class="diin-ai-sidebar-close"
+                        id="btnCloseHistory"
+                        type="button"
+                        aria-label="Close history">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
-            <button class="diin-ai-history-new" id="btnSidebarNewChat" type="button"><i class="bi bi-plus-lg"></i> New chat</button>
+
+            <button class="diin-ai-history-new"
+                    id="btnSidebarNewChat"
+                    type="button">
+                <i class="bi bi-plus-lg"></i> New chat
+            </button>
+
             <div class="diin-ai-history-list" id="aiHistoryList"></div>
-            <div class="diin-ai-history-empty" id="aiHistoryEmpty">Your saved conversations will appear here.</div>
+
+            <div class="diin-ai-history-empty" id="aiHistoryEmpty">
+                Your saved conversations will appear here.
+            </div>
         </aside>
+
         <div class="diin-ai-header text-white p-4 p-lg-5 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <button class="diin-ai-history-toggle" id="btnOpenHistory" type="button" aria-label="Open chat history"><i class="bi bi-layout-sidebar-inset"></i></button>
-                <div class="diin-ai-logo text-emerald rounded-4 d-flex align-items-center justify-content-center fs-3 shadow-sm">🕋</div>
+                <button class="diin-ai-history-toggle"
+                        id="btnOpenHistory"
+                        type="button"
+                        aria-label="Open chat history">
+                    <i class="bi bi-layout-sidebar-inset"></i>
+                </button>
+
+                <div class="diin-ai-logo text-emerald rounded-4 d-flex align-items-center justify-content-center fs-3 shadow-sm">
+                    🕋
+                </div>
+
                 <div>
-                    <div class="diin-ai-eyebrow">Your knowledge companion</div>
-                    <h1 class="fw-bold mb-1">Diin AI</h1>
-                    <small class="text-emerald-light">Islamic Companion &amp; Verified Learning Assistant</small>
+                    <div class="diin-ai-eyebrow">
+                        Your knowledge companion
+                    </div>
+
+                    <h1 class="fw-bold mb-1">
+                        Diin AI
+                    </h1>
+
+                    <small class="text-emerald-light">
+                        Islamic Companion &amp; Verified Learning Assistant
+                    </small>
                 </div>
             </div>
-            <button class="btn diin-ai-new-chat btn-sm rounded-pill px-3" id="btnClearChat" type="button">
+
+            <button class="btn diin-ai-new-chat btn-sm rounded-pill px-3"
+                    id="btnClearChat"
+                    type="button">
                 <i class="bi bi-plus-lg me-1"></i> New Chat
             </button>
         </div>
 
-        <div class="diin-ai-chat p-3 p-md-4" id="aiChatStream" aria-live="polite"></div>
+        <div class="diin-ai-chat p-3 p-md-4"
+             id="aiChatStream"
+             aria-live="polite"></div>
 
-        <div class="diin-ai-prompts px-4 py-3 d-flex flex-wrap align-items-center gap-2" id="quickPromptsBlock">
-            <span class="small prompt-label align-self-center">Try asking</span>
-            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="কুরআনে সালাতের গুরুত্ব কী?">সালাতের গুরুত্ব</button>
-            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="রোজার নিয়ত কী?">রোজার নিয়ত</button>
-            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="যাকাত কীভাবে হিসাব করতে হয়?">যাকাত হিসাব</button>
-            <button class="btn btn-sm prompt-chip rounded-pill small" data-prompt="তাহাজ্জুদ নামাজ কীভাবে পড়ব?">তাহাজ্জুদ নামাজ</button>
+        <div class="diin-ai-prompts px-4 py-3 d-flex flex-wrap align-items-center gap-2"
+             id="quickPromptsBlock">
+            <span class="small prompt-label align-self-center">
+                Try asking
+            </span>
+
+            <button class="btn btn-sm prompt-chip rounded-pill small"
+                    data-prompt="কুরআনে সালাতের গুরুত্ব কী?">
+                সালাতের গুরুত্ব
+            </button>
+
+            <button class="btn btn-sm prompt-chip rounded-pill small"
+                    data-prompt="রোজার নিয়ত কী?">
+                রোজার নিয়ত
+            </button>
+
+            <button class="btn btn-sm prompt-chip rounded-pill small"
+                    data-prompt="যাকাত কীভাবে হিসাব করতে হয়?">
+                যাকাত হিসাব
+            </button>
+
+            <button class="btn btn-sm prompt-chip rounded-pill small"
+                    data-prompt="তাহাজ্জুদ নামাজ কীভাবে পড়ব?">
+                তাহাজ্জুদ নামাজ
+            </button>
         </div>
 
         <div class="diin-ai-composer p-3 p-md-4">
             <form id="aiChatForm" class="d-flex gap-2">
-                <textarea id="aiMessageInput" rows="1" class="form-control rounded-4 py-2" placeholder="ইসলাম সম্পর্কিত যেকোনো প্রশ্ন লিখুন..." aria-label="Your question"></textarea>
-                <button type="submit" id="btnSendAI" class="btn btn-emerald-gradient px-4 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-1">
-                    <span>Send</span> <i class="bi bi-send-fill"></i>
+                <textarea id="aiMessageInput"
+                          rows="1"
+                          class="form-control rounded-4 py-2"
+                          placeholder="ইসলাম সম্পর্কিত যেকোনো প্রশ্ন লিখুন..."
+                          aria-label="Your question"></textarea>
+
+                <button type="submit"
+                        id="btnSendAI"
+                        class="btn btn-emerald-gradient px-4 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-1">
+                    <span>Send</span>
+                    <i class="bi bi-send-fill"></i>
                 </button>
             </form>
-            <div class="diin-ai-disclaimer text-center mt-2">🕌 আপনার chat history এই browser-এ এবং signed-in account-এ সংরক্ষিত হবে।</div>
+
+            <div class="diin-ai-disclaimer text-center mt-2">
+                🕌 আপনার chat history এই browser-এ এবং signed-in account-এ সংরক্ষিত হবে।
+            </div>
         </div>
     </div>
 </div>
@@ -61,6 +130,7 @@
         const historyList = document.getElementById('aiHistoryList');
         const historyEmpty = document.getElementById('aiHistoryEmpty');
         const guestHistoryKey = 'diin-ai-chat-history';
+
         let chatHistory = [];
         let currentConversationId = null;
         let isAuthenticated = false;
@@ -68,55 +138,154 @@
         function escapeHtml(value) {
             // AI text and citations are inserted into HTML templates below.
             // Escape every user/provider value before inserting it.
-            return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         function normalizeSources(rawSources) {
             // Backends may return source strings or objects with different
             // casing; normalize both shapes for one consistent renderer.
             if (!Array.isArray(rawSources)) return [];
-            return rawSources.map(source => {
-                if (typeof source === 'string') return { source: 'Knowledge Base', reference: source, text: '' };
-                if (!source || typeof source !== 'object') return null;
-                return {
-                    source: source.source ?? source.Source ?? source.title ?? source.Title ?? 'Knowledge Base',
-                    reference: source.reference ?? source.Reference ?? source.citation ?? source.Citation ?? source.url ?? source.Url ?? '',
-                    text: source.text ?? source.Text ?? source.content ?? source.Content ?? ''
-                };
-            }).filter(source => source && (source.source || source.reference));
+
+            return rawSources
+                .map(source => {
+                    if (typeof source === 'string') {
+                        return {
+                            source: 'Knowledge Base',
+                            reference: source,
+                            text: ''
+                        };
+                    }
+
+                    if (!source || typeof source !== 'object') {
+                        return null;
+                    }
+
+                    return {
+                        source:
+                            source.source ??
+                            source.Source ??
+                            source.title ??
+                            source.Title ??
+                            'Knowledge Base',
+
+                        reference:
+                            source.reference ??
+                            source.Reference ??
+                            source.citation ??
+                            source.Citation ??
+                            source.url ??
+                            source.Url ??
+                            '',
+
+                        text:
+                            source.text ??
+                            source.Text ??
+                            source.content ??
+                            source.Content ??
+                            ''
+                    };
+                })
+                .filter(source =>
+                    source &&
+                    (source.source || source.reference));
         }
 
         function formatTime(timestamp) {
             if (!timestamp) return 'just now';
-            return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            return new Date(timestamp).toLocaleTimeString(
+                [],
+                {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
         }
 
-        function appendMessage(sender, text, sources = [], timestamp = null) {
+        function appendMessage(
+            sender,
+            text,
+            sources = [],
+            timestamp = null)
+        {
             // One renderer handles user bubbles, AI bubbles, source cards, and
             // the contact-admin fallback marker.
             const row = document.createElement('div');
-            row.className = sender === 'user'
-                ? 'diin-ai-message user d-flex justify-content-end mb-3'
-                : 'diin-ai-message bot d-flex align-items-start gap-2 mb-3';
-            const time = `<span>• ${formatTime(timestamp)}</span>`;
+
+            row.className =
+                sender === 'user'
+                    ? 'diin-ai-message user d-flex justify-content-end mb-3'
+                    : 'diin-ai-message bot d-flex align-items-start gap-2 mb-3';
+
+            const time =
+                `<span>• ${formatTime(timestamp)}</span>`;
+
             let content;
 
             if (sender === 'user') {
-                content = `<div class="chat-bubble-user p-3 rounded-4"><div class="message-label">You ${time}</div><p class="mb-0 small">${escapeHtml(text)}</p></div>`;
-            } else {
-                const contactMarker = '[CONTACT_ADMIN:/contact]';
-                const isContactFallback = String(text || '').includes(contactMarker);
-                const displayText = String(text || '').replace(contactMarker, '').trim();
-                const normalizedSources = normalizeSources(sources);
-                const sourcesHtml = normalizedSources.length
-                    ? `<div class="diin-ai-sources mt-3 pt-3 small p-3 rounded-3"><strong class="d-block mb-2">📚 Knowledge Base Sources</strong>${normalizedSources.map(source => `<div class="diin-ai-source-item"><strong>${escapeHtml(source.source)}</strong><span class="diin-ai-source-reference">${escapeHtml(source.reference)}</span>${source.text ? `<span class="diin-ai-source-text">${escapeHtml(source.text)}</span>` : ''}</div>`).join('')}</div>`
-                    : '';
-                const contactLink = isContactFallback
-                    ? `<div class="mt-3"><a class="btn btn-sm btn-success rounded-pill" href="/contact"><i class="bi bi-chat-heart me-1"></i>যোগাযোগ করুন / Contact Admin</a></div>`
-                    : '';
-                content = `<div class="avatar-circle-sm ai-avatar fw-bold">AI</div><div class="chat-bubble-bot p-3 rounded-4"><div class="message-label">Diin AI ${time}</div><p class="mb-0 small leading-relaxed">${escapeHtml(displayText)}</p>${contactLink}${sourcesHtml}</div>`;
+                content =
+                    `<div class="chat-bubble-user p-3 rounded-4">` +
+                        `<div class="message-label">You ${time}</div>` +
+                        `<p class="mb-0 small">${escapeHtml(text)}</p>` +
+                    `</div>`;
             }
+            else {
+                const contactMarker =
+                    '[CONTACT_ADMIN:/contact]';
+
+                const isContactFallback =
+                    String(text || '').includes(contactMarker);
+
+                const displayText =
+                    String(text || '')
+                        .replace(contactMarker, '')
+                        .trim();
+
+                const normalizedSources =
+                    normalizeSources(sources);
+
+                const sourcesHtml =
+                    normalizedSources.length
+                        ? `<div class="diin-ai-sources mt-3 pt-3 small p-3 rounded-3">` +
+                            `<strong class="d-block mb-2">📚 Knowledge Base Sources</strong>` +
+                            normalizedSources
+                                .map(source =>
+                                    `<div class="diin-ai-source-item">` +
+                                        `<strong>${escapeHtml(source.source)}</strong>` +
+                                        `<span class="diin-ai-source-reference">${escapeHtml(source.reference)}</span>` +
+                                        `${source.text
+                                            ? `<span class="diin-ai-source-text">${escapeHtml(source.text)}</span>`
+                                            : ''}` +
+                                    `</div>`
+                                )
+                                .join('') +
+                          `</div>`
+                        : '';
+
+                const contactLink =
+                    isContactFallback
+                        ? `<div class="mt-3">` +
+                            `<a class="btn btn-sm btn-success rounded-pill" href="/contact">` +
+                                `<i class="bi bi-chat-heart me-1"></i>` +
+                                `যোগাযোগ করুন / Contact Admin` +
+                            `</a>` +
+                          `</div>`
+                        : '';
+
+                content =
+                    `<div class="avatar-circle-sm ai-avatar fw-bold">AI</div>` +
+                    `<div class="chat-bubble-bot p-3 rounded-4">` +
+                        `<div class="message-label">Diin AI ${time}</div>` +
+                        `<p class="mb-0 small leading-relaxed">${escapeHtml(displayText)}</p>` +
+                        `${contactLink}` +
+                        `${sourcesHtml}` +
+                    `</div>`;
+            }
+
             row.innerHTML = content;
             chatStream.appendChild(row);
             chatStream.scrollTop = chatStream.scrollHeight;
@@ -124,67 +293,146 @@
 
         function renderWelcome() {
             chatStream.innerHTML = '';
-            appendMessage('bot', 'আসসালামু আলাইকুম! আমি Diin AI — কুরআন ও সহীহ হাদিসের আলোকে আপনার ইসলামিক প্রশ্নের উত্তর দিতে প্রস্তুত।', []);
+
+            appendMessage(
+                'bot',
+                'আসসালামু আলাইকুম! আমি Diin AI — কুরআন ও সহীহ হাদিসের আলোকে আপনার ইসলামিক প্রশ্নের উত্তর দিতে প্রস্তুত।',
+                []);
         }
 
         function renderHistory(messages) {
             chatStream.innerHTML = '';
+
             if (!messages || messages.length === 0) {
                 renderWelcome();
                 return;
             }
-            messages.forEach(message => appendMessage(message.role === 'user' ? 'user' : 'bot', message.content, message.sources, message.timestamp));
+
+            messages.forEach(message =>
+                appendMessage(
+                    message.role === 'user'
+                        ? 'user'
+                        : 'bot',
+                    message.content,
+                    message.sources,
+                    message.timestamp));
         }
 
         async function loadHistory() {
             // Prefer the server for signed-in users, then fall back to local
             // storage so guest conversations remain usable in this browser.
             try {
-                const response = await fetch('/api/ai/history');
-                const data = await response.json();
+                const response =
+                    await fetch('/api/ai/history');
+
+                const data =
+                    await response.json();
+
                 if (data.authenticated) {
                     isAuthenticated = true;
-                    currentConversationId = data.conversationId;
-                    chatHistory = data.messages;
+                    currentConversationId =
+                        data.conversationId;
+
+                    chatHistory =
+                        data.messages;
+
                     renderHistory(chatHistory);
                     await loadConversationList();
                     return;
                 }
-            } catch (error) {
-                console.warn('Server chat history unavailable; using local history.', error);
             }
+            catch (error) {
+                console.warn(
+                    'Server chat history unavailable; using local history.',
+                    error);
+            }
+
             try {
-                chatHistory = JSON.parse(localStorage.getItem(guestHistoryKey) || '[]');
-            } catch {
+                chatHistory =
+                    JSON.parse(
+                        localStorage.getItem(
+                            guestHistoryKey) || '[]');
+            }
+            catch {
                 chatHistory = [];
             }
+
             renderHistory(chatHistory);
         }
 
         function formatHistoryDate(value) {
             const date = new Date(value);
             const today = new Date();
+
             if (date.toDateString() === today.toDateString()) {
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                return date.toLocaleTimeString(
+                    [],
+                    {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
             }
-            return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+            return date.toLocaleDateString(
+                [],
+                {
+                    month: 'short',
+                    day: 'numeric'
+                });
         }
 
         async function loadConversationList() {
             // Conversation summaries are only available for authenticated users.
             if (!isAuthenticated) return;
-            const response = await fetch('/api/ai/conversations');
-            const data = await response.json();
+
+            const response =
+                await fetch('/api/ai/conversations');
+
+            const data =
+                await response.json();
+
             historyList.innerHTML = '';
-            const conversations = data.conversations || [];
-            historyEmpty.classList.toggle('is-visible', conversations.length === 0);
+
+            const conversations =
+                data.conversations || [];
+
+            historyEmpty.classList.toggle(
+                'is-visible',
+                conversations.length === 0);
+
             conversations.forEach(conversation => {
-                const item = document.createElement('button');
+                const item =
+                    document.createElement('button');
+
                 item.type = 'button';
-                item.className = `diin-ai-history-item${conversation.id === currentConversationId ? ' active' : ''}`;
-                item.dataset.conversationId = conversation.id;
-                item.innerHTML = `<span class="diin-ai-history-icon"><i class="bi bi-chat-left-text"></i></span><span class="diin-ai-history-copy"><strong>${escapeHtml(conversation.title || 'New chat')}</strong><small>${formatHistoryDate(conversation.updatedAt)}</small></span>`;
-                item.addEventListener('click', () => openConversation(conversation.id));
+
+                item.className =
+                    `diin-ai-history-item${
+                        conversation.id === currentConversationId
+                            ? ' active'
+                            : ''
+                    }`;
+
+                item.dataset.conversationId =
+                    conversation.id;
+
+                item.innerHTML =
+                    `<span class="diin-ai-history-icon">` +
+                        `<i class="bi bi-chat-left-text"></i>` +
+                    `</span>` +
+                    `<span class="diin-ai-history-copy">` +
+                        `<strong>${escapeHtml(
+                            conversation.title || 'New chat'
+                        )}</strong>` +
+                        `<small>${formatHistoryDate(
+                            conversation.updatedAt
+                        )}</small>` +
+                    `</span>`;
+
+                item.addEventListener(
+                    'click',
+                    () => openConversation(conversation.id));
+
                 historyList.appendChild(item);
             });
         }
@@ -192,86 +440,222 @@
         async function openConversation(conversationId) {
             // The selected ID is sent back to the server, which also enforces
             // ownership before returning the conversation.
-            const response = await fetch(`/api/ai/history?conversationId=${conversationId}`);
+            const response =
+                await fetch(
+                    `/api/ai/history?conversationId=${conversationId}`);
+
             if (!response.ok) return;
-            const data = await response.json();
-            currentConversationId = conversationId;
-            chatHistory = data.messages || [];
+
+            const data =
+                await response.json();
+
+            currentConversationId =
+                conversationId;
+
+            chatHistory =
+                data.messages || [];
+
             renderHistory(chatHistory);
             await loadConversationList();
-            document.getElementById('aiHistorySidebar').classList.remove('open');
+
+            document
+                .getElementById('aiHistorySidebar')
+                .classList.remove('open');
         }
 
         async function startNewChat() {
             // The server closes the active account thread; local guest history
             // is cleared separately because it has no server-side record.
-            await fetch('/api/ai/new-chat', { method: 'POST' });
+            await fetch(
+                '/api/ai/new-chat',
+                {
+                    method: 'POST'
+                });
+
             currentConversationId = null;
             chatHistory = [];
-            localStorage.removeItem(guestHistoryKey);
+
+            localStorage.removeItem(
+                guestHistoryKey);
+
             renderWelcome();
             await loadConversationList();
+
             inputMsg.focus();
         }
 
-        chatForm.addEventListener('submit', async function (event) {
-            // The UI appends the question immediately, then replaces the loading
-            // state with the normalized answer returned by /api/ai/ask.
-            event.preventDefault();
-            const text = inputMsg.value.trim();
-            if (!text || btnSend.disabled) return;
-
-            appendMessage('user', text);
-            inputMsg.value = '';
-            btnSend.disabled = true;
-            const loadingRow = document.createElement('div');
-            loadingRow.id = 'loadingIndicator';
-            loadingRow.className = 'diin-ai-message bot d-flex align-items-start gap-2 mb-3';
-            loadingRow.innerHTML = '<div class="avatar-circle-sm ai-avatar fw-bold">AI</div><div class="chat-bubble-bot p-3 rounded-4 small"><div class="message-label">Diin AI</div><span class="spinner-border spinner-border-sm text-emerald me-2"></span> যাচাই করে উত্তর প্রস্তুত করা হচ্ছে...</div>';
-            chatStream.appendChild(loadingRow);
-            chatStream.scrollTop = chatStream.scrollHeight;
-
-            try {
-                const response = await fetch('/api/ai/ask', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: text, conversationId: currentConversationId })
-                });
-                const data = await response.json();
-                loadingRow.remove();
-                if (!response.ok || !data.answer) throw new Error(data.error || 'No answer');
-
-                const assistantMessage = { role: 'assistant', content: data.answer, sources: data.sources || [], timestamp: new Date().toISOString() };
-                currentConversationId = data.conversationId || currentConversationId;
-                chatHistory.push({ role: 'user', content: text, timestamp: new Date().toISOString() }, assistantMessage);
-                if (!isAuthenticated) localStorage.setItem(guestHistoryKey, JSON.stringify(chatHistory));
-                appendMessage('bot', data.answer, data.sources, assistantMessage.timestamp);
-                await loadConversationList();
-            } catch (error) {
-                loadingRow.remove();
-                appendMessage('bot', 'দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না। পরে আবার চেষ্টা করুন। [CONTACT_ADMIN:/contact]');
-            } finally {
-                btnSend.disabled = false;
-                inputMsg.focus();
-            }
-        });
-
-        inputMsg.addEventListener('keydown', event => {
-            if (event.key === 'Enter' && !event.shiftKey) {
+        chatForm.addEventListener(
+            'submit',
+            async function (event) {
+                // The UI appends the question immediately, then replaces the loading
+                // state with the normalized answer returned by /api/ai/ask.
                 event.preventDefault();
-                chatForm.requestSubmit();
-            }
-        });
 
-        document.querySelectorAll('.prompt-chip').forEach(button => button.addEventListener('click', () => {
-            inputMsg.value = button.dataset.prompt || '';
-            chatForm.requestSubmit();
-        }));
+                const text =
+                    inputMsg.value.trim();
 
-        document.getElementById('btnClearChat').addEventListener('click', startNewChat);
-        document.getElementById('btnSidebarNewChat').addEventListener('click', startNewChat);
-        document.getElementById('btnOpenHistory').addEventListener('click', () => document.getElementById('aiHistorySidebar').classList.add('open'));
-        document.getElementById('btnCloseHistory').addEventListener('click', () => document.getElementById('aiHistorySidebar').classList.remove('open'));
+                if (!text || btnSend.disabled) {
+                    return;
+                }
+
+                appendMessage(
+                    'user',
+                    text);
+
+                inputMsg.value = '';
+                btnSend.disabled = true;
+
+                const loadingRow =
+                    document.createElement('div');
+
+                loadingRow.id =
+                    'loadingIndicator';
+
+                loadingRow.className =
+                    'diin-ai-message bot d-flex align-items-start gap-2 mb-3';
+
+                loadingRow.innerHTML =
+                    '<div class="avatar-circle-sm ai-avatar fw-bold">AI</div>' +
+                    '<div class="chat-bubble-bot p-3 rounded-4 small">' +
+                        '<div class="message-label">Diin AI</div>' +
+                        '<span class="spinner-border spinner-border-sm text-emerald me-2"></span>' +
+                        ' যাচাই করে উত্তর প্রস্তুত করা হচ্ছে...' +
+                    '</div>';
+
+                chatStream.appendChild(loadingRow);
+                chatStream.scrollTop =
+                    chatStream.scrollHeight;
+
+                try {
+                    const response =
+                        await fetch(
+                            '/api/ai/ask',
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+                                body: JSON.stringify({
+                                    query: text,
+                                    conversationId:
+                                        currentConversationId
+                                })
+                            });
+
+                    const data =
+                        await response.json();
+
+                    loadingRow.remove();
+
+                    if (!response.ok ||
+                        !data.answer) {
+                        throw new Error(
+                            data.error ||
+                            'No answer');
+                    }
+
+                    const assistantMessage = {
+                        role: 'assistant',
+                        content: data.answer,
+                        sources:
+                            data.sources || [],
+                        timestamp:
+                            new Date().toISOString()
+                    };
+
+                    currentConversationId =
+                        data.conversationId ||
+                        currentConversationId;
+
+                    chatHistory.push(
+                        {
+                            role: 'user',
+                            content: text,
+                            timestamp:
+                                new Date().toISOString()
+                        },
+                        assistantMessage);
+
+                    if (!isAuthenticated) {
+                        localStorage.setItem(
+                            guestHistoryKey,
+                            JSON.stringify(chatHistory));
+                    }
+
+                    appendMessage(
+                        'bot',
+                        data.answer,
+                        data.sources,
+                        assistantMessage.timestamp);
+
+                    await loadConversationList();
+                }
+                catch (error) {
+                    loadingRow.remove();
+
+                    appendMessage(
+                        'bot',
+                        'দুঃখিত, AI সার্ভারের সাথে বর্তমানে সংযোগ করা যাচ্ছে না। পরে আবার চেষ্টা করুন. [CONTACT_ADMIN:/contact]');
+                }
+                finally {
+                    btnSend.disabled = false;
+                    inputMsg.focus();
+                }
+            });
+
+        inputMsg.addEventListener(
+            'keydown',
+            event => {
+                if (event.key === 'Enter' &&
+                    !event.shiftKey) {
+                    event.preventDefault();
+                    chatForm.requestSubmit();
+                }
+            });
+
+        document
+            .querySelectorAll('.prompt-chip')
+            .forEach(
+                button =>
+                    button.addEventListener(
+                        'click',
+                        () => {
+                            inputMsg.value =
+                                button.dataset.prompt || '';
+
+                            chatForm.requestSubmit();
+                        }));
+
+        document
+            .getElementById('btnClearChat')
+            .addEventListener(
+                'click',
+                startNewChat);
+
+        document
+            .getElementById('btnSidebarNewChat')
+            .addEventListener(
+                'click',
+                startNewChat);
+
+        document
+            .getElementById('btnOpenHistory')
+            .addEventListener(
+                'click',
+                () =>
+                    document
+                        .getElementById('aiHistorySidebar')
+                        .classList.add('open'));
+
+        document
+            .getElementById('btnCloseHistory')
+            .addEventListener(
+                'click',
+                () =>
+                    document
+                        .getElementById('aiHistorySidebar')
+                        .classList.remove('open'));
 
         loadHistory();
     </script>

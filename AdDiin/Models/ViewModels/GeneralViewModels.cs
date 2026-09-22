@@ -237,6 +237,7 @@ namespace AdDiin.Models.ViewModels
             get
             {
                 var list = new List<DetectedIngredient>();
+
                 if (Decision?.HaramEvidence != null)
                 {
                     foreach (var h in Decision.HaramEvidence)
@@ -245,13 +246,16 @@ namespace AdDiin.Models.ViewModels
                         {
                             Name = h.Ingredient,
                             Status = "Haram",
-                            Reason = !string.IsNullOrWhiteSpace(h.Reference) ? $"{h.Description} ({h.Reference})" : h.Description,
+                            Reason = !string.IsNullOrWhiteSpace(h.Reference)
+                                ? $"{h.Description} ({h.Reference})"
+                                : h.Description,
                             MatchType = h.MatchType,
                             OcrIngredient = h.OcrIngredient,
                             Reference = h.Reference
                         });
                     }
                 }
+
                 if (Decision?.MushboohEvidence != null)
                 {
                     foreach (var m in Decision.MushboohEvidence)
@@ -260,13 +264,16 @@ namespace AdDiin.Models.ViewModels
                         {
                             Name = m.Ingredient,
                             Status = "Requires Verification",
-                            Reason = !string.IsNullOrWhiteSpace(m.Reference) ? $"{m.Description} ({m.Reference})" : m.Description,
+                            Reason = !string.IsNullOrWhiteSpace(m.Reference)
+                                ? $"{m.Description} ({m.Reference})"
+                                : m.Description,
                             MatchType = m.MatchType,
                             OcrIngredient = m.OcrIngredient,
                             Reference = m.Reference
                         });
                     }
                 }
+
                 return list.Count > 0 ? list : null;
             }
         }
