@@ -60,3 +60,33 @@ Client-side validation is supplied by `_ValidationScriptsPartial.cshtml` and wor
 ### Security expectations
 
 State-changing requests should use POST rather than GET. Forms should include antiforgery protection. User-owned records must be checked against the current user identity. Administrator mutations must be protected by the Admin role. File uploads must be validated for size, type, and storage errors.
+
+---
+
+# Part One: Public Platform Pages
+
+## Page 01: Home Dashboard
+
+### Identity
+
+- **Route**: `/`
+- **Alternative route**: `/Home/Index`
+- **Controller**: `HomeController.Index`
+- **View**: `AdDiin/Views/Home/Index.cshtml`
+- **Model**: `HomeViewModel`
+- **Access**: Public
+
+### Purpose
+
+The home page is the public entry point for AdDiin. It introduces the platform while also showing live or recently loaded religious and community information. It links visitors to prayer times, events, activities, Zakat, donations, My Deen, Diin AI, product analysis, and account features.
+
+### Data displayed
+
+The page combines several data groups:
+
+1. Current or upcoming prayer information.
+2. The next prayer and countdown information.
+3. Jamaat or prayer schedule data.
+4. Upcoming Islamic events.
+5. Active community programs.
+6. Navigation links to platform modules.
