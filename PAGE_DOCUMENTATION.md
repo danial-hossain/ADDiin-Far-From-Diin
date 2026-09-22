@@ -857,3 +857,33 @@ Shows the full information for one program and lets a user register.
 - Guest behavior is consistent with the controller.
 - Registration POST has antiforgery protection.
 
+---
+
+## Page 20: My Activities
+
+### Identity
+
+- **Route**: `/my-activities`
+- **Controller**: `ActivitiesController.MyActivities`
+- **View**: `AdDiin/Views/Activities/MyActivities.cshtml`
+- **Model**: `IEnumerable<ProgramRegistration>`
+- **Access**: Authenticated users
+
+### Purpose
+
+Lists the signed-in user’s registrations and their current statuses.
+
+### Data isolation
+
+The action must obtain the current user ID from the authenticated identity and filter registrations by that value. A query parameter must not be trusted as the ownership boundary.
+
+### QA checklist
+
+- Anonymous visitors are redirected to login.
+- User A cannot see User B registrations.
+- Status labels are clear.
+- Empty registrations show a useful link to activities.
+- Registration dates are formatted consistently.
+
+---
+
