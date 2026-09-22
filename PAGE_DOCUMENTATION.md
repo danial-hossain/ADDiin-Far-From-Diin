@@ -1408,3 +1408,34 @@ Conversation membership must be checked for every read and write. A user must no
 - **View**: `AdDiin/Views/Admin/Dashboard.cshtml`
 - **Model**: `AdminDashboardViewModel`
 - **Access**: Admin role
+- **Layout**: `_AdminLayout.cshtml`
+
+### Purpose
+
+Summarizes platform activity and gives administrators links to operational modules.
+
+### Metrics
+
+- User count.
+- Donation totals.
+- Program registration count.
+- Milad request count.
+- Event count.
+- Activity count.
+- Conversation count.
+- Recent records.
+- Upcoming events.
+- Active programs.
+
+### QA checklist
+
+- Non-admin receives access denied.
+- Counts are calculated from correct states.
+- Empty data does not break cards or tables.
+- Sensitive data is limited to what an administrator needs.
+- Dashboard links resolve to admin actions.
+
+---
+
+## Page 36: Admin Users
+
