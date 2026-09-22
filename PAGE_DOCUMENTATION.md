@@ -90,3 +90,34 @@ The page combines several data groups:
 4. Upcoming Islamic events.
 5. Active community programs.
 6. Navigation links to platform modules.
+7. Authentication controls supplied by the shared layout.
+
+### Page lifecycle
+
+1. The browser requests `/`.
+2. `HomeController.Index` loads the data needed for the landing page.
+3. Prayer, event, and activity data are combined into `HomeViewModel`.
+4. Razor renders the page sections.
+5. The shared layout renders navigation and user-state controls.
+6. Browser scripts activate visual interactions and responsive behavior.
+
+### User actions
+
+- Open the prayer-time page.
+- Open the Islamic calendar.
+- Browse activities and programs.
+- Start a donation or Zakat calculation.
+- Open the Diin AI assistant.
+- Open the Halal product analyzer.
+- Register or sign in.
+- Navigate to informational pages.
+
+### Failure behavior
+
+If a secondary data source is unavailable, the page should remain renderable with an empty collection or safe fallback. A failure in one optional section should not hide the core navigation.
+
+### QA checklist
+
+- Anonymous visitors can open `/`.
+- The page renders when there are no upcoming events.
+- The page renders when there are no active programs.
