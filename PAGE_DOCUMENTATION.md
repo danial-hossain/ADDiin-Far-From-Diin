@@ -397,3 +397,34 @@ The Islamic Calendar page provides Hijri date context, upcoming occasions, Sunna
 6. The notification badge may update after a successful request.
 
 ### Security rules
+
+Reminder creation is a state-changing operation and must use antiforgery validation or an equivalent secured request strategy. The reminder must be associated with the current user, never with an arbitrary user identifier supplied by the browser.
+
+### QA checklist
+
+- Public calendar content loads for guests.
+- Reminder action behaves correctly for guests.
+- Duplicate reminders are handled intentionally.
+- The page remains usable when there are no upcoming occasions.
+- Hijri and Gregorian dates are displayed consistently.
+- Notification count updates only after a successful server response.
+
+---
+
+## Page 09: Zakat Calculator
+
+### Identity
+
+- **Route**: `/zakat`
+- **Alternative route**: `/zakat-and-donate`
+- **Controller**: `ZakatController.Index` and `ZakatController.Calculate`
+- **View**: `AdDiin/Views/Zakat/Index.cshtml`
+- **Model**: `ZakatCalculatorViewModel`
+- **Access**: Public
+
+### Purpose
+
+The Zakat page lets a visitor enter eligible assets and debts, compare the result against a Nisab threshold, and calculate a 2.5 percent payable amount when eligible.
+
+### Input categories
+
